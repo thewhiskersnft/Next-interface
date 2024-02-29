@@ -41,6 +41,7 @@ const initialState = {
     ...initialV1Token,
   },
   fileData: null,
+  metaplexFileData: null,
   tokenAddress: "",
   mintAuthority: false,
   freezeAuthority: false,
@@ -62,6 +63,9 @@ export const FormDataSlice = createSlice({
     },
     setFileData: (state, actions) => {
       state.fileData = actions.payload;
+    },
+    setMetaplexFileData: (state, actions) => {
+      state.metaplexFileData = actions.payload;
     },
     setSupply: (state, actions) => {
       state.supply = actions.payload;
@@ -164,6 +168,7 @@ export const {
   setNonTransferable,
   setPermanentDelegate,
   setFileData,
+  setMetaplexFileData,
   setPreviewData,
   setRate,
   setSelectedForm,

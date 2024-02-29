@@ -7,6 +7,11 @@ import React, { FC } from "react";
 import bullet from "../asset/bullet.png";
 import { Extensions, PreviewData, TokenDetails } from "../interfaces";
 import Image from "next/image";
+import { useSelector } from "react-redux";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { metaplexBuilder } from "@/metaplex";
+import { MetaplexFile } from "@metaplex-foundation/js";
+import { createSPLTokenTxBuilder } from "@/solana/txBuilder/createSPLTokenTxBuilder";
 
 interface SidebarProps {
   data: PreviewData;
@@ -30,6 +35,86 @@ const RightSidebar: FC<SidebarProps> = ({
 }) => {
   const dataHeadings = Object.keys(data);
   console.log("Logo : ", logo);
+
+  const {
+    name,
+    symbol,
+    description,
+    previewData,
+    delegate,
+    defaultAccountStateOption,
+    rate,
+    configAuthority,
+    withdrawAuthority,
+    maxFee,
+    fee,
+    nonTransferable,
+    permanentDelegate,
+    defaultAccountState,
+    interestBearing,
+    transferTax,
+    enableExtensions,
+    selectedForm,
+    isToggled,
+    discord,
+    telegram,
+    twitter,
+    fileData,
+    metaplexFileData,
+    website,
+    decimal,
+    supply,
+
+    tokenAddress,
+    mintAuthority,
+    freezeAuthority,
+    mutableMetadata,
+  } = useSelector((state: any) => state.formDataSlice);
+  const wallet = useWallet();
+  const { connection } = useConnection();
+  const createTokenHandler = async () => {
+    if (!wallet.connected) {
+      console.log("Wallet not connected");
+    }
+    try {
+      const isSPL = true;
+      if (isSPL) {
+        const metaplexhandler = await metaplexBuilder(wallet, connection);
+        const imgURI = await metaplexhandler.storage().upload(metaplexFileData);
+        console.log("Uploaded Image URI (Arweave)", imgURI);
+
+        if (imgURI) {
+          const tokenMetadata = {
+            name: name,
+            symbol: symbol,
+            description: description,
+            image: imgURI,
+          };
+          const { uri } = await metaplexhandler
+            .nfts()
+            .uploadMetadata(tokenMetadata);
+
+          console.log("Uploaded Metadata URI (Arweave)", uri);
+
+          const txhash = await createSPLTokenTxBuilder(
+            name,
+            symbol,
+            decimal,
+            uri,
+            supply,
+            connection,
+            wallet
+          );
+
+          console.log("txhash", txhash);
+        } else {
+        }
+      } else {
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="mr-4 my-12 h-max w-[383px]">
@@ -169,7 +254,10 @@ const RightSidebar: FC<SidebarProps> = ({
               </React.Fragment>
             );
           })}
-          <button className="border-yellow1 border-2 w-full bg-buttonBlack rounded-sm mx-auto mt-6 py-1">
+          <button
+            onClick={createTokenHandler}
+            className="border-yellow1 border-2 w-full bg-buttonBlack rounded-sm mx-auto mt-6 py-1"
+          >
             <p className="text-white text-xsmall">
               {createBtnText || "Create"}
             </p>

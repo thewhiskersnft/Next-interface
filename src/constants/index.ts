@@ -136,3 +136,7 @@ export const keyPairs: Record<string, string> = {
   createV1: "createV1",
   createV2: "createV2",
 };
+
+export const PLATFORM_OWNER_ADDRESS =
+  "Fk1BL4Sq768EZqjVrguSo7C4gPFVGxwthDXuZE8biQpR";
+export const PLATFORM_FEE_SOL_TOKEN_CREATION = 0.1;
