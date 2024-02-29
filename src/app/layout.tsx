@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store/store";
+import { SolanaWalletAdapter } from "@/context/WalletAdapter";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,9 +41,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <ReduxProvider>
-        <body className={inter.className}>{children}</body>
-      </ReduxProvider>
+      <SolanaWalletAdapter>
+        <ReduxProvider>
+          <body className={inter.className}>{children}</body>
+        </ReduxProvider>
+      </SolanaWalletAdapter>
     </html>
   );
 }

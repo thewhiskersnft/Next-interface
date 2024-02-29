@@ -23,6 +23,7 @@ import {
   setTelegram,
   setToggled,
   setFileData,
+  setMetaplexFileData,
   setTransferTax,
   setTwitter,
   setWebsite,
@@ -35,6 +36,7 @@ import CustomInput from "./customInput";
 import CustomImagePicker from "./customImagePicker";
 import CustomRadio from "./customRadio";
 import Image from "next/image";
+import { toMetaplexFileFromBrowser } from "@metaplex-foundation/js";
 
 type CreateOrEditTokenProps = { isEdit?: boolean };
 
@@ -210,13 +212,17 @@ const CreateOrEditToken = ({ isEdit = false }: CreateOrEditTokenProps) => {
             label="Logo"
             value={fileData}
             fileName={(fileData && fileData.name) || ""}
-            onChange={(e) => {
+            onChange={async (e) => {
               // setDecimal(e.target.value);
               // console.log(e);
-              // console.log("Image : ", e?.target?.files[0]);
-              if (e?.target?.files && e.target.files[0])
+              console.log("Image : ", e?.target?.files[0]);
+              if (e?.target?.files && e.target.files[0]) {
+                const imgMetaplexFile = await toMetaplexFileFromBrowser(
+                  e.target.files[0]
+                );
+                dispatch(setMetaplexFileData(imgMetaplexFile));
                 dispatch(setFileData(e.target.files[0]));
-              else dispatch(setFileData(null));
+              } else dispatch(setFileData(null));
             }}
             showSymbol={true}
             placeholder={"Select logo"}

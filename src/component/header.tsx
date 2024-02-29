@@ -23,13 +23,7 @@ import "@solana/wallet-adapter-react-ui/styles.css";
 import { Buffer } from "buffer";
 import CustomInput from "./customInput";
 import Image from "next/image";
-window.Buffer = Buffer;
-
-import {
-  bundlrStorage,
-  Metaplex,
-  walletAdapterIdentity,
-} from "@metaplex-foundation/js";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const borderColor: string = "#4D4D4D";
 
@@ -39,26 +33,12 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ showPrimaryHeader }) => {
   const [points, setPoints] = useState<number>(0);
-  const [wallet, setWallet] = useState<any>(null);
   const [userAddress, setWalletAddress] = useState<null | string>(null);
   const [apiResponse, setApiResponse] = useState<any[]>([]);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [searchVal, setSearchVal] = useState<string>("");
 
-  useEffect(() => {
-    const initWallet = async () => {
-      const walletAdapter = new PhantomWalletAdapter();
-      try {
-        await walletAdapter.connect();
-        console.log("Wallet : ", walletAdapter);
-        setWallet(walletAdapter);
-      } catch (error) {
-        console.error("Failed to connect to wallet:", error);
-      }
-    };
-
-    initWallet();
-  }, []);
+  const wallet = useWallet();
 
   return (
     <div>
@@ -200,7 +180,7 @@ const Header: React.FC<HeaderProps> = ({ showPrimaryHeader }) => {
             borderColor: borderColor,
           }}
         >
-          {window?.solana?.isConnected ? (
+          {wallet.connected ? (
             <></>
           ) : (
             // <img
