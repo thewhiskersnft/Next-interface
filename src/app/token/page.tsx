@@ -10,7 +10,7 @@ export default function Home() {
       style={{ height: "100vh", overflow: "hidden" }}
     >
       <Header showPrimaryHeader={true} />
-      <div className="width-100 flex flex-row h-full overflow-hidden">
+      <div className="width-100 flex flex-row h-full overflow-hidden bg-black">
         <Sidebar />
         <Form />
         {/* <RightSidebar /> */}
