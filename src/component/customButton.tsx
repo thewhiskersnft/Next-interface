@@ -1,23 +1,47 @@
 import React, { CSSProperties, FC, ChangeEvent } from "react";
+import Loader from "./loader";
 
 interface CustomButtonProps {
   label?: string;
   htmlFor?: string;
   onClick: () => void;
+  containerStyles?: CSSProperties;
+  labelStyles?: CSSProperties;
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-const CustomButton: FC<CustomButtonProps> = ({ label, htmlFor, onClick }) => {
+const CustomButton: FC<CustomButtonProps> = ({
+  label,
+  htmlFor,
+  onClick,
+  containerStyles,
+  labelStyles,
+  disabled,
+  loading,
+}) => {
   return (
     <div
       className="click:animate-bounce block cursor-pointer w-full"
-      onClick={onClick}
+      onClick={() => {
+        if (!disabled) {
+          onClick();
+        }
+      }}
+      style={{ ...containerStyles }}
     >
       <label htmlFor={htmlFor || ""}>
         <span
-          className="block text-white text-xsmall cursor-pointer text-center border-1 border-yellow1 hover:bg-yellow1 hover:text-black font-Orbitron p-1 px-2 h-[28px]"
-          style={{ border: "1px solid #FFC83A" }}
+          className={`block text-white text-xsmall cursor-pointer text-center border-1 border-yellow1 ${
+            disabled || loading
+              ? ""
+              : "hover:bg-yellow1 hover:text-black border-white"
+          } font-Orbitron p-1 px-2 h-[28px] ${
+            loading ? "flex w-full items-center justify-center" : ""
+          }`}
+          style={{ border: "1px solid #FFC83A", ...labelStyles }}
         >
-          {label}
+          {loading ? <Loader visible={true} size={19} /> : label}
         </span>
       </label>
     </div>

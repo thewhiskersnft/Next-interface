@@ -5,6 +5,8 @@ import "./globals.css";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store/store";
 import { SolanaWalletAdapter } from "@/context/WalletAdapter";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -43,6 +45,7 @@ export default function RootLayout({
     <html lang="en">
       <SolanaWalletAdapter>
         <ReduxProvider>
+          <ToastContainer />
           <body className={inter.className}>{children}</body>
         </ReduxProvider>
       </SolanaWalletAdapter>

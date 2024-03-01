@@ -33,13 +33,13 @@ const CustomImagePicker: FC<CustomImagePickerProps> = ({
       >
         {label || ""}
         {showSymbol && (
-          <span>
+          <span className="flex items-center">
             {/* <img className="ml-1" src={Help} alt="/help" /> */}
             <Image
               src={"/help.svg"}
               alt="Help Logo"
-              width={14}
-              height={5}
+              width={19}
+              height={19}
               priority
             />
           </span>

@@ -1,15 +1,3 @@
-// import tokenManagement from "../asset/tokenManagement.png";
-// import tokenManagementActive from "../asset/tokenManagementActive.png";
-// import manageLiquidity from "../asset/manageLiquidity.png";
-// import manageLiquidityActive from "../asset/manageLiquidityActive.png";
-// import creatorTools from "../asset/creatorTools.png";
-// import creatorToolsActive from "../asset/creatorToolsActive.png";
-// import tokenSafety from "../asset/tokenSafety.png";
-// import tokenSafetyActive from "../asset/tokenSafetyActive.png";
-// import burn from "../asset/burn.png";
-// import burnActive from "../asset/burnActive.png";
-// import airdrop from "../asset/airdrop.png";
-// import airdropActive from "../asset/airdropActive.png";
 import { SidebarItem } from "../interfaces";
 
 export const TokenRoutes: Record<string, string> = {
@@ -64,8 +52,7 @@ export const sidebarData: SidebarItem[] = [
   },
   {
     label: "Manage Liquidity",
-    description:
-      "Design & Deploy your own v1 ( legacy ) or v2 ( Token-22) SPL tokens with Extensions",
+    description: "Create & Manage OpenBook Market IDs & Liquidity Pools",
     icon: "/manageLiquidity.png",
     activeIcon: "/manageLiquidityActive.png",
     children: [

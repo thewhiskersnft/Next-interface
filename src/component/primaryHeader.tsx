@@ -97,13 +97,14 @@ const PrimaryHeader: FC = () => {
           }}
         >
           <div className="text-center text-white text-xsmall font-Orbitron w-100 cursor-pointer">
-            Light
+            Lite
           </div>
           <label className="switch text-xsmall mx-4">
             <input
               onClick={() => {
                 console.log("Toggle theme");
               }}
+              checked={true}
               type="checkbox"
             />
             <span className="slider round"></span>

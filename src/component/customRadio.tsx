@@ -39,11 +39,7 @@ const CustomRadio: FC<CustomRadioProps> = ({
           )}
         </>
         <label className="switch">
-          <input
-            value={value ? "true" : "false"}
-            onChange={onChange}
-            type="checkbox"
-          />
+          <input checked={value} onChange={onChange} type="checkbox" />
           <span className="slider round"></span>
         </label>
       </div>
