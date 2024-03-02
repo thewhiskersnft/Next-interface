@@ -55,7 +55,7 @@ export default function RootLayout({
         <ReduxProvider>
           <ToastContainer /> */}
       <body className={inter.className}>
-        {<ProviderChild children={children} />}
+        {<ProviderChild>{children}</ProviderChild> }
       </body>
       {/* </ReduxProvider>
       </SolanaWalletAdapter> */}

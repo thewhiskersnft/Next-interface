@@ -12,14 +12,14 @@ export const TokenRoutes: Record<string, string> = {
 export const sidebarData: SidebarItem[] = [
   {
     label: "Token Management",
-    description: "Create and manage your own SPL (v1/v2) Tokens",
+    description: "Create & Manage SPL ( v1/v2 ) Tokens",
     icon: "/tokenManagement.png",
     activeIcon: "/tokenManagementActive.png",
     children: [
       {
         label: "Create Token",
         description:
-          "Design & Deploy your own v1 ( legacy ) or v2 ( Token-22) SPL tokens with Extensions",
+          "Design & Deploy v1 ( Legacy ) Or v2 ( Token-22 ) SPL Tokens With Extensions",
         navigateTo: `/token?action=${TokenRoutes.createToken}`,
       },
       {
@@ -35,30 +35,30 @@ export const sidebarData: SidebarItem[] = [
       {
         label: "Get Token Verified",
         description:
-          "Verify to Get listed on jupiter strict list & solana wallets",
+          "Get Verified On Jupiter Strict List & Solana Wallets",
         navigateTo: `/token?action=${TokenRoutes.verifyToken}`,
       },
       {
         label: "Mint Tokens",
-        description: "Mint more tokens using an existing token mint",
+        description: "Mint More Tokens Using An Existing Token Mint",
         navigateTo: `/token?action=${TokenRoutes.mintToken}`,
       },
       {
         label: "Burn Tokens",
-        description: "Burn tokens from your wallet",
+        description: "Burn Tokens From Your Wallet",
         navigateTo: `/token?action=${TokenRoutes.burnToken}`,
       },
     ],
   },
   {
     label: "Manage Liquidity",
-    description: "Create & Manage OpenBook Market IDs & Liquidity Pools",
+    description: "Create & Manage Openbook Market IDs & Liquidity Pools",
     icon: "/manageLiquidity.png",
     activeIcon: "/manageLiquidityActive.png",
     children: [
       {
-        label: "Create Open Book Market ID",
-        description: "Create Openbook Market ID to Set Up Liquidity Pool",
+        label: "Create Openbook Market ID",
+        description: "Create Openbook Market ID To Set Up Liquidity Pool",
       },
       {
         label: "Create Raydium Liquidity Pool (LP)",
@@ -70,7 +70,7 @@ export const sidebarData: SidebarItem[] = [
       },
       {
         label: "Renounce LP (Burn LP)",
-        description: "Renounce Your LP Ownership Token",
+        description: "Renounce Your LP Ownership Tokens",
       },
     ],
   },
@@ -82,7 +82,7 @@ export const sidebarData: SidebarItem[] = [
     children: [
       {
         label: "Snapshot Holders",
-        description: "Snapshot Holder List For NFTs& SPL Tokens",
+        description: "Snapshot Holder List For NFTs & SPL Tokens",
       },
       {
         label: "Send Airdrops",
@@ -125,5 +125,5 @@ export const keyPairs: Record<string, string> = {
 };
 
 export const PLATFORM_OWNER_ADDRESS =
-  "Fk1BL4Sq768EZqjVrguSo7C4gPFVGxwthDXuZE8biQpR";
-export const PLATFORM_FEE_SOL_TOKEN_CREATION = 0.1;
+  "AZLF3pWCpjh93yJo74hzKJWmiQrfv1hVAZ7wq4DA5x1d";
+export const PLATFORM_FEE_SOL_TOKEN_CREATION = 0.015;

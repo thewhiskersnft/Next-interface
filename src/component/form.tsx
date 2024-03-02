@@ -136,6 +136,7 @@ export default function Form() {
   const [showManageTokenData, setShowManageTokenData] = useState(false);
   const [showUpdateMetadata, setShowUpdateMetadata] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
+  const [balance, setBalance] = useState(0);
 
   const formik = useFormik({
     initialValues: {
@@ -241,8 +242,18 @@ export default function Form() {
   const createTokenHandler = async (values: any) => {
     console.log("Values : ", values);
     if (!wallet.connected) {
+
+      errorToast({ message: "Please connect the wallet" });
       console.log("Wallet not connected");
     }
+  //  console.log("fsfs dkcfds",wallet);
+    if(wallet.publicKey!=null){
+    let balance = await connection.getBalance(wallet.publicKey as any);
+    setBalance(balance)
+   // console.log("sdfd",balance);
+    }
+     if(balance>5000000){
+
     try {
       const isSPL = true;
       if (isSPL) {
@@ -276,15 +287,26 @@ export default function Form() {
 
           console.log("txhash", txhash);
           setButtonClicked(false);
-        } else {
-          setButtonClicked(false);
         }
+         else {
+          setButtonClicked(false);
+          errorToast({ message: "Error in creating token please retry" });
+
+        }
+        
       } else {
+
       }
     } catch (error) {
       console.log(error);
       setButtonClicked(false);
     }
+
+  }else{
+    errorToast({ message: "Insufficent balance" });
+    setButtonClicked(false);
+
+  }
   };
 
   const toggleShowManageTokenData = () => {

@@ -3,7 +3,7 @@ import Header from "@/component/header";
 import Sidebar from "@/component/sidebar";
 import Image from "next/image";
 
-export default function Home() {
+export default function Token() {
   return (
     <div
       className="width-100 flex flex-col h-max"
