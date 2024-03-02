@@ -126,3 +126,15 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+.toast-message {
+  background: darkblue;
+  color: #fff;
+  font-size: 20px;
+  width: 34vw;
+  padding: 30px 20px;
+}
+
+.Toastify__toast-theme--light.Toastify__toast--default {
+  background-color: #ffc83a;
+}

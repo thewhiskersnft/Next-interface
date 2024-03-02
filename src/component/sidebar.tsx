@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { sidebarData } from "../constants";
 import { SidebarItem } from "../interfaces";
 // import { useNavigate } from "react-router-dom";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { get } from "lodash";
 import Image from "next/image";
 
@@ -12,7 +12,7 @@ const Sidebar: React.FC = () => {
   const [clicked, setClicked] = useState<string>("");
   const [childClicked, setChildClicked] = useState<string>(""); // move these to redux and remove use client from top
 
-  // const navigate = useNavigate();
+  const router = useRouter();
 
   const handleChildClick = (val: string, navigateTo: string | undefined) => {
     if (childClicked === val) {
@@ -22,7 +22,7 @@ const Sidebar: React.FC = () => {
     console.log(navigateTo);
     if (navigateTo) {
       console.log(navigateTo);
-      redirect(navigateTo);
+      router.push(navigateTo);
     }
   };
 

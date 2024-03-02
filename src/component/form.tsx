@@ -1,31 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-// import {
-//   Connection,
-//   SystemProgram,
-//   Transaction,
-//   LAMPORTS_PER_SOL,
-//   clusterApiUrl,
-//   PublicKey,
-//   Keypair,
-//   sendAndConfirmTransaction,
-// } from "@solana/web3.js";
-// import bs58 from "bs58";
-// import {
-//   MINT_SIZE,
-//   TOKEN_PROGRAM_ID,
-//   createInitializeMint2Instruction,
-//   createMint,
-//   getMinimumBalanceForRentExemptMint,
-//   updateTokenMetadata,
-// } from "@solana/spl-token";
-// import Help from "../asset/help.svg";
 import CustomInput from "./customInput";
 import CustomRadio from "./customRadio";
 import RightSidebar from "./rightSidebar";
 import { TokenRoutes, keyPairs } from "../constants";
-import help from "../asset/help.svg";
-import helpDark from "../asset/helpDark.png";
 import { PreviewData } from "../interfaces";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -60,21 +38,27 @@ import {
   setFreezeAuthority,
   setMutableMetadata,
 } from "../redux/slice/formDataSlice";
-import CustomImagePicker from "./customImagePicker";
-// import { useSearchParams } from "react-router-dom";
 import { useSearchParams } from "next/navigation";
 import CustomButton from "./customButton";
 import CreateOrEditToken from "./createOrEditToken";
+import { useFormik, Formik } from "formik";
+import { metaplexBuilder } from "@/metaplex";
+import { MetaplexFile } from "@metaplex-foundation/js";
+import { createSPLTokenTxBuilder } from "@/solana/txBuilder/createSPLTokenTxBuilder";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { v1TokenValidation } from "../utils/formikValidators";
+import { cloneDeep } from "lodash";
+import { errorToast, successToast } from "./toast";
 
-// const initialV1Token: PreviewData = {
-//   "Token Details": {
-//     "Token Name": "",
-//     Description: "",
-//     Symbol: "",
-//     Supply: "",
-//     Decimals: "",
-//   },
-// };
+const initialV1Token: PreviewData = {
+  "Token Details": {
+    "Token Name": "",
+    Description: "",
+    Symbol: "",
+    Supply: "",
+    Decimals: "",
+  },
+};
 
 // const initialV2Token: PreviewData = {
 //   "Token Details": {
@@ -117,6 +101,7 @@ export default function Form() {
     telegram,
     twitter,
     fileData,
+    metaplexFileData,
     website,
     decimal,
     supply,
@@ -130,6 +115,9 @@ export default function Form() {
 
   const dispatch = useDispatch();
 
+  const wallet = useWallet();
+  const { connection } = useConnection();
+
   // const [searchParams, setSearchParams] = useSearchParams();
   const searchParams = useSearchParams();
 
@@ -141,6 +129,112 @@ export default function Form() {
 
   const [showManageTokenData, setShowManageTokenData] = useState(false);
   const [showUpdateMetadata, setShowUpdateMetadata] = useState(false);
+  const [buttonClicked, setButtonClicked] = useState(false);
+
+  const formik = useFormik({
+    initialValues: {
+      name: name,
+      symbol: symbol,
+      description: description,
+      supply: supply,
+      decimal: decimal,
+      website: website,
+      twitter: twitter,
+      telegram: telegram,
+      discord: discord,
+      logo: "", // not currently used here (used from redux state)
+      fee: "",
+      maxFee: maxFee,
+      withdrawAuthority: withdrawAuthority,
+      configAuthority: configAuthority,
+      rate: rate,
+      defaultAccountStateOption: defaultAccountStateOption,
+      delegate: delegate,
+      nonTransferable: nonTransferable,
+    },
+    validateOnChange: false,
+    validateOnBlur: false,
+    validate: (values) => createTokenValidator(values),
+    onSubmit: (values) => {
+      setButtonClicked(true);
+      if (selectedForm === keyPairs.createV1) {
+        // v1 token creation
+        createTokenHandler(values);
+      }
+    },
+  });
+
+  const createTokenValidator = (values: any) => {
+    let resp = {} as any;
+    if (selectedForm === keyPairs.createV1) {
+      // v1 token validator
+      resp = v1TokenValidation(values);
+      // check if logo added
+      if (!fileData?.name) {
+        resp["logo"] = "Please select logo";
+        errorToast({ message: "Please upload logo!" });
+      }
+      let errors = Object.keys(resp).length;
+      if (errors < 1) {
+        // no errors so updating redux state
+        dispatch(setName(formik.values.name));
+        dispatch(setSymbol(formik.values.symbol));
+        dispatch(setDescription(formik.values.description));
+        dispatch(setSupply(formik.values.supply));
+        dispatch(setDecimal(formik.values.decimal));
+      }
+    }
+    return resp;
+  };
+
+  const createTokenHandler = async (values: any) => {
+    console.log("Values : ", values);
+    if (!wallet.connected) {
+      console.log("Wallet not connected");
+    }
+    try {
+      const isSPL = true;
+      if (isSPL) {
+        const metaplexhandler = await metaplexBuilder(wallet, connection);
+        const imgURI = await metaplexhandler.storage().upload(metaplexFileData);
+        console.log("MP data : ", metaplexFileData);
+        console.log("Uploaded Image URI (Arweave)", imgURI);
+
+        if (imgURI) {
+          const tokenMetadata = {
+            name: name,
+            symbol: symbol,
+            description: description,
+            image: imgURI,
+          };
+          const { uri } = await metaplexhandler
+            .nfts()
+            .uploadMetadata(tokenMetadata);
+
+          console.log("Uploaded Metadata URI (Arweave)", uri);
+
+          const txhash = await createSPLTokenTxBuilder(
+            name,
+            symbol,
+            decimal,
+            uri,
+            supply,
+            connection,
+            wallet
+          );
+
+          console.log("txhash", txhash);
+          setButtonClicked(false);
+        } else {
+          setButtonClicked(false);
+        }
+      } else {
+      }
+    } catch (error) {
+      console.log(error);
+      setButtonClicked(false);
+    }
+  };
 
   const toggleShowManageTokenData = () => {
     // add validations here
@@ -162,56 +256,68 @@ export default function Form() {
 
   useEffect(() => {
     let updatedPreviewData: PreviewData = {} as PreviewData;
-    if (selectedForm === keyPairs.createV1) {
-      updatedPreviewData = {
-        "Token Details": {
-          "Token Name": name,
-          Description: description,
-          Symbol: symbol,
-          Supply: `${supply}`,
-          Decimals: `${decimal}`,
-        },
-      };
+    if (tokenAction === TokenRoutes.createToken) {
+      // create token
+      if (selectedForm === keyPairs.createV1) {
+        updatedPreviewData = {
+          "Token Details": {
+            "Token Name": formik.values.name,
+            Description: formik.values.description,
+            Symbol: formik.values.symbol,
+            Supply: formik.values.supply,
+            Decimals: formik.values.decimal,
+          },
+        };
+      }
+      if (selectedForm === keyPairs.createV2) {
+        updatedPreviewData = {
+          "Token Details": {
+            "Token Name": formik.values.name,
+            Description: formik.values.description,
+            Symbol: formik.values.symbol,
+            Supply: formik.values.supply,
+            Decimals: formik.values.decimal,
+          },
+          Extensions: {
+            "Fee %": formik.values.fee,
+            "Max Fee": formik.values.maxFee,
+            "Interest Rate": formik.values.rate,
+            "Account State": formik.values.defaultAccountStateOption,
+            "Permanent Delegate": formik.values.delegate,
+            "Non Transferable": `${nonTransferable}`,
+          },
+        };
+      }
+    } else if (tokenAction === TokenRoutes.updateMetadata) {
+      // update metadata
+      updatedPreviewData = { ...initialV1Token };
+    } else {
+      // default cond (setting to empty vals)
+      updatedPreviewData = { ...initialV1Token };
     }
-    if (selectedForm === keyPairs.createV2) {
-      updatedPreviewData = {
-        "Token Details": {
-          "Token Name": name,
-          Description: description,
-          Symbol: symbol,
-          Supply: `${supply}`,
-          Decimals: `${decimal}`,
-        },
-        Extensions: {
-          "Fee %": fee,
-          "Max Fee": maxFee,
-          "Interest Rate": rate,
-          "Account State": defaultAccountStateOption,
-          "Permanent Delegate": delegate,
-          "Non Transferable": `${nonTransferable}`,
-        },
-      };
-    }
-    dispatch(setPreviewData(updatedPreviewData));
+    dispatch(setPreviewData(cloneDeep(updatedPreviewData)));
   }, [
-    name,
-    symbol,
-    description,
-    supply,
-    decimal,
+    formik.values.name,
+    formik.values.symbol,
+    formik.values.description,
+    formik.values.supply,
+    formik.values.decimal,
     selectedForm,
-    fee,
-    maxFee,
-    rate,
-    defaultAccountStateOption,
-    delegate,
+    formik.values.fee,
+    formik.values.maxFee,
+    formik.values.rate,
+    formik.values.defaultAccountStateOption,
+    formik.values.delegate,
     nonTransferable,
     dispatch,
+    tokenAction,
   ]);
 
   return (
     <div className="flex flex-row flex-1 h-full overflow-auto scroll-smooth">
-      {tokenAction === TokenRoutes.createToken && <CreateOrEditToken />}
+      {tokenAction === TokenRoutes.createToken && (
+        <CreateOrEditToken formik={formik} />
+      )}
       {tokenAction === TokenRoutes.manageToken && (
         <div
           style={{ alignItems: "center" }}
@@ -362,11 +468,18 @@ export default function Form() {
             : "Create v2 SPL Token"
         }
         mediaLinks={{
-          website,
-          twitter,
-          telegram,
-          discord,
+          website: formik.values.website,
+          twitter: formik.values.twitter,
+          telegram: formik.values.telegram,
+          discord: formik.values.discord,
         }}
+        formik={formik}
+        label={
+          tokenAction === TokenRoutes.updateMetadata
+            ? "Preview (Old Metadata)"
+            : "Preview"
+        }
+        loading={buttonClicked}
       />
     </div>
   );

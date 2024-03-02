@@ -12,6 +12,10 @@ interface CustomInputProps {
   containerStyles?: CSSProperties;
   inputStyles?: CSSProperties;
   placeholderColor?: string;
+  id?: string;
+  name?: string;
+  showError?: boolean;
+  errorMessage?: string;
 }
 
 const CustomInput = ({
@@ -24,6 +28,10 @@ const CustomInput = ({
   containerStyles,
   inputStyles,
   placeholderColor,
+  id,
+  name,
+  showError,
+  errorMessage,
 }: CustomInputProps) => {
   return (
     <>
@@ -33,13 +41,13 @@ const CustomInput = ({
       >
         {label || ""}
         {showSymbol && (
-          <span>
+          <span className="flex items-center">
             {/* <img className="ml-1" src={Help} alt="/help" /> */}
             <Image
               src={"/help.svg"}
               alt="Help Logo"
-              width={14}
-              height={5}
+              width={19}
+              height={19}
               priority
             />
           </span>
@@ -50,12 +58,19 @@ const CustomInput = ({
           className={`outline-none w-100 bg-background text-xsmall font-Orbitron placeholder:${
             placeholderColor ? `text-${placeholderColor}` : "text-darkGrey"
           } p-1 px-[16px] text-white w-[100%] customInp hover:bg-hoverInputBg`}
+          id={id}
+          name={name}
           style={{ ...inputStyles }}
           type={type || "text"}
           value={value}
           placeholder={placeholder || ""}
           onChange={onChange}
         />
+        {showError && (
+          <div className="bg-[#D93535] text-[10px] font-Oxanium px-[16px]">
+            {errorMessage}
+          </div>
+        )}
       </div>
     </>
   );

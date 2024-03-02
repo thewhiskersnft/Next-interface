@@ -1,10 +1,5 @@
+"use client";
 import React, { FC } from "react";
-// import cat1 from "../asset/cat1.png";
-// import website from "../asset/website.png";
-// import twitter from "../asset/twitter.png";
-// import discord from "../asset/discord.png";
-// import telegram from "../asset/telegram.png";
-import bullet from "../asset/bullet.png";
 import { Extensions, PreviewData, TokenDetails } from "../interfaces";
 import Image from "next/image";
 import { useSelector } from "react-redux";
@@ -12,6 +7,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { metaplexBuilder } from "@/metaplex";
 import { MetaplexFile } from "@metaplex-foundation/js";
 import { createSPLTokenTxBuilder } from "@/solana/txBuilder/createSPLTokenTxBuilder";
+import CustomButton from "./customButton";
 
 interface SidebarProps {
   data: PreviewData;
@@ -24,6 +20,9 @@ interface SidebarProps {
     discord: string;
     telegram: string;
   };
+  formik?: any;
+  label?: string;
+  loading?: boolean;
 }
 
 const RightSidebar: FC<SidebarProps> = ({
@@ -32,9 +31,11 @@ const RightSidebar: FC<SidebarProps> = ({
   logo,
   createBtnText,
   mediaLinks,
+  formik,
+  label,
+  loading,
 }) => {
   const dataHeadings = Object.keys(data);
-  console.log("Logo : ", logo);
 
   const {
     name,
@@ -70,51 +71,55 @@ const RightSidebar: FC<SidebarProps> = ({
     freezeAuthority,
     mutableMetadata,
   } = useSelector((state: any) => state.formDataSlice);
-  const wallet = useWallet();
-  const { connection } = useConnection();
-  const createTokenHandler = async () => {
-    if (!wallet.connected) {
-      console.log("Wallet not connected");
-    }
-    try {
-      const isSPL = true;
-      if (isSPL) {
-        const metaplexhandler = await metaplexBuilder(wallet, connection);
-        const imgURI = await metaplexhandler.storage().upload(metaplexFileData);
-        console.log("Uploaded Image URI (Arweave)", imgURI);
+  // const wallet = useWallet();
+  // const { connection } = useConnection();
+  // const createTokenHandler = async () => {
+  //   console.log("here");
+  //   toast.error("Remove comment!");
+  //   if (!wallet.connected) {
+  //     console.log("Wallet not connected");
+  //   }
+  //   try {
+  //     const isSPL = true;
+  //     if (isSPL) {
+  //       const metaplexhandler = await metaplexBuilder(wallet, connection);
+  //       const imgURI = await metaplexhandler.storage().upload(metaplexFileData);
+  //       console.log("Uploaded Image URI (Arweave)", imgURI);
 
-        if (imgURI) {
-          const tokenMetadata = {
-            name: name,
-            symbol: symbol,
-            description: description,
-            image: imgURI,
-          };
-          const { uri } = await metaplexhandler
-            .nfts()
-            .uploadMetadata(tokenMetadata);
+  //       if (imgURI) {
+  //         const tokenMetadata = {
+  //           name: name,
+  //           symbol: symbol,
+  //           description: description,
+  //           image: imgURI,
+  //         };
+  //         const { uri } = await metaplexhandler
+  //           .nfts()
+  //           .uploadMetadata(tokenMetadata);
 
-          console.log("Uploaded Metadata URI (Arweave)", uri);
+  //         console.log("Uploaded Metadata URI (Arweave)", uri);
 
-          const txhash = await createSPLTokenTxBuilder(
-            name,
-            symbol,
-            decimal,
-            uri,
-            supply,
-            connection,
-            wallet
-          );
+  //         const txhash = await createSPLTokenTxBuilder(
+  //           name,
+  //           symbol,
+  //           decimal,
+  //           uri,
+  //           supply,
+  //           connection,
+  //           wallet
+  //         );
 
-          console.log("txhash", txhash);
-        } else {
-        }
-      } else {
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //         console.log("txhash", txhash);
+  //       } else {
+  //       }
+  //     } else {
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // console.log("media  : ", mediaLinks);
 
   return (
     <div className="mr-4 my-12 h-max w-[383px]">
@@ -126,18 +131,19 @@ const RightSidebar: FC<SidebarProps> = ({
           className="border-b-2 py-2 text-white cursor-pointer font-Orbitron text-small text-left px-4"
           style={{ borderColor: "rgba(255, 255, 255, 0.2)" }}
         >
-          Preview
+          {label || "Preview"}
         </div>
         <div className="p-4 bg-black">
           <div className="border-yellow1 border-2 flex items-center justify-center h-[343px] w-[343px]">
             {logo ? (
               <img
                 src={logo} // default image is cat1 for now
-                alt="cat1"
+                alt="logo"
                 width={`${254}px`}
                 style={{
                   height: `${254}px`,
                   objectFit: "cover",
+                  borderRadius: "200px",
                 }}
               />
             ) : (
@@ -151,68 +157,66 @@ const RightSidebar: FC<SidebarProps> = ({
             )}
           </div>
           <span className="w-[full] flex justify-between items-center my-[20px] px-[90px]">
-            <a className="website" href={mediaLinks.website}>
-              {/* <img
-                src={website}
-                alt="website"
-                width={`${23}px`}
-                style={{
-                  height: `${23}px`,
-                }}
-              /> */}
+            <a
+              className="website"
+              target="_blank"
+              rel="noopener noreferrer"
+              href={mediaLinks.website}
+            >
               <Image
-                src={"/website.png"}
+                src={
+                  mediaLinks.website ? "/website.png" : "/websiteDisabled.png"
+                }
                 alt="websity Logo"
                 width={23}
                 height={23}
                 priority
               />
             </a>
-            <a className="twitter" href={mediaLinks.twitter}>
-              {/* <img
-                src={twitter}
-                alt="twitter"
-                width={`${20}px`}
-                style={{
-                  height: `${20}px`,
-                }}
-              /> */}
+            <a
+              className="twitter"
+              href={mediaLinks.twitter}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Image
-                src={"/twitter.png"}
+                src={
+                  mediaLinks.twitter ? "/twitter.png" : "/twitterDisabled.png"
+                }
                 alt="twitter Logo"
                 width={20}
                 height={20}
                 priority
               />
             </a>
-            <a className="telegram" href={mediaLinks.telegram}>
-              {/* <img
-                src={telegram}
-                alt="telegram"
-                width={`${20}px`}
-                style={{
-                  height: `${20}px`,
-                }}
-              /> */}
+            <a
+              className="telegram"
+              href={mediaLinks.telegram}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Image
-                src={"/telegram.png"}
+                src={
+                  mediaLinks.telegram
+                    ? "/telegram.png"
+                    : "/telegramDisabled.png"
+                }
                 alt="telegram Logo"
                 width={20}
                 height={20}
                 priority
               />
             </a>
-            <a className="discord" href={mediaLinks.discord}>
-              {/* <img
-                src={discord}
-                alt="discord"
-                width={`${20}px`}
-                style={{
-                  height: `${20}px`,
-                }}
-              /> */}
+            <a
+              className="discord"
+              href={mediaLinks.discord}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Image
-                src={"/discord.png"}
+                src={
+                  mediaLinks.discord ? "/discord.png" : "/discordDisabled.png"
+                }
                 alt="discord Logo"
                 width={20}
                 height={20}
@@ -254,14 +258,17 @@ const RightSidebar: FC<SidebarProps> = ({
               </React.Fragment>
             );
           })}
-          <button
-            onClick={createTokenHandler}
-            className="border-yellow1 border-2 w-full bg-buttonBlack rounded-sm mx-auto mt-6 py-1"
-          >
-            <p className="text-white text-xsmall">
-              {createBtnText || "Create"}
-            </p>
-          </button>
+          <CustomButton
+            onClick={formik?.handleSubmit}
+            label={createBtnText || "Create"}
+            disabled={false}
+            loading={loading}
+            containerStyles={{
+              marginTop: "10px",
+              backgroundColor: "#222222",
+            }}
+            labelStyles={{ fontFamily: "Oxanium" }}
+          />
         </div>
       </div>
       {showInfo && (
@@ -277,91 +284,63 @@ const RightSidebar: FC<SidebarProps> = ({
           </div>
           <div className="p-4 bg-black">
             <span className="text-white flex mt-2">
-              {/* <img
-                src={bullet}
-                alt="bullet"
-                width={`${16}px`}
-                style={{
-                  height: `${16}px`,
-                  marginRight: "8px",
-                }}
-              /> */}
-              <Image
-                src={"/bullet.png"}
-                alt="bullet Logo"
-                width={16}
-                height={16}
-                style={{ marginRight: "8px" }}
-                priority
-              />
+              <span className="w-[25px]">
+                <Image
+                  src={"/bullet.png"}
+                  alt="bullet Logo"
+                  width={16}
+                  height={16}
+                  style={{ marginRight: "8px" }}
+                  priority
+                />
+              </span>
               <p className="w-full text-left font-Oxanium text-xsmall">
                 No smart contract programming necessary.
               </p>
             </span>
             <span className="text-white flex mt-2">
-              {/* <img
-                src={bullet}
-                alt="bullet"
-                width={`${16}px`}
-                style={{
-                  height: `${16}px`,
-                  marginRight: "8px",
-                }}
-              /> */}
-              <Image
-                src={"/bullet.png"}
-                alt="bullet Logo"
-                width={16}
-                height={16}
-                style={{ marginRight: "8px" }}
-                priority
-              />
+              <span className="w-[25px]">
+                <Image
+                  src={"/bullet.png"}
+                  alt="bullet Logo"
+                  width={16}
+                  height={16}
+                  style={{ marginRight: "8px" }}
+                  priority
+                />
+              </span>
               <p className="w-full text-left font-Oxanium text-xsmall">
                 Secure 100% ownership of generated token.
               </p>
             </span>
             <span className="text-white flex mt-2">
-              {/* <img
-                src={bullet}
-                alt="bullet"
-                width={`${16}px`}
-                style={{
-                  height: `${16}px`,
-                  marginRight: "8px",
-                }}
-              /> */}
-              <Image
-                src={"/bullet.png"}
-                alt="bullet Logo"
-                width={16}
-                height={16}
-                style={{ marginRight: "8px" }}
-                priority
-              />
+              <span className="w-[25px]">
+                <Image
+                  src={"/bullet.png"}
+                  alt="bullet Logo"
+                  width={16}
+                  height={16}
+                  style={{ marginRight: "8px" }}
+                  priority
+                />
+              </span>
               <p className="w-full text-left font-Oxanium text-xsmall">
                 Customize token name, symbol and initial supply.
               </p>
             </span>
             <span className="text-white flex mt-2">
-              {/* <img
-                src={bullet}
-                alt="bullet"
-                width={`${16}px`}
-                style={{
-                  height: `${16}px`,
-                  marginRight: "8px",
-                }}
-              /> */}
-              <Image
-                src={"/bullet.png"}
-                alt="bullet Logo"
-                width={16}
-                height={16}
-                style={{ marginRight: "8px" }}
-                priority
-              />
+              <span className="w-[25px]">
+                <Image
+                  src={"/bullet.png"}
+                  alt="bullet Logo"
+                  width={16}
+                  height={16}
+                  style={{ marginRight: "8px" }}
+                  priority
+                />
+              </span>
               <p className="w-full text-left font-Oxanium text-xsmall">
-                Sign and create your own wallet.
+                Sign and create with your own wallet.
               </p>
             </span>
           </div>
