@@ -106,6 +106,7 @@ const PrimaryHeader: FC = () => {
               }}
               checked={true}
               type="checkbox"
+              onChange={() => {}}
             />
             <span className="slider round"></span>
           </label>

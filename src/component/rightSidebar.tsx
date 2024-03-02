@@ -22,6 +22,7 @@ interface SidebarProps {
   };
   formik?: any;
   label?: string;
+  loading?: boolean;
 }
 
 const RightSidebar: FC<SidebarProps> = ({
@@ -32,6 +33,7 @@ const RightSidebar: FC<SidebarProps> = ({
   mediaLinks,
   formik,
   label,
+  loading,
 }) => {
   const dataHeadings = Object.keys(data);
 
@@ -260,7 +262,7 @@ const RightSidebar: FC<SidebarProps> = ({
             onClick={formik?.handleSubmit}
             label={createBtnText || "Create"}
             disabled={false}
-            loading={false}
+            loading={loading}
             containerStyles={{
               marginTop: "10px",
               backgroundColor: "#222222",

@@ -48,6 +48,7 @@ import { createSPLTokenTxBuilder } from "@/solana/txBuilder/createSPLTokenTxBuil
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { v1TokenValidation } from "../utils/formikValidators";
 import { cloneDeep } from "lodash";
+import { errorToast, successToast } from "./toast";
 
 const initialV1Token: PreviewData = {
   "Token Details": {
@@ -128,6 +129,7 @@ export default function Form() {
 
   const [showManageTokenData, setShowManageTokenData] = useState(false);
   const [showUpdateMetadata, setShowUpdateMetadata] = useState(false);
+  const [buttonClicked, setButtonClicked] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -154,6 +156,7 @@ export default function Form() {
     validateOnBlur: false,
     validate: (values) => createTokenValidator(values),
     onSubmit: (values) => {
+      setButtonClicked(true);
       if (selectedForm === keyPairs.createV1) {
         // v1 token creation
         createTokenHandler(values);
@@ -162,10 +165,15 @@ export default function Form() {
   });
 
   const createTokenValidator = (values: any) => {
-    let resp = {};
+    let resp = {} as any;
     if (selectedForm === keyPairs.createV1) {
       // v1 token validator
       resp = v1TokenValidation(values);
+      // check if logo added
+      if (!fileData?.name) {
+        resp["logo"] = "Please select logo";
+        errorToast({ message: "Please upload logo!" });
+      }
       let errors = Object.keys(resp).length;
       if (errors < 1) {
         // no errors so updating redux state
@@ -216,12 +224,15 @@ export default function Form() {
           );
 
           console.log("txhash", txhash);
+          setButtonClicked(false);
         } else {
+          setButtonClicked(false);
         }
       } else {
       }
     } catch (error) {
       console.log(error);
+      setButtonClicked(false);
     }
   };
 
@@ -468,6 +479,7 @@ export default function Form() {
             ? "Preview (Old Metadata)"
             : "Preview"
         }
+        loading={buttonClicked}
       />
     </div>
   );

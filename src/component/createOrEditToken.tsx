@@ -247,7 +247,10 @@ const CreateOrEditToken = ({
               );
               dispatch(setMetaplexFileData(imgMetaplexFile));
               dispatch(setFileData(e.target.files[0]));
-            } else dispatch(setFileData(null));
+            } else {
+              dispatch(setFileData(null));
+              dispatch(setMetaplexFileData(null));
+            }
           }}
           showSymbol={true}
           placeholder={"Select logo"}

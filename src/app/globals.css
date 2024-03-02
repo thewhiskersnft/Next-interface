@@ -134,3 +134,7 @@ input:checked + .slider:before {
   width: 34vw;
   padding: 30px 20px;
 }
+
+.Toastify__toast-theme--light.Toastify__toast--default {
+  background-color: #ffc83a;
+}
