@@ -142,6 +142,7 @@ export const FormDataSlice = createSlice({
       state.mintAuthority = actions.payload;
     },
     setFreezeAuthority: (state, actions) => {
+      console.log(actions);
       state.freezeAuthority = actions.payload;
     },
     setMutableMetadata: (state, actions) => {

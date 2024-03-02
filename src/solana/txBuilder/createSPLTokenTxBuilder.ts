@@ -49,7 +49,6 @@ export const createSPLTokenTxBuilder = async (
     if (!wallet.publicKey) {
       return;
     }
-    console.log("hit");
     const ON_CHAIN_METADATA = {
       name: name,
       symbol: symbol,
