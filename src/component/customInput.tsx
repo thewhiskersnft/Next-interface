@@ -1,6 +1,5 @@
 import Image from "next/image";
 import React, { CSSProperties } from "react";
-// import Help from "../asset/help.svg";
 
 interface CustomInputProps {
   label?: string;

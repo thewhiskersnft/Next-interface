@@ -1,8 +1,10 @@
 "use client";
+//@ts-nocheck
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Provider } from "react-redux";
+// @ts-ignore
 import { store } from "@/redux/store/store";
 import { SolanaWalletAdapter } from "@/context/WalletAdapter";
 import { ToastContainer } from "react-toastify";
@@ -37,6 +39,8 @@ function ReduxProvider({ children }: ReduxProviderProps) {
   return (
     <SolanaWalletAdapter>
       <ToastContainer />
+      {/* 
+// @ts-ignore */}
       <Provider store={store}>{children}</Provider>
     </SolanaWalletAdapter>
   );
@@ -55,7 +59,7 @@ export default function RootLayout({
         <ReduxProvider>
           <ToastContainer /> */}
       <body className={inter.className}>
-        {<ProviderChild>{children}</ProviderChild> }
+        {<ProviderChild>{children}</ProviderChild>}
       </body>
       {/* </ReduxProvider>
       </SolanaWalletAdapter> */}

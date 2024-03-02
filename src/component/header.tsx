@@ -37,8 +37,13 @@ const Header: React.FC<HeaderProps> = ({ showPrimaryHeader }) => {
   const [apiResponse, setApiResponse] = useState<any[]>([]);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [searchVal, setSearchVal] = useState<string>("");
+  const [showButton, setShowButton] = useState(false);
 
   const wallet = useWallet();
+
+  useEffect(() => {
+    setShowButton(true);
+  }, []);
 
   return (
     <div>
@@ -158,6 +163,7 @@ const Header: React.FC<HeaderProps> = ({ showPrimaryHeader }) => {
             alt="search Logo"
             width={20}
             height={20}
+            style={{ marginRight: "10px" }}
             priority
           />
           <CustomInput
@@ -203,22 +209,24 @@ const Header: React.FC<HeaderProps> = ({ showPrimaryHeader }) => {
             Connect Wallet
           </div> */}
           <div style={{}}>
-            <WalletMultiButton
-              style={{
-                borderRadius: "10px",
-                width: "max-content",
-                backgroundColor: "transparent",
-                border: "0px solid #67676F",
-                marginLeft: "10px",
-                color: "white",
-                fontWeight: "600",
-                fontSize: "12px",
-                padding: "5px",
-                height: "32px",
-                fontFamily: "Orbitron",
-                letterSpacing: "2px",
-              }}
-            />
+            {showButton && (
+              <WalletMultiButton
+                style={{
+                  borderRadius: "10px",
+                  width: "max-content",
+                  backgroundColor: "transparent",
+                  border: "0px solid #67676F",
+                  marginLeft: "10px",
+                  color: "white",
+                  fontWeight: "600",
+                  fontSize: "12px",
+                  padding: "5px",
+                  height: "32px",
+                  fontFamily: "Orbitron",
+                  letterSpacing: "2px",
+                }}
+              />
+            )}
           </div>
         </div>
       </div>

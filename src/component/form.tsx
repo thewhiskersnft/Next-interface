@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import CustomInput from "./customInput";
 import CustomRadio from "./customRadio";
 import RightSidebar from "./rightSidebar";
@@ -56,6 +56,7 @@ import { revokeMintAuthTxBuilder } from "@/solana/txBuilder/revokeMintAuthTxBuil
 import { revokeFreezeAuthTxBuilder } from "@/solana/txBuilder/revokeFreezeAuthTxBuilder";
 import { createMintTokensTxBuilder } from "@/solana/txBuilder/mintTokenTxBuilder";
 import { createBurnTokensTxBuilder } from "@/solana/txBuilder/burnTokenTxBuilder";
+import Loader from "./loader";
 
 const initialV1Token: PreviewData = {
   "Token Details": {
@@ -126,19 +127,19 @@ export default function Form() {
   const wallet = useWallet();
   const { connection } = useConnection();
 
-  // const [searchParams, setSearchParams] = useSearchParams();
   const searchParams = useSearchParams();
 
   const tokenAction = searchParams.get("action");
-
-  // const [previewData, setPreviewData] = useState<PreviewData>({
-  //   ...initialV1Token,
-  // });
 
   const [showManageTokenData, setShowManageTokenData] = useState(false);
   const [showUpdateMetadata, setShowUpdateMetadata] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
   const [balance, setBalance] = useState(0);
+
+  const [renderForm, setRenderForm] = useState(false);
+  useEffect(() => {
+    setRenderForm(true);
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -385,197 +386,205 @@ export default function Form() {
   ]);
 
   return (
-    <div className="flex flex-row flex-1 h-full overflow-auto scroll-smooth">
-      {tokenAction === TokenRoutes.createToken && (
-        <CreateOrEditToken formik={formik} />
-      )}
-      {tokenAction === TokenRoutes.manageToken && (
-        <div
-          style={{ alignItems: "center" }}
-          className="w-5/6 flex flex-col justify-center align-center h-max mt-12"
-        >
-          <div
-            className="bg-black w-[95%] h-max mb-5 p-12"
-            style={{
-              border: "1px solid #FFC83A",
-              minHeight: "max-content",
-            }}
-          >
-            <div className="text-white text-left width-4/5 text-large font-Orbitron">
-              Manage Token
-            </div>
-            <CustomInput
-              label="Token Address"
-              value={tokenAddress}
-              onChange={(e) => {
-                dispatch(setTokenAddress(e.target.value));
-              }}
-              showSymbol={false}
-              type={"text"}
-              placeholder={"Enter Token Address"}
-            />
-            <div className="w-[90px] mt-6 flex justify-left">
-              <CustomButton
-                label="Load"
-                onClick={async () => {
-                  console.log("Load clicked");
-                  let mintAccount = await getMint(
-                    connection,
-                    new PublicKey(tokenAddress)
-                  );
-                  if (mintAccount) {
-                    dispatch(
-                      setMintAuthority(
-                        mintAccount.mintAuthority?.toBase58() ===
-                          wallet.publicKey?.toBase58()
-                      )
-                    );
-                    dispatch(
-                      setFreezeAuthority(
-                        mintAccount.freezeAuthority?.toBase58() ===
-                          wallet.publicKey?.toBase58()
-                      )
-                    );
-                  }
-                  toggleShowManageTokenData();
+    <>
+      {renderForm ? (
+        <div className="flex flex-row flex-1 h-full overflow-auto scroll-smooth">
+          {tokenAction === TokenRoutes.createToken && (
+            <CreateOrEditToken formik={formik} />
+          )}
+          {tokenAction === TokenRoutes.manageToken && (
+            <div
+              style={{ alignItems: "center" }}
+              className="w-5/6 flex flex-col justify-center align-center h-max mt-12"
+            >
+              <div
+                className="bg-black w-[95%] h-max mb-5 p-12"
+                style={{
+                  border: "1px solid #FFC83A",
+                  minHeight: "max-content",
                 }}
-              />
-            </div>
-            {showManageTokenData && (
-              <>
-                <span className="text-white flex mt-6 w-[375px] justify-between items-center">
-                  <span className="w-[320px] flex justify-between">
-                    <p className="text-left text-xsmall font-Orbitron w-[160px]">
-                      {"Mint Authority"}
-                    </p>
-                    <p className="text-left text-xsmall font-Orbitron">{` : `}</p>
-                  </span>
-                  <p className="w-2/3 text-left text-xsmall font-Orbitron pl-[12px]">
-                    {`${mintAuthority ? "Enabled" : "Disabled"}`}
-                  </p>
-                  <div className="flex justify-left w-[200px]">
-                    <CustomButton
-                      label="Revoke"
-                      onClick={async () => {
-                        await revokeMintAuth();
-                      }}
-                    />
-                  </div>
-                </span>
-                <span className="text-white flex mt-6 w-[375px] justify-between items-center">
-                  <span className="w-[320px] flex justify-between">
-                    <p className="text-left text-xsmall font-Orbitron w-[160px]">
-                      {"Freeze Authority"}
-                    </p>
-                    <p className="text-left text-xsmall font-Orbitron">{` : `}</p>
-                  </span>
-                  <p className="w-2/3 text-left text-xsmall font-Orbitron pl-[12px]">
-                    {`${freezeAuthority ? "Enabled" : "Disabled"}`}
-                  </p>
-                  <div className="flex justify-left w-[200px]">
-                    <CustomButton
-                      label="Revoke"
-                      onClick={async () => {
-                        await revokeFreezeAuth();
-                      }}
-                    />
-                  </div>
-                </span>
-                <span className="text-white flex mt-6 w-[375px] justify-between items-center">
-                  <span className="w-[320px] flex justify-between">
-                    <p className="text-left text-xsmall font-Orbitron w-[160px]">
-                      {"Mutable Metadata"}
-                    </p>
-                    <p className="text-left text-xsmall font-Orbitron">{` : `}</p>
-                  </span>
-                  <p className="w-2/3 text-left text-xsmall font-Orbitron pl-[12px]">
-                    {`${mutableMetadata ? "True" : "False"}`}
-                  </p>
-                  <div className="flex justify-left w-[200px]">
-                    <CustomButton
-                      label={mutableMetadata ? "Disable" : "Enable"}
-                      onClick={() => {
-                        dispatch(setMutableMetadata(!mutableMetadata));
-                      }}
-                    />
-                  </div>
-                </span>
-              </>
-            )}
-          </div>
-        </div>
-      )}
-      {tokenAction === TokenRoutes.updateMetadata && (
-        <div
-          style={{ alignItems: "center" }}
-          className="w-5/6 flex flex-col justify-center align-center h-max mt-12"
-        >
-          <div
-            className="bg-black w-[95%] h-max mb-5 p-12"
-            style={{
-              border: "1px solid #FFC83A",
-              minHeight: "max-content",
-            }}
-          >
-            <div className="text-white text-left width-4/5 text-large font-Orbitron">
-              Update Metadata
-            </div>
-            <CustomInput
-              label="Token Address"
-              value={tokenAddress}
-              onChange={(e) => {
-                dispatch(setTokenAddress(e.target.value));
-              }}
-              showSymbol={false}
-              type={"text"}
-              placeholder={"Enter Token Address"}
-            />
-            {showUpdateMetadata ? (
-              <CreateOrEditToken isEdit={true} />
-            ) : (
-              <div className="w-[90px] mt-6 flex justify-left">
-                <CustomButton
-                  label="Load"
-                  onClick={() => {
-                    console.log("Load clicked");
-                    toggleShowUpdateMetadata();
+              >
+                <div className="text-white text-left width-4/5 text-large font-Orbitron">
+                  Manage Token
+                </div>
+                <CustomInput
+                  label="Token Address"
+                  value={tokenAddress}
+                  onChange={(e) => {
+                    dispatch(setTokenAddress(e.target.value));
                   }}
+                  showSymbol={false}
+                  type={"text"}
+                  placeholder={"Enter Token Address"}
                 />
+                <div className="w-[90px] mt-6 flex justify-left">
+                  <CustomButton
+                    label="Load"
+                    onClick={async () => {
+                      console.log("Load clicked");
+                      let mintAccount = await getMint(
+                        connection,
+                        new PublicKey(tokenAddress)
+                      );
+                      if (mintAccount) {
+                        dispatch(
+                          setMintAuthority(
+                            mintAccount.mintAuthority?.toBase58() ===
+                              wallet.publicKey?.toBase58()
+                          )
+                        );
+                        dispatch(
+                          setFreezeAuthority(
+                            mintAccount.freezeAuthority?.toBase58() ===
+                              wallet.publicKey?.toBase58()
+                          )
+                        );
+                      }
+                      toggleShowManageTokenData();
+                    }}
+                  />
+                </div>
+                {showManageTokenData && (
+                  <>
+                    <span className="text-white flex mt-6 w-[375px] justify-between items-center">
+                      <span className="w-[320px] flex justify-between">
+                        <p className="text-left text-xsmall font-Orbitron w-[160px]">
+                          {"Mint Authority"}
+                        </p>
+                        <p className="text-left text-xsmall font-Orbitron">{` : `}</p>
+                      </span>
+                      <p className="w-2/3 text-left text-xsmall font-Orbitron pl-[12px]">
+                        {`${mintAuthority ? "Enabled" : "Disabled"}`}
+                      </p>
+                      <div className="flex justify-left w-[200px]">
+                        <CustomButton
+                          label="Revoke"
+                          onClick={async () => {
+                            await revokeMintAuth();
+                          }}
+                        />
+                      </div>
+                    </span>
+                    <span className="text-white flex mt-6 w-[375px] justify-between items-center">
+                      <span className="w-[320px] flex justify-between">
+                        <p className="text-left text-xsmall font-Orbitron w-[160px]">
+                          {"Freeze Authority"}
+                        </p>
+                        <p className="text-left text-xsmall font-Orbitron">{` : `}</p>
+                      </span>
+                      <p className="w-2/3 text-left text-xsmall font-Orbitron pl-[12px]">
+                        {`${freezeAuthority ? "Enabled" : "Disabled"}`}
+                      </p>
+                      <div className="flex justify-left w-[200px]">
+                        <CustomButton
+                          label="Revoke"
+                          onClick={async () => {
+                            await revokeFreezeAuth();
+                          }}
+                        />
+                      </div>
+                    </span>
+                    <span className="text-white flex mt-6 w-[375px] justify-between items-center">
+                      <span className="w-[320px] flex justify-between">
+                        <p className="text-left text-xsmall font-Orbitron w-[160px]">
+                          {"Mutable Metadata"}
+                        </p>
+                        <p className="text-left text-xsmall font-Orbitron">{` : `}</p>
+                      </span>
+                      <p className="w-2/3 text-left text-xsmall font-Orbitron pl-[12px]">
+                        {`${mutableMetadata ? "True" : "False"}`}
+                      </p>
+                      <div className="flex justify-left w-[200px]">
+                        <CustomButton
+                          label={mutableMetadata ? "Disable" : "Enable"}
+                          onClick={() => {
+                            dispatch(setMutableMetadata(!mutableMetadata));
+                          }}
+                        />
+                      </div>
+                    </span>
+                  </>
+                )}
               </div>
-            )}
-          </div>
+            </div>
+          )}
+          {tokenAction === TokenRoutes.updateMetadata && (
+            <div
+              style={{ alignItems: "center" }}
+              className="w-5/6 flex flex-col justify-center align-center h-max mt-12"
+            >
+              <div
+                className="bg-black w-[95%] h-max mb-5 p-12"
+                style={{
+                  border: "1px solid #FFC83A",
+                  minHeight: "max-content",
+                }}
+              >
+                <div className="text-white text-left width-4/5 text-large font-Orbitron">
+                  Update Metadata
+                </div>
+                <CustomInput
+                  label="Token Address"
+                  value={tokenAddress}
+                  onChange={(e) => {
+                    dispatch(setTokenAddress(e.target.value));
+                  }}
+                  showSymbol={false}
+                  type={"text"}
+                  placeholder={"Enter Token Address"}
+                />
+                {showUpdateMetadata ? (
+                  <CreateOrEditToken isEdit={true} />
+                ) : (
+                  <div className="w-[90px] mt-6 flex justify-left">
+                    <CustomButton
+                      label="Load"
+                      onClick={() => {
+                        console.log("Load clicked");
+                        toggleShowUpdateMetadata();
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          {tokenAction === TokenRoutes.mintToken && (
+            <MintOrBurnToken formik={formik} />
+          )}
+          {tokenAction === TokenRoutes.burnToken && (
+            <MintOrBurnToken formik={formik} isBurn={true} />
+          )}
+
+          <RightSidebar
+            data={previewData}
+            logo={getImageURL()}
+            showInfo={true}
+            createBtnText={
+              selectedForm === keyPairs.createV1
+                ? "Create v1 SPL Token"
+                : "Create v2 SPL Token"
+            }
+            mediaLinks={{
+              website: formik.values.website,
+              twitter: formik.values.twitter,
+              telegram: formik.values.telegram,
+              discord: formik.values.discord,
+            }}
+            formik={formik}
+            label={
+              tokenAction === TokenRoutes.updateMetadata
+                ? "Preview (Old Metadata)"
+                : "Preview"
+            }
+            loading={buttonClicked}
+          />
+        </div>
+      ) : (
+        <div className="flex flex-1 items-center justify-center">
+          <Loader visible={true} size={30} />
         </div>
       )}
-      {tokenAction === TokenRoutes.mintToken && (
-        <MintOrBurnToken formik={formik} />
-      )}
-      {tokenAction === TokenRoutes.burnToken && (
-        <MintOrBurnToken formik={formik} isBurn={true} />
-      )}
-
-      <RightSidebar
-        data={previewData}
-        logo={getImageURL()}
-        showInfo={true}
-        createBtnText={
-          selectedForm === keyPairs.createV1
-            ? "Create v1 SPL Token"
-            : "Create v2 SPL Token"
-        }
-        mediaLinks={{
-          website: formik.values.website,
-          twitter: formik.values.twitter,
-          telegram: formik.values.telegram,
-          discord: formik.values.discord,
-        }}
-        formik={formik}
-        label={
-          tokenAction === TokenRoutes.updateMetadata
-            ? "Preview (Old Metadata)"
-            : "Preview"
-        }
-        loading={buttonClicked}
-      />
-    </div>
+    </>
   );
 }

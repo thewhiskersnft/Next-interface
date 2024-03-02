@@ -12,25 +12,36 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-const persistConfig = {
-  key: "rootStore",
-  version: 1,
-  storage,
-};
+const isClient = typeof window !== "undefined";
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+let store;
+let persistor;
+if (isClient) {
+  const persistConfig = {
+    key: "rootStore",
+    version: 1,
+    storage,
+  };
+  const persistedReducer = persistReducer(persistConfig, rootReducer);
+  store = configureStore({
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        // serializableCheck: {
+        //  // ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        // },
+        serializableCheck: false,
+      }),
+  });
 
-const store = configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      // serializableCheck: {
-      //  // ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      // },
-         serializableCheck: false,
-    }),
-});
+  persistor = persistStore(store);
+} else {
+  store = configureStore({
+    reducer: rootReducer,
+  });
+  persistor = persistStore(store);
+}
 
-const persistor = persistStore(store);
+export type RootState = ReturnType<typeof store.getState>;
 
 export { store, persistor };
