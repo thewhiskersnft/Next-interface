@@ -49,6 +49,12 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { v1TokenValidation } from "../utils/formikValidators";
 import { cloneDeep } from "lodash";
 import { errorToast, successToast } from "./toast";
+import { getMint } from "@solana/spl-token";
+import { PublicKey } from "@solana/web3.js";
+import { revokeMintAuthTxBuilder } from "@/solana/txBuilder/revokeMintAuthTxBuilder";
+import { revokeFreezeAuthTxBuilder } from "@/solana/txBuilder/revokeFreezeAuthTxBuilder";
+import { createMintTokensTxBuilder } from "@/solana/txBuilder/mintTokenTxBuilder";
+import { createBurnTokensTxBuilder } from "@/solana/txBuilder/burnTokenTxBuilder";
 
 const initialV1Token: PreviewData = {
   "Token Details": {
@@ -185,6 +191,51 @@ export default function Form() {
       }
     }
     return resp;
+  };
+
+  const revokeMintAuth = async () => {
+    try {
+      // handler to mint TOKEns
+      // const amount = "1000000000000"; // multiply with decimal later
+      // const txhash = await createMintTokensTxBuilder(
+      //   connection,
+      //   wallet,
+      //   new PublicKey(tokenAddress),
+      //   amount
+      // );
+
+      // handler to burn tokens
+      // const amount = "1000000000000";
+      // const txhash = await createBurnTokensTxBuilder(
+      //   connection,
+      //   wallet,
+      //   new PublicKey(tokenAddress),
+      //   amount
+      // );
+
+      const txhash = await revokeMintAuthTxBuilder(
+        connection,
+        wallet,
+        new PublicKey(tokenAddress)
+      );
+
+      console.log(txhash);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const revokeFreezeAuth = async () => {
+    try {
+      const txhash = await revokeFreezeAuthTxBuilder(
+        connection,
+        wallet,
+        new PublicKey(tokenAddress)
+      );
+      console.log(txhash);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const createTokenHandler = async (values: any) => {
@@ -346,8 +397,26 @@ export default function Form() {
             <div className="w-[90px] mt-6 flex justify-left">
               <CustomButton
                 label="Load"
-                onClick={() => {
+                onClick={async () => {
                   console.log("Load clicked");
+                  let mintAccount = await getMint(
+                    connection,
+                    new PublicKey(tokenAddress)
+                  );
+                  if (mintAccount) {
+                    dispatch(
+                      setMintAuthority(
+                        mintAccount.mintAuthority?.toBase58() ===
+                          wallet.publicKey?.toBase58()
+                      )
+                    );
+                    dispatch(
+                      setFreezeAuthority(
+                        mintAccount.freezeAuthority?.toBase58() ===
+                          wallet.publicKey?.toBase58()
+                      )
+                    );
+                  }
                   toggleShowManageTokenData();
                 }}
               />
@@ -367,8 +436,8 @@ export default function Form() {
                   <div className="flex justify-left w-[200px]">
                     <CustomButton
                       label="Revoke"
-                      onClick={() => {
-                        dispatch(setMintAuthority(!mintAuthority));
+                      onClick={async () => {
+                        await revokeMintAuth();
                       }}
                     />
                   </div>
@@ -386,8 +455,8 @@ export default function Form() {
                   <div className="flex justify-left w-[200px]">
                     <CustomButton
                       label="Revoke"
-                      onClick={() => {
-                        dispatch(setFreezeAuthority(!freezeAuthority));
+                      onClick={async () => {
+                        await revokeFreezeAuth();
                       }}
                     />
                   </div>
