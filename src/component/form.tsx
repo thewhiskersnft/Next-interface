@@ -50,6 +50,12 @@ import { v1TokenValidation } from "../utils/formikValidators";
 import { cloneDeep } from "lodash";
 import { errorToast, successToast } from "./toast";
 import MintOrBurnToken from "./mintOrBurnToken";
+import { getMint } from "@solana/spl-token";
+import { PublicKey } from "@solana/web3.js";
+import { revokeMintAuthTxBuilder } from "@/solana/txBuilder/revokeMintAuthTxBuilder";
+import { revokeFreezeAuthTxBuilder } from "@/solana/txBuilder/revokeFreezeAuthTxBuilder";
+import { createMintTokensTxBuilder } from "@/solana/txBuilder/mintTokenTxBuilder";
+import { createBurnTokensTxBuilder } from "@/solana/txBuilder/burnTokenTxBuilder";
 
 const initialV1Token: PreviewData = {
   "Token Details": {
@@ -132,6 +138,7 @@ export default function Form() {
   const [showManageTokenData, setShowManageTokenData] = useState(false);
   const [showUpdateMetadata, setShowUpdateMetadata] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
+  const [balance, setBalance] = useState(0);
 
   const formik = useFormik({
     initialValues: {
@@ -191,51 +198,111 @@ export default function Form() {
     return resp;
   };
 
+  const revokeMintAuth = async () => {
+    try {
+      // handler to mint TOKEns
+      // const amount = "1000000000000"; // multiply with decimal later
+      // const txhash = await createMintTokensTxBuilder(
+      //   connection,
+      //   wallet,
+      //   new PublicKey(tokenAddress),
+      //   amount
+      // );
+
+      // handler to burn tokens
+      // const amount = "1000000000000";
+      // const txhash = await createBurnTokensTxBuilder(
+      //   connection,
+      //   wallet,
+      //   new PublicKey(tokenAddress),
+      //   amount
+      // );
+
+      const txhash = await revokeMintAuthTxBuilder(
+        connection,
+        wallet,
+        new PublicKey(tokenAddress)
+      );
+
+      console.log(txhash);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const revokeFreezeAuth = async () => {
+    try {
+      const txhash = await revokeFreezeAuthTxBuilder(
+        connection,
+        wallet,
+        new PublicKey(tokenAddress)
+      );
+      console.log(txhash);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const createTokenHandler = async (values: any) => {
     console.log("Values : ", values);
     if (!wallet.connected) {
+      errorToast({ message: "Please connect the wallet" });
       console.log("Wallet not connected");
     }
-    try {
-      const isSPL = true;
-      if (isSPL) {
-        const metaplexhandler = await metaplexBuilder(wallet, connection);
-        const imgURI = await metaplexhandler.storage().upload(metaplexFileData);
-        console.log("MP data : ", metaplexFileData);
-        console.log("Uploaded Image URI (Arweave)", imgURI);
+    //  console.log("fsfs dkcfds",wallet);
+    if (wallet.publicKey != null) {
+      let balance = await connection.getBalance(wallet.publicKey as any);
+      setBalance(balance);
+      // console.log("sdfd",balance);
+    }
+    if (balance > 5000000) {
+      try {
+        const isSPL = true;
+        if (isSPL) {
+          const metaplexhandler = await metaplexBuilder(wallet, connection);
+          const imgURI = await metaplexhandler
+            .storage()
+            .upload(metaplexFileData);
+          console.log("MP data : ", metaplexFileData);
+          console.log("Uploaded Image URI (Arweave)", imgURI);
 
-        if (imgURI) {
-          const tokenMetadata = {
-            name: name,
-            symbol: symbol,
-            description: description,
-            image: imgURI,
-          };
-          const { uri } = await metaplexhandler
-            .nfts()
-            .uploadMetadata(tokenMetadata);
+          if (imgURI) {
+            const tokenMetadata = {
+              name: name,
+              symbol: symbol,
+              description: description,
+              image: imgURI,
+            };
+            const { uri } = await metaplexhandler
+              .nfts()
+              .uploadMetadata(tokenMetadata);
 
-          console.log("Uploaded Metadata URI (Arweave)", uri);
+            console.log("Uploaded Metadata URI (Arweave)", uri);
 
-          const txhash = await createSPLTokenTxBuilder(
-            name,
-            symbol,
-            decimal,
-            uri,
-            supply,
-            connection,
-            wallet
-          );
+            const txhash = await createSPLTokenTxBuilder(
+              name,
+              symbol,
+              decimal,
+              uri,
+              supply,
+              connection,
+              wallet
+            );
 
-          console.log("txhash", txhash);
-          setButtonClicked(false);
+            console.log("txhash", txhash);
+            setButtonClicked(false);
+          } else {
+            setButtonClicked(false);
+            errorToast({ message: "Error in creating token please retry" });
+          }
         } else {
-          setButtonClicked(false);
         }
-      } else {
+      } catch (error) {
+        console.log(error);
+        setButtonClicked(false);
       }
-    } catch (error) {
-      console.log(error);
+    } else {
+      errorToast({ message: "Insufficent balance" });
       setButtonClicked(false);
     }
   };
@@ -350,8 +417,26 @@ export default function Form() {
             <div className="w-[90px] mt-6 flex justify-left">
               <CustomButton
                 label="Load"
-                onClick={() => {
+                onClick={async () => {
                   console.log("Load clicked");
+                  let mintAccount = await getMint(
+                    connection,
+                    new PublicKey(tokenAddress)
+                  );
+                  if (mintAccount) {
+                    dispatch(
+                      setMintAuthority(
+                        mintAccount.mintAuthority?.toBase58() ===
+                          wallet.publicKey?.toBase58()
+                      )
+                    );
+                    dispatch(
+                      setFreezeAuthority(
+                        mintAccount.freezeAuthority?.toBase58() ===
+                          wallet.publicKey?.toBase58()
+                      )
+                    );
+                  }
                   toggleShowManageTokenData();
                 }}
               />
@@ -371,8 +456,8 @@ export default function Form() {
                   <div className="flex justify-left w-[200px]">
                     <CustomButton
                       label="Revoke"
-                      onClick={() => {
-                        dispatch(setMintAuthority(!mintAuthority));
+                      onClick={async () => {
+                        await revokeMintAuth();
                       }}
                     />
                   </div>
@@ -390,8 +475,8 @@ export default function Form() {
                   <div className="flex justify-left w-[200px]">
                     <CustomButton
                       label="Revoke"
-                      onClick={() => {
-                        dispatch(setFreezeAuthority(!freezeAuthority));
+                      onClick={async () => {
+                        await revokeFreezeAuth();
                       }}
                     />
                   </div>

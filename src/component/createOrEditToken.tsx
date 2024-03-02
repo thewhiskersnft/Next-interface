@@ -254,7 +254,7 @@ const CreateOrEditToken = ({
             }
           }}
           showSymbol={true}
-          placeholder={"Select logo"}
+          placeholder={"Select Logo"}
         />
         {selectedForm === keyPairs.createV2 ? (
           <>
@@ -495,7 +495,7 @@ const CreateOrEditToken = ({
               onChange={formik?.handleChange}
               showSymbol={false}
               type={"text"}
-              placeholder={"Enter Twitter Handle"}
+              placeholder={"Enter Twitter URL"}
               showError={
                 formik?.touched?.twitter && formik.errors?.twitter
                   ? true
@@ -511,7 +511,7 @@ const CreateOrEditToken = ({
               onChange={formik?.handleChange}
               showSymbol={false}
               type={"text"}
-              placeholder={"Enter Telegram Id"}
+              placeholder={"Enter Telegram Invite Link"}
               showError={
                 formik?.touched?.telegram && formik.errors?.telegram
                   ? true
@@ -527,7 +527,7 @@ const CreateOrEditToken = ({
               onChange={formik?.handleChange}
               showSymbol={false}
               type={"text"}
-              placeholder={"Enter Discord Link"}
+              placeholder={"Enter Discord Invite Link"}
               showError={
                 formik?.touched?.discord && formik.errors?.discord
                   ? true
