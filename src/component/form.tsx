@@ -49,6 +49,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { v1TokenValidation } from "../utils/formikValidators";
 import { cloneDeep } from "lodash";
 import { errorToast, successToast } from "./toast";
+import MintOrBurnToken from "./mintOrBurnToken";
 
 const initialV1Token: PreviewData = {
   "Token Details": {
@@ -111,6 +112,7 @@ export default function Form() {
     mintAuthority,
     freezeAuthority,
     mutableMetadata,
+    mintAmount,
   } = useSelector((state: any) => state.formDataSlice);
 
   const dispatch = useDispatch();
@@ -151,6 +153,8 @@ export default function Form() {
       defaultAccountStateOption: defaultAccountStateOption,
       delegate: delegate,
       nonTransferable: nonTransferable,
+      tokenAddress: tokenAddress,
+      mintAmount: mintAmount,
     },
     validateOnChange: false,
     validateOnBlur: false,
@@ -456,6 +460,12 @@ export default function Form() {
             )}
           </div>
         </div>
+      )}
+      {tokenAction === TokenRoutes.mintToken && (
+        <MintOrBurnToken formik={formik} />
+      )}
+      {tokenAction === TokenRoutes.burnToken && (
+        <MintOrBurnToken formik={formik} isBurn={true} />
       )}
 
       <RightSidebar
