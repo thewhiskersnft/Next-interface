@@ -252,6 +252,9 @@ export default function Form() {
     if (!wallet.connected) {
       errorToast({ message: "Please connect the wallet" });
       console.log("Wallet not connected");
+      setButtonClicked(false);
+
+      return ; 
     }
     //  console.log("fsfs dkcfds",wallet);
     if (wallet.publicKey != null) {

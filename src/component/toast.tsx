@@ -13,7 +13,7 @@ const ErrorComp = ({ message, description }: ToastProps) => {
   return (
     <div className="bg-yellow1 flex items-center w-full">
       <Image
-        src={"/warning.png"}
+        src={"/warning.svg"}
         alt="warning"
         width={48}
         height={48}

@@ -105,7 +105,7 @@ const CreateOrEditToken = ({
             <Image
               src={
                 selectedForm === keyPairs.createV1
-                  ? "/helpDark.png"
+                  ? "/helpDark.svg"
                   : "/help.svg"
               }
               alt="Help Logo"
@@ -135,7 +135,7 @@ const CreateOrEditToken = ({
               src={
                 selectedForm === keyPairs.createV1
                   ? "/help.svg"
-                  : "/helpDark.png"
+                  : "/helpDark.svg"
               }
               alt="Help Logo"
               width={14}

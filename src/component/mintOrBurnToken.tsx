@@ -2,14 +2,84 @@
 import React, { useState } from "react";
 import CustomInput from "./customInput";
 import CustomButton from "./customButton";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
+
+import { createMintTokensTxBuilder } from "../solana/txBuilder/mintTokenTxBuilder"
+import { validateAddress } from "@/solana/txBuilder/checkAddress";
+import { errorToast, successToast } from "./toast";
 
 type MintOrBurnTokenProps = { isBurn?: boolean; formik?: any };
-
 const MintOrBurnToken = ({
   formik = { errors: {}, values: {}, touched: {} },
   isBurn,
 }: MintOrBurnTokenProps) => {
   const [showOnLoadClick, setShowOnloadClick] = useState(false);
+  const { connection } = useConnection();
+  const wallet = useWallet();
+
+  const checkAddress = async () => {
+   
+    try {
+      const mintAccount = await validateAddress(connection, formik.values.tokenAddress);
+      console.log("mintAccount", mintAccount);
+      if (!mintAccount) {
+        errorToast({ message: "Please Check the address" });
+      }
+
+    }
+    catch {
+      errorToast({ message: "Please Check the address" });
+
+    }
+  }
+
+
+  const mintToken = async () => {
+    try {
+      if (!wallet.publicKey) {
+        errorToast({ message: "Please connect the wallet" });
+        return;
+      }
+      const txhash = await createMintTokensTxBuilder(
+        connection,
+        wallet,
+        new PublicKey(formik.values.tokenAddress),
+        formik.values.mintAmount
+      )
+      console.log(txhash)
+    }
+    catch (e) {
+
+      errorToast({ message: "Please try again" });
+
+    }
+  }
+
+
+  const burnToken = async () => {
+    try {
+      if (!wallet.publicKey) {
+        errorToast({ message: "Please connect the wallet" });
+        return;
+      }
+      const txhash = await createMintTokensTxBuilder(
+        connection,
+        wallet,
+        new PublicKey(formik.values.tokenAddress),
+        formik.values.mintAmount
+      )
+      console.log(txhash)
+    }
+    catch (e) {
+      errorToast({ message: "Please try again" });
+    }
+  }
+
+
+
+
+
 
   return (
     <div
@@ -70,7 +140,7 @@ const MintOrBurnToken = ({
               errorMessage={formik.errors.mintAmount}
             />
             <p className="text-xsmall text-yellow1 text-right my-2 mb-6">
-              Balance: $738,162,324
+              Balance: 738,162,324
             </p>
             <div className="w-full mt-6 flex justify-left">
               <CustomButton

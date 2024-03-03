@@ -19,7 +19,7 @@ export default function Home() {
         >
           <span style={{ position: "absolute", bottom: "10vh" }}>
             <Image
-              src={"/comingSoon.png"}
+              src={"/comingSoon.svg"}
               alt="Coming Soon Logo"
               width={628}
               height={268}
@@ -34,7 +34,7 @@ export default function Home() {
                 style={{ pointerEvents: "auto" }}
               >
                 <Image
-                  src={"/twitter.png"}
+                  src={"/twitter.svg"}
                   alt="twitter Logo"
                   width={20}
                   height={20}
@@ -49,7 +49,7 @@ export default function Home() {
                 style={{ pointerEvents: "auto" }}
               >
                 <Image
-                  src={"/discord.png"}
+                  src={"/discord.svg"}
                   alt="discord Logo"
                   width={20}
                   height={20}

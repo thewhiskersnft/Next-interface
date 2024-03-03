@@ -13,8 +13,8 @@ export const sidebarData: SidebarItem[] = [
   {
     label: "Token Management",
     description: "Create & Manage SPL ( v1/v2 ) Tokens",
-    icon: "/tokenManagement.png",
-    activeIcon: "/tokenManagementActive.png",
+    icon: "/tokenManagement.svg",
+    activeIcon: "/tokenManagementActive.svg",
     children: [
       {
         label: "Create Token",
@@ -53,8 +53,8 @@ export const sidebarData: SidebarItem[] = [
   {
     label: "Manage Liquidity",
     description: "Create & Manage Openbook Market IDs & Liquidity Pools",
-    icon: "/manageLiquidity.png",
-    activeIcon: "/manageLiquidityActive.png",
+    icon: "/manageLiquidity.svg",
+    activeIcon: "/manageLiquidityActive.svg",
     children: [
       {
         label: "Create Openbook Market ID",
@@ -77,8 +77,8 @@ export const sidebarData: SidebarItem[] = [
   {
     label: "Creator Tools",
     description: "Manage Airdrops, Team Vesting Contracts & More",
-    icon: "/creatorTools.png",
-    activeIcon: "/creatorToolsActive.png",
+    icon: "/creatorTools.svg",
+    activeIcon: "/creatorToolsActive.svg",
     children: [
       {
         label: "Snapshot Holders",
@@ -102,20 +102,20 @@ export const sidebarData: SidebarItem[] = [
   {
     label: "Token Safety (Rug Check)",
     description: "Analyse Token Safety Parameters To Be Safe From Rugs",
-    icon: "/tokenSafety.png",
-    activeIcon: "/tokenSafetyActive.png",
+    icon: "/tokenSafety.svg",
+    activeIcon: "/tokenSafetyActive.svg",
   },
   {
     label: "Burn To Claim Rent",
     description: "Burn Tokens & NFTs Or Close Vacant Accounts For Rent",
-    icon: "/burn.png",
-    activeIcon: "/burnActive.png",
+    icon: "/burn.svg",
+    activeIcon: "/burnActive.svg",
   },
   {
     label: "Airdrop Checker",
     description: "Bulk Scan Your Wallets To Determine Airdrop Eligibility",
-    icon: "/airdrop.png",
-    activeIcon: "/airdropActive.png",
+    icon: "/airdrop.svg",
+    activeIcon: "/airdropActive.svg",
   },
 ];
 
