@@ -24,7 +24,7 @@ const CustomButton: FC<CustomButtonProps> = ({
     <div
       className="click:animate-bounce block cursor-pointer w-full"
       onClick={() => {
-        if (!disabled) {
+        if (!disabled && !loading) {
           onClick();
         }
       }}

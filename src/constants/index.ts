@@ -34,9 +34,9 @@ export const sidebarData: SidebarItem[] = [
       },
       {
         label: "Get Token Verified",
-        description:
-          "Get Verified On Jupiter Strict List & Solana Wallets",
+        description: "Get Verified On Jupiter Strict List & Solana Wallets",
         navigateTo: `/token?action=${TokenRoutes.verifyToken}`,
+        disabled: true,
       },
       {
         label: "Mint Tokens",

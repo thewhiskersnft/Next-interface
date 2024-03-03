@@ -138,3 +138,29 @@ input:checked + .slider:before {
 .Toastify__toast-theme--light.Toastify__toast--default {
   background-color: #ffc83a;
 }
+
+.dropdownContainer {
+  margin-top: 10px;
+}
+
+.Dropdown-control {
+  background-color: #222 !important;
+  font-family: "Orbitron" !important;
+  border: 0 !important;
+}
+
+.Dropdown-option {
+  background-color: #222 !important;
+  color: #fff !important;
+}
+
+.Dropdown-option:hover {
+  background-color: #ffc83a !important;
+  color: black !important;
+}
+
+.Dropdown-menu {
+  border: 0 !important;
+  background-color: #222 !important;
+  padding-top: 10px;
+}

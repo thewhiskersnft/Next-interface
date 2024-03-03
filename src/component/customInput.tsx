@@ -1,6 +1,5 @@
 import Image from "next/image";
 import React, { CSSProperties } from "react";
-// import Help from "../asset/help.svg";
 
 interface CustomInputProps {
   label?: string;
@@ -16,6 +15,7 @@ interface CustomInputProps {
   name?: string;
   showError?: boolean;
   errorMessage?: string;
+  showCurrency?: boolean;
 }
 
 const CustomInput = ({
@@ -32,6 +32,7 @@ const CustomInput = ({
   name,
   showError,
   errorMessage,
+  showCurrency,
 }: CustomInputProps) => {
   return (
     <>
@@ -54,18 +55,29 @@ const CustomInput = ({
         )}
       </div>
       <div className={`${label ? "mt-[10px]" : "mt-0"} w-[100%]`}>
-        <input
-          className={`outline-none w-100 bg-background text-xsmall font-Orbitron placeholder:${
-            placeholderColor ? `text-${placeholderColor}` : "text-darkGrey"
-          } p-1 px-[16px] text-white w-[100%] customInp hover:bg-hoverInputBg`}
-          id={id}
-          name={name}
-          style={{ ...inputStyles }}
-          type={type || "text"}
-          value={value}
-          placeholder={placeholder || ""}
-          onChange={onChange}
-        />
+        <span className="flex bg-background  hover:bg-hoverInputBg">
+          {showCurrency && (
+            <p
+              className={`text-xsmall font-Orbitron pl-2 p-1 ${
+                value ? "text-white" : "text-darkGrey"
+              }`}
+            >
+              $
+            </p>
+          )}
+          <input
+            className={`outline-none w-100 bg-[transparent] text-xsmall font-Orbitron placeholder:${
+              placeholderColor ? `text-${placeholderColor}` : "text-darkGrey"
+            } p-1 px-[16px] text-white w-[100%] customInp`}
+            id={id}
+            name={name}
+            style={{ ...inputStyles }}
+            type={type || "text"}
+            value={value}
+            placeholder={placeholder || ""}
+            onChange={onChange}
+          />
+        </span>
         {showError && (
           <div className="bg-[#D93535] text-[10px] font-Oxanium px-[16px]">
             {errorMessage}

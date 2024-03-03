@@ -37,6 +37,7 @@ import CustomImagePicker from "./customImagePicker";
 import CustomRadio from "./customRadio";
 import Image from "next/image";
 import { toMetaplexFileFromBrowser } from "@metaplex-foundation/js";
+import CustomDropdown from "./customDropdown";
 
 type CreateOrEditTokenProps = { isEdit?: boolean; formik?: any };
 
@@ -396,22 +397,17 @@ const CreateOrEditToken = ({
                 />
                 {defaultAccountState && (
                   <div className="flex flex-col">
-                    <CustomInput
-                      label={`Default State (to be replaced with dropdown)`}
-                      id="defaultAccountStateOption"
-                      name="defaultAccountStateOption"
+                    <CustomDropdown
+                      label="Default State"
                       value={formik?.values?.defaultAccountStateOption}
-                      onChange={formik?.handleChange}
-                      showSymbol={true}
-                      type={"text"}
-                      placeholder={"Enter Text"}
-                      showError={
-                        formik?.touched?.defaultAccountStateOption &&
-                        formik.errors?.defaultAccountStateOption
-                          ? true
-                          : false
-                      }
-                      errorMessage={formik.errors.defaultAccountStateOption}
+                      options={["Uninitialized", "Initialized", "Frozen"]}
+                      placeholder="Select default account state"
+                      onChange={(e) => {
+                        formik.setFieldValue(
+                          "defaultAccountStateOption",
+                          e.value
+                        );
+                      }}
                     />
                   </div>
                 )}

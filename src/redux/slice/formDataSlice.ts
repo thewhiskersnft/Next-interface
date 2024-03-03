@@ -46,6 +46,7 @@ const initialState = {
   mintAuthority: false,
   freezeAuthority: false,
   mutableMetadata: false,
+  mintAmount: 0,
 };
 
 export const FormDataSlice = createSlice({
@@ -147,6 +148,9 @@ export const FormDataSlice = createSlice({
     },
     setMutableMetadata: (state, actions) => {
       state.mutableMetadata = actions.payload;
+    },
+    setMintAmount: (state, actions) => {
+      state.mintAmount = actions.payload;
     },
   },
 });

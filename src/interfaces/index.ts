@@ -24,4 +24,5 @@ export interface SidebarItem {
   activeIcon?: string;
   children?: SidebarItem[];
   navigateTo?: string;
+  disabled?: boolean;
 }

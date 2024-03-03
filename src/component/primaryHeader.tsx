@@ -10,7 +10,7 @@ const PrimaryHeader: FC = () => {
   return (
     <div
       className="w-full bg-black flex justify-between py-[5px]"
-      style={{ borderBottomWidth: "0.2px", borderColor: borderColor }}
+      style={{ borderTopWidth: "0.2px", borderColor: borderColor }}
     >
       <div className="flex">
         <div

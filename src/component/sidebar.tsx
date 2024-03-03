@@ -7,6 +7,7 @@ import { SidebarItem } from "../interfaces";
 import { useRouter } from "next/navigation";
 import { get } from "lodash";
 import Image from "next/image";
+import { errorToast } from "./toast";
 
 const Sidebar: React.FC = () => {
   const [clicked, setClicked] = useState<string>("");
@@ -50,12 +51,17 @@ const Sidebar: React.FC = () => {
       {sidebarData.map((side: SidebarItem, index: number) => {
         const isExpandable: boolean =
           (side.children && side.children.length > 0) || false;
-        const { label, description, icon, activeIcon, children } = side;
+        const { label, description, icon, activeIcon, children, disabled } =
+          side;
         return (
           <div key={index}>
             <div
               className="border border-#4D4D4D-600 flex bg-black flex-row h-48px justify-center align-center p-4 border-1 border-[#4D4D4D] hover:border-yellow1 cursor-pointer"
               onClick={() => {
+                if (disabled) {
+                  errorToast({ message: "Coming Soon!" });
+                  return;
+                }
                 handleClick(label);
               }}
             >
@@ -125,13 +131,19 @@ const Sidebar: React.FC = () => {
                 {isExpandable &&
                   children &&
                   children.map((child, childIndex) => {
-                    const { label, description, navigateTo } = child;
+                    const { label, description, navigateTo, disabled } = child;
                     return (
                       <div
                         className={`bg-background h-28 border-[1px] border-variant1 flex flex-col justify-center align-center p-6 hover:bg-variant1 cursor-pointer px-10 ${
                           childClicked === label ? "border-white" : ""
                         }`}
-                        onClick={() => handleChildClick(label, navigateTo)}
+                        onClick={() => {
+                          if (disabled) {
+                            errorToast({ message: "Coming Soon!" });
+                            return;
+                          }
+                          handleChildClick(label, navigateTo);
+                        }}
                         key={childIndex}
                       >
                         <div
