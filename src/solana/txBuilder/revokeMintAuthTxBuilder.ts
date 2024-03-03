@@ -1,3 +1,4 @@
+import { errorToast } from "@/component/toast";
 import {
   AuthorityType,
   createSetAuthorityInstruction,
@@ -12,6 +13,8 @@ export const revokeMintAuthTxBuilder = async (
 ) => {
   try {
     if (!wallet.publicKey) {
+      errorToast({ message:  "Wallet not Connected" });
+
       return;
     }
     const revokeMintAuthInstruction = createSetAuthorityInstruction(

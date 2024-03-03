@@ -187,7 +187,7 @@ const Header: React.FC<HeaderProps> = ({ showPrimaryHeader, selectedLink }) => {
             }}
           /> */}
           <Image
-            src={"/search.png"}
+            src={"/search.svg"}
             alt="search Logo"
             width={20}
             height={20}

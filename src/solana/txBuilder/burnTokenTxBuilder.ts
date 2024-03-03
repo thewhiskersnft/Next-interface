@@ -1,3 +1,4 @@
+import { errorToast } from "@/component/toast";
 import {
   AuthorityType,
   TOKEN_PROGRAM_ID,
@@ -28,6 +29,8 @@ export const createBurnTokensTxBuilder = async (
 ) => {
   try {
     if (!wallet.publicKey) {
+      errorToast({ message:  "Wallet not Connected" });
+
       return;
     }
     let Tx = new Transaction();

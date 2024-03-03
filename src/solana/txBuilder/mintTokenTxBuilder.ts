@@ -1,3 +1,4 @@
+import { errorToast } from "@/component/toast";
 import {
   AuthorityType,
   createAssociatedTokenAccountInstruction,
@@ -18,6 +19,7 @@ export const createMintTokensTxBuilder = async (
 ) => {
   try {
     if (!wallet.publicKey) {
+      errorToast({ message:  "Wallet not Connected" });
       return;
     }
 

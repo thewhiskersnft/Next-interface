@@ -4,6 +4,8 @@ import {
 } from "@solana/spl-token";
 import { WalletContextState } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
+import { errorToast, successToast } from "../../component/toast";
+
 
 export const revokeFreezeAuthTxBuilder = async (
   connection: Connection,
@@ -12,6 +14,7 @@ export const revokeFreezeAuthTxBuilder = async (
 ) => {
   try {
     if (!wallet.publicKey) {
+      errorToast({ message:  "Wallet not Connected" });
       return;
     }
     const revokeMintAuthInstruction = createSetAuthorityInstruction(
@@ -31,6 +34,7 @@ export const revokeFreezeAuthTxBuilder = async (
     return createRevokeFreezeAuthTransactionSignature;
   } catch (error) {
     console.log(error);
+    errorToast({ message: "Please try again" });
     return "";
   }
 };
