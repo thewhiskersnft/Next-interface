@@ -31,6 +31,7 @@ export const sidebarData: SidebarItem[] = [
         label: "Update Metadata",
         description: "Update Token Metadata",
         navigateTo: `/token?action=${TokenRoutes.updateMetadata}`,
+        disabled: true,
       },
       {
         label: "Get Token Verified",
@@ -55,22 +56,27 @@ export const sidebarData: SidebarItem[] = [
     description: "Create & Manage Openbook Market IDs & Liquidity Pools",
     icon: "/manageLiquidity.svg",
     activeIcon: "/manageLiquidityActive.svg",
+    // disabled: true,
     children: [
       {
         label: "Create Openbook Market ID",
         description: "Create Openbook Market ID To Set Up Liquidity Pool",
+        disabled: true,
       },
       {
         label: "Create Raydium Liquidity Pool (LP)",
         description: "Create a Raydium LP",
+        disabled: true,
       },
       {
         label: "Fund Liquidity Pool",
         description: "Fund An Existing Liquidity Pool",
+        disabled: true,
       },
       {
         label: "Renounce LP (Burn LP)",
         description: "Renounce Your LP Ownership Tokens",
+        disabled: true,
       },
     ],
   },
@@ -83,19 +89,23 @@ export const sidebarData: SidebarItem[] = [
       {
         label: "Snapshot Holders",
         description: "Snapshot Holder List For NFTs & SPL Tokens",
+        disabled: true,
       },
       {
         label: "Send Airdrops",
         description: "Send Bulk Airdrops To Solana Wallets",
+        disabled: true,
       },
       {
         label: "Create Airdrop Claim Contracts",
         description:
           "Create An Airdrop Claim Contrect To Distribute Your Tokens",
+        disabled: true,
       },
       {
         label: "Create Vesting Contracts",
         description: "Manage Vesting Of Teams Tokens On Chain",
+        disabled: true,
       },
     ],
   },
@@ -110,12 +120,14 @@ export const sidebarData: SidebarItem[] = [
     description: "Burn Tokens & NFTs Or Close Vacant Accounts For Rent",
     icon: "/burn.svg",
     activeIcon: "/burnActive.svg",
+    disabled: true,
   },
   {
     label: "Airdrop Checker",
     description: "Bulk Scan Your Wallets To Determine Airdrop Eligibility",
     icon: "/airdrop.svg",
     activeIcon: "/airdropActive.svg",
+    disabled: true,
   },
 ];
 

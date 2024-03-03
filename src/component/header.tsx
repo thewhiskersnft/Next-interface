@@ -33,9 +33,14 @@ const borderColor: string = "#4D4D4D";
 interface HeaderProps {
   showPrimaryHeader: boolean;
   selectedLink?: string;
+  handleClickProp?: Function;
 }
 
-const Header: React.FC<HeaderProps> = ({ showPrimaryHeader, selectedLink }) => {
+const Header: React.FC<HeaderProps> = ({
+  showPrimaryHeader,
+  selectedLink,
+  handleClickProp,
+}) => {
   const [points, setPoints] = useState<number>(0);
   const [userAddress, setWalletAddress] = useState<null | string>(null);
   const [apiResponse, setApiResponse] = useState<any[]>([]);
@@ -52,6 +57,7 @@ const Header: React.FC<HeaderProps> = ({ showPrimaryHeader, selectedLink }) => {
 
   const handleClick = (tag: string) => {
     if (tag === "TOOLS") {
+      handleClickProp ? handleClickProp() : null;
       router.push(`/token?action=${TokenRoutes.createToken}`);
     } else {
       errorToast({ message: "Coming Soon!" });
@@ -71,7 +77,10 @@ const Header: React.FC<HeaderProps> = ({ showPrimaryHeader, selectedLink }) => {
             borderRightWidth: "2px",
             borderColor: borderColor,
           }}
-          onClick={() => router.push(`/`)}
+          onClick={() => {
+            handleClickProp ? handleClickProp() : null;
+            router.push(`/`);
+          }}
         >
           <Image
             src={"/logo.jpeg"}
