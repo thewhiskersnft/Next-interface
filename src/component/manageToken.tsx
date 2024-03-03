@@ -59,7 +59,7 @@ const ManageToken = ({
         // correctly revoked
         formik.setFieldValue("mintAuthority", false);
         dispatch(setMintAuthority(false));
-        successToast({ message: "Successfully revoked!" });
+        successToast({ message: ` Successfully Revoked ${txhash} `})
       }
     } catch (error) {
       console.log(error);
@@ -79,6 +79,8 @@ const ManageToken = ({
         // correctly revoked
         formik.setFieldValue("freezeAuthority", false);
         dispatch(setFreezeAuthority(false));
+        successToast({ message: `SuccessfullyRevoked ${txhash} `})
+
       }
     } catch (error) {
       console.log(error);
