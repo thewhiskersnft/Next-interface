@@ -290,12 +290,12 @@ const RightSidebar: FC<SidebarProps> = ({
           </div>
           <div className="p-4 bg-black">
             <span className="text-white flex mt-2">
-              <span className="w-[25px]">
+              <span className="w-[25px] mt-[3px]">
                 <Image
                   src={"/bullet.svg"}
                   alt="bullet Logo"
-                  width={16}
-                  height={16}
+                  width={10}
+                  height={10}
                   style={{ marginRight: "8px" }}
                   priority
                 />
@@ -305,12 +305,12 @@ const RightSidebar: FC<SidebarProps> = ({
               </p>
             </span>
             <span className="text-white flex mt-2">
-              <span className="w-[25px]">
+              <span className="w-[25px] mt-[3px]">
                 <Image
                   src={"/bullet.svg"}
                   alt="bullet Logo"
-                  width={16}
-                  height={16}
+                  width={10}
+                  height={10}
                   style={{ marginRight: "8px" }}
                   priority
                 />
@@ -320,12 +320,12 @@ const RightSidebar: FC<SidebarProps> = ({
               </p>
             </span>
             <span className="text-white flex mt-2">
-              <span className="w-[25px]">
+              <span className="w-[25px] mt-[3px]">
                 <Image
                   src={"/bullet.svg"}
                   alt="bullet Logo"
-                  width={16}
-                  height={16}
+                  width={10}
+                  height={10}
                   style={{ marginRight: "8px" }}
                   priority
                 />
@@ -335,12 +335,12 @@ const RightSidebar: FC<SidebarProps> = ({
               </p>
             </span>
             <span className="text-white flex mt-2">
-              <span className="w-[25px]">
+              <span className="w-[25px] mt-[3px]">
                 <Image
                   src={"/bullet.svg"}
                   alt="bullet Logo"
-                  width={16}
-                  height={16}
+                  width={10}
+                  height={10}
                   style={{ marginRight: "8px" }}
                   priority
                 />

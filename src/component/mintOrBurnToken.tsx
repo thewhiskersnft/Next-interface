@@ -5,9 +5,10 @@ import CustomButton from "./customButton";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 
-import { createMintTokensTxBuilder } from "../solana/txBuilder/mintTokenTxBuilder"
+import { createMintTokensTxBuilder } from "../solana/txBuilder/mintTokenTxBuilder";
 import { validateAddress } from "@/solana/txBuilder/checkAddress";
 import { errorToast, successToast } from "./toast";
+import { createBurnTokensTxBuilder } from "@/solana/txBuilder/burnTokenTxBuilder";
 
 type MintOrBurnTokenProps = { isBurn?: boolean; formik?: any };
 const MintOrBurnToken = ({
@@ -19,21 +20,21 @@ const MintOrBurnToken = ({
   const wallet = useWallet();
 
   const checkAddress = async () => {
-   
     try {
-      const mintAccount = await validateAddress(connection, formik.values.tokenAddress);
+      const mintAccount = await validateAddress(
+        connection,
+        new PublicKey(formik.values.tokenAddress)
+      );
       console.log("mintAccount", mintAccount);
       if (!mintAccount) {
         errorToast({ message: "Please Check the address" });
+      } else {
+        setShowOnloadClick(true);
       }
-
-    }
-    catch {
+    } catch {
       errorToast({ message: "Please Check the address" });
-
     }
-  }
-
+  };
 
   const mintToken = async () => {
     try {
@@ -46,16 +47,12 @@ const MintOrBurnToken = ({
         wallet,
         new PublicKey(formik.values.tokenAddress),
         formik.values.mintAmount
-      )
-      console.log(txhash)
-    }
-    catch (e) {
-
+      );
+      console.log(txhash);
+    } catch (e) {
       errorToast({ message: "Please try again" });
-
     }
-  }
-
+  };
 
   const burnToken = async () => {
     try {
@@ -63,23 +60,17 @@ const MintOrBurnToken = ({
         errorToast({ message: "Please connect the wallet" });
         return;
       }
-      const txhash = await createMintTokensTxBuilder(
+      const txhash = await createBurnTokensTxBuilder(
         connection,
         wallet,
         new PublicKey(formik.values.tokenAddress),
         formik.values.mintAmount
-      )
-      console.log(txhash)
-    }
-    catch (e) {
+      );
+      console.log(txhash);
+    } catch (e) {
       errorToast({ message: "Please try again" });
     }
-  }
-
-
-
-
-
+  };
 
   return (
     <div
@@ -116,7 +107,8 @@ const MintOrBurnToken = ({
           <CustomButton
             label="Load"
             onClick={() => {
-              setShowOnloadClick(!showOnLoadClick);
+              checkAddress();
+              // setShowOnloadClick(!showOnLoadClick);
             }}
           />
         </div>
@@ -130,8 +122,8 @@ const MintOrBurnToken = ({
               onChange={formik?.handleChange}
               showSymbol={false}
               type={"text"}
-              showCurrency={true}
-              placeholder={"Enter Mint Amount"}
+              showCurrency={false}
+              placeholder={"Enter Amount"}
               showError={
                 formik?.touched?.mintAmount && formik.errors?.mintAmount
                   ? true
@@ -146,7 +138,12 @@ const MintOrBurnToken = ({
               <CustomButton
                 label={isBurn ? "Burn Token" : "Mint Token"}
                 onClick={() => {
-                  console.log("Mint token clicked!");
+                  if (isBurn) {
+                    burnToken();
+                  } else {
+                    mintToken();
+                  }
+                  // console.log("Mint token clicked!");
                 }}
               />
             </div>
