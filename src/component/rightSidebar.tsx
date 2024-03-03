@@ -129,7 +129,10 @@ const RightSidebar: FC<SidebarProps> = ({
       >
         <div
           className="border-b-2 py-2 text-white cursor-pointer font-Orbitron text-small text-left px-4"
-          style={{ borderColor: "rgba(255, 255, 255, 0.2)" }}
+          style={{
+            borderColor: "rgba(255, 255, 255, 0.2)",
+            backgroundColor: "#222222",
+          }}
         >
           {label || "Preview"}
         </div>
@@ -278,7 +281,10 @@ const RightSidebar: FC<SidebarProps> = ({
         >
           <div
             className="border-b-2 py-2 text-white cursor-pointer font-Orbitron text-small text-left px-4"
-            style={{ borderColor: "rgba(255, 255, 255, 0.2)" }}
+            style={{
+              borderColor: "rgba(255, 255, 255, 0.2)",
+              backgroundColor: "#222222",
+            }}
           >
             Information
           </div>

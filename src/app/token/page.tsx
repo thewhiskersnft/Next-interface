@@ -15,7 +15,7 @@ export default function Token() {
         className="width-100 flex flex-col h-max"
         style={{ height: "100vh", overflow: "hidden" }}
       >
-        <Header showPrimaryHeader={true} />
+        <Header showPrimaryHeader={true} selectedLink="TOOLS" />
         <div className="width-100 flex flex-row h-full overflow-hidden bg-black">
           <Sidebar />
           <Form />

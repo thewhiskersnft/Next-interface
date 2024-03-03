@@ -40,6 +40,7 @@ const config: Config = {
         lightGrey: "#4D4D4D",
         buttonBlack: "#222222",
         hoverInputBg: "#3f3f3f",
+        disabledLink: "#8d8d8d",
       },
       keyframes: {
         wiggle: {

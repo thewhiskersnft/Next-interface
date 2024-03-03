@@ -24,14 +24,18 @@ import { Buffer } from "buffer";
 import CustomInput from "./customInput";
 import Image from "next/image";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { useRouter } from "next/navigation";
+import { TokenRoutes } from "@/constants";
+import { errorToast } from "./toast";
 
 const borderColor: string = "#4D4D4D";
 
 interface HeaderProps {
   showPrimaryHeader: boolean;
+  selectedLink?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ showPrimaryHeader }) => {
+const Header: React.FC<HeaderProps> = ({ showPrimaryHeader, selectedLink }) => {
   const [points, setPoints] = useState<number>(0);
   const [userAddress, setWalletAddress] = useState<null | string>(null);
   const [apiResponse, setApiResponse] = useState<any[]>([]);
@@ -40,30 +44,35 @@ const Header: React.FC<HeaderProps> = ({ showPrimaryHeader }) => {
   const [showButton, setShowButton] = useState(false);
 
   const wallet = useWallet();
+  const router = useRouter();
 
   useEffect(() => {
     setShowButton(true);
   }, []);
 
+  const handleClick = (tag: string) => {
+    if (tag === "TOOLS") {
+      router.push(`/token?action=${TokenRoutes.createToken}`);
+    } else {
+      errorToast({ message: "Coming Soon!" });
+    }
+  };
+
   return (
     <div>
-      {showPrimaryHeader && <PrimaryHeader />}
-      <div className="w-full bg-black flex items-center h-[46px]">
+      {/* {showPrimaryHeader && <PrimaryHeader />} */}
+      <div
+        className="w-full bg-black flex items-center h-[46px]"
+        style={{ borderBottomWidth: "0.2px", borderColor: borderColor }}
+      >
         <div
           className="cursor-pointer px-4 flex items-center"
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
           }}
+          onClick={() => router.push(`/`)}
         >
-          {/* <img
-            src={logo}
-            alt="logo"
-            width={`${20}px`}
-            style={{
-              height: `${20}px`,
-            }}
-          /> */}
           <Image
             src={"/logo.jpeg"}
             alt="logo Logo"
@@ -88,7 +97,7 @@ const Header: React.FC<HeaderProps> = ({ showPrimaryHeader }) => {
             }}
           /> */}
           <Image
-            src={"/menu.png"}
+            src={"/menuDisabled.png"}
             alt="menu Logo"
             width={16}
             height={16}
@@ -102,7 +111,11 @@ const Header: React.FC<HeaderProps> = ({ showPrimaryHeader }) => {
             borderColor: borderColor,
           }}
         >
-          <div className="text-center text-white text-small font-Orbitron w-100 cursor-pointer">
+          <div
+            className={`text-center ${
+              selectedLink === "MARKET" ? "text-yellow1" : "text-disabledLink"
+            } text-small font-Orbitron w-100 cursor-pointer`}
+          >
             MARKETS
           </div>
         </div>
@@ -113,7 +126,11 @@ const Header: React.FC<HeaderProps> = ({ showPrimaryHeader }) => {
             borderColor: borderColor,
           }}
         >
-          <div className="text-center text-white text-small font-Orbitron w-100 cursor-pointer">
+          <div
+            className={`text-center ${
+              selectedLink === "TRADE" ? "text-yellow1" : "text-disabledLink"
+            } text-small font-Orbitron w-100 cursor-pointer`}
+          >
             TRADE
           </div>
         </div>
@@ -124,7 +141,13 @@ const Header: React.FC<HeaderProps> = ({ showPrimaryHeader }) => {
             borderColor: borderColor,
           }}
         >
-          <div className="text-center text-white text-small font-Orbitron w-100 cursor-pointer">
+          <div
+            className={`text-center ${
+              selectedLink === "PORTFOLIO"
+                ? "text-yellow1"
+                : "text-disabledLink"
+            } text-small font-Orbitron w-100 cursor-pointer`}
+          >
             PORTFOLIO
           </div>
         </div>
@@ -135,7 +158,12 @@ const Header: React.FC<HeaderProps> = ({ showPrimaryHeader }) => {
             borderColor: borderColor,
           }}
         >
-          <div className="text-center text-small text-yellow1 font-Orbitron w-100 cursor-pointer">
+          <div
+            className={`text-center ${
+              selectedLink === "TOOLS" ? "text-yellow1" : "text-white"
+            } text-small font-Orbitron w-100 cursor-pointer`}
+            onClick={() => handleClick("TOOLS")}
+          >
             TOOLS
           </div>
         </div>
@@ -173,7 +201,7 @@ const Header: React.FC<HeaderProps> = ({ showPrimaryHeader }) => {
               setSearchVal(e.target.value);
             }}
             containerStyles={{ marginTop: 0 }}
-            inputStyles={{ backgroundColor: "#FFC83A1A" }}
+            // inputStyles={{ backgroundColor: "#FFC83A1A" }}
             placeholderColor={"#989C9F"}
             placeholder={"Search for symbol, name, contract, or wallets"}
             type={"string"}
