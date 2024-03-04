@@ -74,17 +74,17 @@ const RightSidebar: FC<SidebarProps> = ({
   // const wallet = useWallet();
   // const { connection } = useConnection();
   // const createTokenHandler = async () => {
-  //   console.log("here");
+  //   // console.log("here");
   //   toast.error("Remove comment!");
   //   if (!wallet.connected) {
-  //     console.log("Wallet not connected");
+  //     // console.log("Wallet not connected");
   //   }
   //   try {
   //     const isSPL = true;
   //     if (isSPL) {
   //       const metaplexhandler = await metaplexBuilder(wallet, connection);
   //       const imgURI = await metaplexhandler.storage().upload(metaplexFileData);
-  //       console.log("Uploaded Image URI (Arweave)", imgURI);
+  //       // console.log("Uploaded Image URI (Arweave)", imgURI);
 
   //       if (imgURI) {
   //         const tokenMetadata = {
@@ -97,7 +97,7 @@ const RightSidebar: FC<SidebarProps> = ({
   //           .nfts()
   //           .uploadMetadata(tokenMetadata);
 
-  //         console.log("Uploaded Metadata URI (Arweave)", uri);
+  //         // console.log("Uploaded Metadata URI (Arweave)", uri);
 
   //         const txhash = await createSPLTokenTxBuilder(
   //           name,
@@ -109,17 +109,17 @@ const RightSidebar: FC<SidebarProps> = ({
   //           wallet
   //         );
 
-  //         console.log("txhash", txhash);
+  //         // console.log("txhash", txhash);
   //       } else {
   //       }
   //     } else {
   //     }
   //   } catch (error) {
-  //     console.log(error);
+  //     // console.log(error);
   //   }
   // };
 
-  // console.log("media  : ", mediaLinks);
+  // // console.log("media  : ", mediaLinks);
 
   return (
     <div className="mr-4 my-12 h-max w-[383px]">

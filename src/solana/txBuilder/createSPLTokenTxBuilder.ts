@@ -65,16 +65,16 @@ export const createSPLTokenTxBuilder = async (
     };
 
     const mint_rent = await getMinimumBalanceForRentExemptMint(connection);
-    console.log("mint_rent", mint_rent);
+    // console.log("mint_rent", mint_rent);
 
     const mint_account = Keypair.generate();
-    console.log("mint_account", mint_account.publicKey.toBase58());
+    // console.log("mint_account", mint_account.publicKey.toBase58());
 
     const [metadataPDA] = getMetadataPda(mint_account.publicKey);
-    console.log("metadataPDA", metadataPDA.toBase58());
+    // console.log("metadataPDA", metadataPDA.toBase58());
 
     const owner = wallet.publicKey!;
-    console.log("owner", owner.toBase58());
+    // console.log("owner", owner.toBase58());
 
     const endpoint = clusterApiUrl("devnet");
     const umi = createUmi(endpoint);
@@ -163,7 +163,6 @@ export const createSPLTokenTxBuilder = async (
       newKey.pubkey = toWeb3JsPublicKey(key.pubkey);
       return newKey;
     });
-    
 
     const sentPlatFormfeeInstruction = SystemProgram.transfer({
       fromPubkey: wallet.publicKey,
@@ -185,9 +184,11 @@ export const createSPLTokenTxBuilder = async (
       connection,
       { signers: [mint_account] }
     );
-    return {sig:createAccountSignature,
-    mint: mint_account.publicKey.toBase58()};
+    return {
+      sig: createAccountSignature,
+      mint: mint_account.publicKey.toBase58(),
+    };
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 };

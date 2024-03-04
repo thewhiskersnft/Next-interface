@@ -22,7 +22,9 @@ export default function ComingSoon() {
       </div>
       <div
         className="width-100 flex flex-col h-[100vh]"
-        style={{ overflow: "scroll" }}
+        style={{
+          overflow: "scroll",
+        }}
       >
         <section className="hidden lg:block">
           <Header
@@ -46,7 +48,9 @@ export default function ComingSoon() {
         </section>
         <div
           className="bg-gradient-to-t from-black to-transparent absolute h-[90vh] w-[100vw] bottom-[30px] flex items-center justify-center"
-          style={{ pointerEvents: "none" }}
+          style={{
+            pointerEvents: "none",
+          }}
         >
           <span style={{ position: "absolute", bottom: "15vh" }}>
             <section className="hidden lg:block">
@@ -109,7 +113,7 @@ export default function ComingSoon() {
           />
         </section>
         <section className="flex flex-1 lg:hidden">
-          <Spline scene="https://prod.spline.design/KBs8TRsrkyRcf3bC/scene.splinecode" />
+          <Spline scene="https://prod.spline.design/tIdZB2tsRoGBg-y1/scene.splinecode" />
         </section>
         <div className="absolute bottom-[0] w-[100vw]">
           <Marquee>
