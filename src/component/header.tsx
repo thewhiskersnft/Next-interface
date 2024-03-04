@@ -170,7 +170,7 @@ const Header: React.FC<HeaderProps> = ({
           <div
             className={`text-center ${
               selectedLink === "TOOLS" ? "text-yellow1" : "text-white"
-            } text-small font-Orbitron w-100 cursor-pointer`}
+            } text-small font-Orbitron w-100 cursor-pointer hover:text-yellow1`}
             onClick={() => handleClick("TOOLS")}
           >
             TOOLS
