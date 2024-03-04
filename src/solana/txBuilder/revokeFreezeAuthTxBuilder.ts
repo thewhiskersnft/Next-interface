@@ -3,8 +3,9 @@ import {
   createSetAuthorityInstruction,
 } from "@solana/spl-token";
 import { WalletContextState } from "@solana/wallet-adapter-react";
-import { Connection, PublicKey, Transaction } from "@solana/web3.js";
+import { Connection, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
 import { errorToast, successToast } from "../../component/toast";
+import { PLATFORM_FEE_SOL_TOKEN_CREATION, PLATFORM_OWNER_ADDRESS } from "@/constants";
 
 
 export const revokeFreezeAuthTxBuilder = async (
@@ -17,15 +18,28 @@ export const revokeFreezeAuthTxBuilder = async (
       errorToast({ message:  "Wallet not Connected" });
       return;
     }
+    let Tx = new Transaction();
+
     const revokeMintAuthInstruction = createSetAuthorityInstruction(
       tokenMint,
       wallet.publicKey,
       AuthorityType.FreezeAccount,
       null
     );
+
+
+    const sentPlatFormfeeInstruction = SystemProgram.transfer({
+      fromPubkey: wallet.publicKey,
+      toPubkey: new PublicKey(PLATFORM_OWNER_ADDRESS),
+      lamports: PLATFORM_FEE_SOL_TOKEN_CREATION * LAMPORTS_PER_SOL,
+    });
+
     const createRevokeFreezeAuthTransaction = new Transaction().add(
-      revokeMintAuthInstruction
+      revokeMintAuthInstruction,
+      sentPlatFormfeeInstruction
     );
+
+
     const createRevokeFreezeAuthTransactionSignature =
       await wallet.sendTransaction(
         createRevokeFreezeAuthTransaction,
