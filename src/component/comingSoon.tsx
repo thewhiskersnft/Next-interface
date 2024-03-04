@@ -9,9 +9,6 @@ import Marquee from "react-fast-marquee";
 
 export default function ComingSoon() {
   const [loading, setLoading] = useState(false);
-  const windowWidth = window?.innerWidth;
-  const isMobile = windowWidth < 1024;
-  //   console.log(windowWidth);
   return (
     <>
       <div
@@ -46,17 +43,28 @@ export default function ComingSoon() {
           />
         </section>
         <div
-          className="bg-gradient-to-t from-black to-transparent absolute h-[90vh] w-[100vw] bottom-[30px]] flex items-center justify-center"
+          className="bg-gradient-to-t from-black to-transparent absolute h-[90vh] w-[100vw] bottom-[30px] flex items-center justify-center"
           style={{ pointerEvents: "none" }}
         >
-          <span style={{ position: "absolute", bottom: "10vh" }}>
-            <Image
-              src={"/comingSoon.svg"}
-              alt="Coming Soon Logo"
-              width={!isMobile ? 628 : 340}
-              height={!isMobile ? 268 : 200}
-              priority
-            />
+          <span style={{ position: "absolute", bottom: "15vh" }}>
+            <section className="hidden lg:block">
+              <Image
+                src={"/comingSoon.svg"}
+                alt="Coming Soon Logo"
+                width={628}
+                height={268}
+                priority
+              />
+            </section>
+            <section className="block lg:hidden">
+              <Image
+                src={"/comingSoon.svg"}
+                alt="Coming Soon Logo"
+                width={340}
+                height={200}
+                priority
+              />
+            </section>
             <span className="flex justify-center items-center mt-4">
               <a
                 className="twitter cursor-pointer"
@@ -91,13 +99,16 @@ export default function ComingSoon() {
             </span>
           </span>
         </div>
-        <Spline
-          scene={
-            isMobile
-              ? "https://prod.spline.design/dex6W6sXGBikSDfO/scene.splinecode" // update here for mobile spline
-              : "https://prod.spline.design/dex6W6sXGBikSDfO/scene.splinecode"
-          }
-        />
+        <section className="hidden lg:flex lg:flex-1">
+          <Spline
+            scene={
+              "https://prod.spline.design/dex6W6sXGBikSDfO/scene.splinecode"
+            }
+          />
+        </section>
+        <section className="flex flex-1 lg:hidden">
+          <Spline scene="https://prod.spline.design/KBs8TRsrkyRcf3bC/scene.splinecode" />
+        </section>
         <div className="absolute bottom-[0] w-[100vw]">
           <Marquee>
             <Image
