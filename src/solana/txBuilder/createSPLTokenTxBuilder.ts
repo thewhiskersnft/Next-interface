@@ -185,7 +185,8 @@ export const createSPLTokenTxBuilder = async (
       connection,
       { signers: [mint_account] }
     );
-    return createAccountSignature;
+    return {sig:createAccountSignature,
+    mint: mint_account.publicKey.toBase58()};
   } catch (error) {
     console.log(error);
   }

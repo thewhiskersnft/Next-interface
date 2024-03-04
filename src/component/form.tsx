@@ -227,7 +227,9 @@ export default function Form() {
           console.log("MP data : ", metaplexFileData);
           console.log("Uploaded Image URI (Arweave)", imgURI);
 
+
           if (imgURI) {
+            successToast({ message: `Image Uri Created ${imgURI}`})
             const tokenMetadata = {
               name: name,
               symbol: symbol,
@@ -239,6 +241,7 @@ export default function Form() {
               .uploadMetadata(tokenMetadata);
 
             console.log("Uploaded Metadata URI (Arweave)", uri);
+            successToast({ message: `MetaData Uploaded ${uri}` })
 
             const txhash = await createSPLTokenTxBuilder(
               name,
@@ -250,7 +253,11 @@ export default function Form() {
               wallet
             );
 
-            console.log("txhash", txhash);
+            console.log("txhash", txhash?.sig);
+            successToast({
+              message: `Token Created ${txhash?.sig} 
+                        Mint Address ${txhash?.mint}`
+            })
             setButtonClicked(false);
           } else {
             setButtonClicked(false);

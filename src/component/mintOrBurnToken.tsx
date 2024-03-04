@@ -48,6 +48,10 @@ const MintOrBurnToken = ({
         new PublicKey(formik.values.tokenAddress),
         formik.values.mintAmount
       );
+      if (txhash) {
+        // correctly revoked
+        successToast({ message: `Minted ${txhash} `})
+      }
       console.log(txhash);
     } catch (e) {
       errorToast({ message: "Please try again" });
@@ -66,6 +70,10 @@ const MintOrBurnToken = ({
         new PublicKey(formik.values.tokenAddress),
         formik.values.mintAmount
       );
+      if (txhash) {
+        // correctly revoked
+        successToast({ message: `Burned ${txhash} `})
+      }
       console.log(txhash);
     } catch (e) {
       errorToast({ message: "Please try again" });
