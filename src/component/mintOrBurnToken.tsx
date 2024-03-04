@@ -2,14 +2,83 @@
 import React, { useState } from "react";
 import CustomInput from "./customInput";
 import CustomButton from "./customButton";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
+
+import { createMintTokensTxBuilder } from "../solana/txBuilder/mintTokenTxBuilder";
+import { validateAddress } from "@/solana/txBuilder/checkAddress";
+import { errorToast, successToast } from "./toast";
+import { createBurnTokensTxBuilder } from "@/solana/txBuilder/burnTokenTxBuilder";
 
 type MintOrBurnTokenProps = { isBurn?: boolean; formik?: any };
-
 const MintOrBurnToken = ({
   formik = { errors: {}, values: {}, touched: {} },
   isBurn,
 }: MintOrBurnTokenProps) => {
   const [showOnLoadClick, setShowOnloadClick] = useState(false);
+  const { connection } = useConnection();
+  const wallet = useWallet();
+
+  const checkAddress = async () => {
+    try {
+      const mintAccount = await validateAddress(
+        connection,
+        new PublicKey(formik.values.tokenAddress)
+      );
+      console.log("mintAccount", mintAccount);
+      if (!mintAccount) {
+        errorToast({ message: "Please Check the address" });
+      } else {
+        setShowOnloadClick(true);
+      }
+    } catch {
+      errorToast({ message: "Please Check the address" });
+    }
+  };
+
+  const mintToken = async () => {
+    try {
+      if (!wallet.publicKey) {
+        errorToast({ message: "Please connect the wallet" });
+        return;
+      }
+      const txhash = await createMintTokensTxBuilder(
+        connection,
+        wallet,
+        new PublicKey(formik.values.tokenAddress),
+        formik.values.mintAmount
+      );
+      if (txhash) {
+        // correctly revoked
+        successToast({ message: `Minted ${txhash} `})
+      }
+      console.log(txhash);
+    } catch (e) {
+      errorToast({ message: "Please try again" });
+    }
+  };
+
+  const burnToken = async () => {
+    try {
+      if (!wallet.publicKey) {
+        errorToast({ message: "Please connect the wallet" });
+        return;
+      }
+      const txhash = await createBurnTokensTxBuilder(
+        connection,
+        wallet,
+        new PublicKey(formik.values.tokenAddress),
+        formik.values.mintAmount
+      );
+      if (txhash) {
+        // correctly revoked
+        successToast({ message: `Burned ${txhash} `})
+      }
+      console.log(txhash);
+    } catch (e) {
+      errorToast({ message: "Please try again" });
+    }
+  };
 
   return (
     <div
@@ -46,7 +115,8 @@ const MintOrBurnToken = ({
           <CustomButton
             label="Load"
             onClick={() => {
-              setShowOnloadClick(!showOnLoadClick);
+              checkAddress();
+              // setShowOnloadClick(!showOnLoadClick);
             }}
           />
         </div>
@@ -60,8 +130,8 @@ const MintOrBurnToken = ({
               onChange={formik?.handleChange}
               showSymbol={false}
               type={"text"}
-              showCurrency={true}
-              placeholder={"Enter Mint Amount"}
+              showCurrency={false}
+              placeholder={"Enter Amount"}
               showError={
                 formik?.touched?.mintAmount && formik.errors?.mintAmount
                   ? true
@@ -70,13 +140,18 @@ const MintOrBurnToken = ({
               errorMessage={formik.errors.mintAmount}
             />
             <p className="text-xsmall text-yellow1 text-right my-2 mb-6">
-              Balance: $738,162,324
+              Balance: 738,162,324
             </p>
             <div className="w-full mt-6 flex justify-left">
               <CustomButton
                 label={isBurn ? "Burn Token" : "Mint Token"}
                 onClick={() => {
-                  console.log("Mint token clicked!");
+                  if (isBurn) {
+                    burnToken();
+                  } else {
+                    mintToken();
+                  }
+                  // console.log("Mint token clicked!");
                 }}
               />
             </div>

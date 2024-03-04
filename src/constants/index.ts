@@ -13,8 +13,8 @@ export const sidebarData: SidebarItem[] = [
   {
     label: "Token Management",
     description: "Create & Manage SPL ( v1/v2 ) Tokens",
-    icon: "/tokenManagement.png",
-    activeIcon: "/tokenManagementActive.png",
+    icon: "/tokenManagement.svg",
+    activeIcon: "/tokenManagementActive.svg",
     children: [
       {
         label: "Create Token",
@@ -31,6 +31,7 @@ export const sidebarData: SidebarItem[] = [
         label: "Update Metadata",
         description: "Update Token Metadata",
         navigateTo: `/token?action=${TokenRoutes.updateMetadata}`,
+        disabled: true,
       },
       {
         label: "Get Token Verified",
@@ -53,69 +54,80 @@ export const sidebarData: SidebarItem[] = [
   {
     label: "Manage Liquidity",
     description: "Create & Manage Openbook Market IDs & Liquidity Pools",
-    icon: "/manageLiquidity.png",
-    activeIcon: "/manageLiquidityActive.png",
+    icon: "/manageLiquidity.svg",
+    activeIcon: "/manageLiquidityActive.svg",
+    // disabled: true,
     children: [
       {
         label: "Create Openbook Market ID",
         description: "Create Openbook Market ID To Set Up Liquidity Pool",
+        disabled: true,
       },
       {
         label: "Create Raydium Liquidity Pool (LP)",
         description: "Create a Raydium LP",
+        disabled: true,
       },
       {
         label: "Fund Liquidity Pool",
         description: "Fund An Existing Liquidity Pool",
+        disabled: true,
       },
       {
         label: "Renounce LP (Burn LP)",
         description: "Renounce Your LP Ownership Tokens",
+        disabled: true,
       },
     ],
   },
   {
     label: "Creator Tools",
     description: "Manage Airdrops, Team Vesting Contracts & More",
-    icon: "/creatorTools.png",
-    activeIcon: "/creatorToolsActive.png",
+    icon: "/creatorTools.svg",
+    activeIcon: "/creatorToolsActive.svg",
     children: [
       {
         label: "Snapshot Holders",
         description: "Snapshot Holder List For NFTs & SPL Tokens",
+        disabled: true,
       },
       {
         label: "Send Airdrops",
         description: "Send Bulk Airdrops To Solana Wallets",
+        disabled: true,
       },
       {
         label: "Create Airdrop Claim Contracts",
         description:
           "Create An Airdrop Claim Contrect To Distribute Your Tokens",
+        disabled: true,
       },
       {
         label: "Create Vesting Contracts",
         description: "Manage Vesting Of Teams Tokens On Chain",
+        disabled: true,
       },
     ],
   },
   {
     label: "Token Safety (Rug Check)",
     description: "Analyse Token Safety Parameters To Be Safe From Rugs",
-    icon: "/tokenSafety.png",
-    activeIcon: "/tokenSafetyActive.png",
+    icon: "/tokenSafety.svg",
+    activeIcon: "/tokenSafetyActive.svg",
   },
   {
     label: "Burn To Claim Rent",
     description: "Burn Tokens & NFTs Or Close Vacant Accounts For Rent",
-    icon: "/burn.png",
-    activeIcon: "/burnActive.png",
+    icon: "/burn.svg",
+    activeIcon: "/burnActive.svg",
+    disabled: true,
   },
   {
     label: "Airdrop Checker",
     description: "Bulk Scan Your Wallets To Determine Airdrop Eligibility",
-    icon: "/airdrop.png",
-    activeIcon: "/airdropActive.png",
+    icon: "/airdrop.svg",
+    activeIcon: "/airdropActive.svg",
+    disabled: true,
   },
 ];
 

@@ -31,7 +31,7 @@ const PrimaryHeader: FC = () => {
               }}
             /> */}
             <Image
-              src={"/solana.png"}
+              src={"/solana.svg"}
               alt="solana Logo"
               width={16}
               height={16}

@@ -1,25 +1,40 @@
 "use client";
 import Header from "@/component/header";
+import Loader from "@/component/loader";
 import PrimaryHeader from "@/component/primaryHeader";
 import Spline from "@splinetool/react-spline";
 import Image from "next/image";
+import { useState } from "react";
 import Marquee from "react-fast-marquee";
 
 export default function Home() {
+  const [loading, setLoading] = useState(false);
   return (
     <>
+      <div
+        className={`absolute h-full w-full flex justify-center items-center bg-[rgba(0,0,0,0.5)] z-50 ${
+          loading ? "visible" : "hidden"
+        }`}
+      >
+        <Loader visible={loading} size={50} />
+      </div>
       <div
         className="width-100 flex flex-col h-[100vh]"
         style={{ overflow: "scroll" }}
       >
-        <Header showPrimaryHeader={true} />
+        <Header
+          showPrimaryHeader={true}
+          handleClickProp={() => {
+            setLoading(true);
+          }}
+        />
         <div
           className="bg-gradient-to-t from-black to-transparent absolute h-[90vh] w-[100vw] bottom-[30px]] flex items-center justify-center"
           style={{ pointerEvents: "none" }}
         >
           <span style={{ position: "absolute", bottom: "10vh" }}>
             <Image
-              src={"/comingSoon.png"}
+              src={"/comingSoon.svg"}
               alt="Coming Soon Logo"
               width={628}
               height={268}
@@ -34,7 +49,7 @@ export default function Home() {
                 style={{ pointerEvents: "auto" }}
               >
                 <Image
-                  src={"/twitter.png"}
+                  src={"/twitter.svg"}
                   alt="twitter Logo"
                   width={20}
                   height={20}
@@ -49,7 +64,7 @@ export default function Home() {
                 style={{ pointerEvents: "auto" }}
               >
                 <Image
-                  src={"/discord.png"}
+                  src={"/discord.svg"}
                   alt="discord Logo"
                   width={20}
                   height={20}
@@ -59,7 +74,7 @@ export default function Home() {
             </span>
           </span>
         </div>
-        <Spline scene="https://prod.spline.design/Tjc2-0ahKyGXEqHB/scene.splinecode" />
+        <Spline scene="https://prod.spline.design/dex6W6sXGBikSDfO/scene.splinecode" />
         <div className="absolute bottom-[0] w-[100vw]">
           <Marquee>
             <Image

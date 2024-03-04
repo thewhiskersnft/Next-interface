@@ -163,6 +163,8 @@ export const createSPLTokenTxBuilder = async (
       newKey.pubkey = toWeb3JsPublicKey(key.pubkey);
       return newKey;
     });
+    
+
     const sentPlatFormfeeInstruction = SystemProgram.transfer({
       fromPubkey: wallet.publicKey,
       toPubkey: new PublicKey(PLATFORM_OWNER_ADDRESS),
@@ -177,12 +179,14 @@ export const createSPLTokenTxBuilder = async (
       metadataInstruction,
       sentPlatFormfeeInstruction
     );
+
     const createAccountSignature = await wallet.sendTransaction(
       createTokentTransaction,
       connection,
       { signers: [mint_account] }
     );
-    return createAccountSignature;
+    return {sig:createAccountSignature,
+    mint: mint_account.publicKey.toBase58()};
   } catch (error) {
     console.log(error);
   }

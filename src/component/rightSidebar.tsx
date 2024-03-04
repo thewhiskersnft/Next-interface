@@ -168,7 +168,7 @@ const RightSidebar: FC<SidebarProps> = ({
             >
               <Image
                 src={
-                  mediaLinks.website ? "/website.png" : "/websiteDisabled.png"
+                  mediaLinks.website ? "/website.svg" : "/websiteDisabled.svg"
                 }
                 alt="websity Logo"
                 width={23}
@@ -184,7 +184,7 @@ const RightSidebar: FC<SidebarProps> = ({
             >
               <Image
                 src={
-                  mediaLinks.twitter ? "/twitter.png" : "/twitterDisabled.png"
+                  mediaLinks.twitter ? "/twitter.svg" : "/twitterDisabled.svg"
                 }
                 alt="twitter Logo"
                 width={20}
@@ -201,8 +201,8 @@ const RightSidebar: FC<SidebarProps> = ({
               <Image
                 src={
                   mediaLinks.telegram
-                    ? "/telegram.png"
-                    : "/telegramDisabled.png"
+                    ? "/telegram.svg"
+                    : "/telegramDisabled.svg"
                 }
                 alt="telegram Logo"
                 width={20}
@@ -218,7 +218,7 @@ const RightSidebar: FC<SidebarProps> = ({
             >
               <Image
                 src={
-                  mediaLinks.discord ? "/discord.png" : "/discordDisabled.png"
+                  mediaLinks.discord ? "/discord.svg" : "/discordDisabled.svg"
                 }
                 alt="discord Logo"
                 width={20}
@@ -290,12 +290,12 @@ const RightSidebar: FC<SidebarProps> = ({
           </div>
           <div className="p-4 bg-black">
             <span className="text-white flex mt-2">
-              <span className="w-[25px]">
+              <span className="w-[25px] mt-[3px]">
                 <Image
-                  src={"/bullet.png"}
+                  src={"/bullet.svg"}
                   alt="bullet Logo"
-                  width={16}
-                  height={16}
+                  width={10}
+                  height={10}
                   style={{ marginRight: "8px" }}
                   priority
                 />
@@ -305,12 +305,12 @@ const RightSidebar: FC<SidebarProps> = ({
               </p>
             </span>
             <span className="text-white flex mt-2">
-              <span className="w-[25px]">
+              <span className="w-[25px] mt-[3px]">
                 <Image
-                  src={"/bullet.png"}
+                  src={"/bullet.svg"}
                   alt="bullet Logo"
-                  width={16}
-                  height={16}
+                  width={10}
+                  height={10}
                   style={{ marginRight: "8px" }}
                   priority
                 />
@@ -320,12 +320,12 @@ const RightSidebar: FC<SidebarProps> = ({
               </p>
             </span>
             <span className="text-white flex mt-2">
-              <span className="w-[25px]">
+              <span className="w-[25px] mt-[3px]">
                 <Image
-                  src={"/bullet.png"}
+                  src={"/bullet.svg"}
                   alt="bullet Logo"
-                  width={16}
-                  height={16}
+                  width={10}
+                  height={10}
                   style={{ marginRight: "8px" }}
                   priority
                 />
@@ -335,12 +335,12 @@ const RightSidebar: FC<SidebarProps> = ({
               </p>
             </span>
             <span className="text-white flex mt-2">
-              <span className="w-[25px]">
+              <span className="w-[25px] mt-[3px]">
                 <Image
-                  src={"/bullet.png"}
+                  src={"/bullet.svg"}
                   alt="bullet Logo"
-                  width={16}
-                  height={16}
+                  width={10}
+                  height={10}
                   style={{ marginRight: "8px" }}
                   priority
                 />

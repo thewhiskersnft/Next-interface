@@ -1,19 +1,42 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // import Expand from "../asset/expand.svg";
-import { sidebarData } from "../constants";
+import { TokenRoutes, sidebarData } from "../constants";
 import { SidebarItem } from "../interfaces";
 // import { useNavigate } from "react-router-dom";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { get } from "lodash";
 import Image from "next/image";
 import { errorToast } from "./toast";
 
-const Sidebar: React.FC = () => {
+type SidebarProps = {};
+
+const Sidebar = ({}: SidebarProps) => {
   const [clicked, setClicked] = useState<string>("");
-  const [childClicked, setChildClicked] = useState<string>(""); // move these to redux and remove use client from top
+  const [childClicked, setChildClicked] = useState<string>("");
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const tokenAction = searchParams.get("action");
+    if (tokenAction === TokenRoutes.createToken) {
+      setClicked("Token Management");
+      setChildClicked("Create Token");
+    } else if (tokenAction === TokenRoutes.manageToken) {
+      setClicked("Token Management");
+      setChildClicked("Manage Token");
+    } else if (tokenAction === TokenRoutes.updateMetadata) {
+      setClicked("Token Management");
+      setChildClicked("Update Metadata");
+    } else if (tokenAction === TokenRoutes.mintToken) {
+      setClicked("Token Management");
+      setChildClicked("Mint Tokens");
+    } else if (tokenAction === TokenRoutes.burnToken) {
+      setClicked("Token Management");
+      setChildClicked("Burn Tokens");
+    }
+  }, []);
 
   const handleChildClick = (val: string, navigateTo: string | undefined) => {
     if (childClicked === val) {

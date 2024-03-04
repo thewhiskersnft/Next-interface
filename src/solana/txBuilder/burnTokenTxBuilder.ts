@@ -1,3 +1,4 @@
+import { errorToast } from "@/component/toast";
 import {
   AuthorityType,
   TOKEN_PROGRAM_ID,
@@ -10,11 +11,18 @@ import {
   getMint,
   getOrCreateAssociatedTokenAccount,
 } from "@solana/spl-token";
+import {
+  PLATFORM_FEE_SOL_TOKEN_CREATION,
+  PLATFORM_OWNER_ADDRESS,
+} from "@/constants";
+
 import { WalletContextState } from "@solana/wallet-adapter-react";
 import {
   Connection,
+  LAMPORTS_PER_SOL,
   PublicKey,
   Signer,
+  SystemProgram,
   Transaction,
   TransactionMessage,
   VersionedTransaction,
@@ -28,9 +36,11 @@ export const createBurnTokensTxBuilder = async (
 ) => {
   try {
     if (!wallet.publicKey) {
+      errorToast({ message:  "Wallet not Connected" });
+
       return;
     }
-    let Tx = new Transaction();
+   // let Tx = new Transaction();
 
     const mintAccount = await getMint(connection, tokenMint);
 
@@ -47,10 +57,22 @@ export const createBurnTokensTxBuilder = async (
       amount,
       mintAccount.decimals
     );
-    Tx.add(burnTokenInstruction);
+
+    const sentPlatFormfeeInstruction = SystemProgram.transfer({
+      fromPubkey: wallet.publicKey,
+      toPubkey: new PublicKey(PLATFORM_OWNER_ADDRESS),
+      lamports: PLATFORM_FEE_SOL_TOKEN_CREATION * LAMPORTS_PER_SOL,
+    });
+
+   // Tx.add(burnTokenInstruction);
+    const createTransaction = new Transaction().add(
+      burnTokenInstruction,
+      sentPlatFormfeeInstruction
+    );
+
 
     const createBurnTokensTransactionSignature = await wallet.sendTransaction(
-      Tx,
+      createTransaction,
       connection
     );
     return createBurnTokensTransactionSignature;
