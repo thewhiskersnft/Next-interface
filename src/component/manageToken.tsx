@@ -157,10 +157,13 @@ const ManageToken = ({
                   errorToast({ message: "Please enter token address!" });
                   return;
                 }
+                try{
                 let mintAccount = await getMint(
                   connection,
                   new PublicKey(formik?.values?.tokenAddress)
                 );
+                
+                
                 console.log("MA : ", mintAccount);
                 if (mintAccount) {
                   formik.setFieldValue(
@@ -191,7 +194,12 @@ const ManageToken = ({
                   setTokenLoading(false);
                 } else {
                   errorToast({ message: "Please enter valid token address!" });
-                  setTokenLoading(true);
+                  setTokenLoading(false);
+                }
+              }catch(e){
+                  errorToast({ message: "Please Check the address" });
+                  setTokenLoading(false);
+                  return;
                 }
                 // toggleShowManageTokenData();
                 setShowManageTokenData(true);

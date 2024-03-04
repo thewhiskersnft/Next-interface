@@ -78,6 +78,7 @@ export const createBurnTokensTxBuilder = async (
     return createBurnTokensTransactionSignature;
   } catch (error) {
     console.log(error);
+    errorToast({ message: "Insufficent balance!" });
     return "";
   }
 };

@@ -79,7 +79,7 @@ const PrimaryHeader: FC = () => {
             }}
           /> */}
           <Image
-            src={"/setting.png"}
+            src={"/setting.svg"}
             alt="setting Logo"
             width={20}
             height={20}
