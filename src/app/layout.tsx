@@ -38,7 +38,7 @@ type ReduxProviderProps = {
 function ReduxProvider({ children }: ReduxProviderProps) {
   return (
     <SolanaWalletAdapter>
-      <ToastContainer />
+      <ToastContainer style={{ width: "max-content" }} />
       {/* 
 // @ts-ignore */}
       <Provider store={store}>{children}</Provider>

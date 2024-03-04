@@ -44,13 +44,13 @@ const CustomInput = ({
         {showSymbol && (
           <span className="flex items-center">
             {/* <img className="ml-1" src={Help} alt="/help" /> */}
-            <Image
+            {/* <Image
               src={"/help.svg"}
               alt="Help Logo"
               width={19}
               height={19}
               priority
-            />
+            /> */}
           </span>
         )}
       </div>

@@ -23,8 +23,12 @@ const ManageToken = ({
   const wallet = useWallet();
 
   const [showManageTokenData, setShowManageTokenData] = useState(false);
+  const [tokenLoading, setTokenLoading] = useState(false);
+  const [mintLoading, setMintLoading] = useState(false);
+  const [freezeLoading, setFreezeLoading] = useState(false);
 
   const revokeMintAuth = async () => {
+    setMintLoading(true);
     try {
       // handler to mint TOKEns
       // const amount = "1000000000000"; // multiply with decimal later
@@ -59,15 +63,27 @@ const ManageToken = ({
         // correctly revoked
         formik.setFieldValue("mintAuthority", false);
         dispatch(setMintAuthority(false));
-        successToast({ message: ` Successfully Revoked ${txhash} `})
+        // successToast({ message: ` Successfully Revoked ${txhash} `})
+        successToast({
+          keyPairs: {
+            signature: {
+              value: `${txhash}`,
+              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
+            },
+          },
+          allowCopy: true,
+        });
       }
+      setMintLoading(false);
     } catch (error) {
       console.log(error);
       errorToast({ message: "Please try again!" });
+      setMintLoading(false);
     }
   };
 
   const revokeFreezeAuth = async () => {
+    setFreezeLoading(true);
     try {
       const txhash = await revokeFreezeAuthTxBuilder(
         connection,
@@ -79,12 +95,22 @@ const ManageToken = ({
         // correctly revoked
         formik.setFieldValue("freezeAuthority", false);
         dispatch(setFreezeAuthority(false));
-        successToast({ message: `SuccessfullyRevoked ${txhash} `})
-
+        // successToast({ message: `SuccessfullyRevoked ${txhash} ` });
+        successToast({
+          keyPairs: {
+            signature: {
+              value: `${txhash}`,
+              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
+            },
+          },
+          allowCopy: true,
+        });
       }
+      setFreezeLoading(false);
     } catch (error) {
       console.log(error);
       errorToast({ message: "Please try again!" });
+      setFreezeLoading(false);
     }
   };
 
@@ -123,8 +149,10 @@ const ManageToken = ({
           <div className="w-[90px] mt-6 flex justify-left">
             <CustomButton
               label="Load"
+              loading={tokenLoading}
               onClick={async () => {
                 // console.log("Load clicked");
+                setTokenLoading(true);
                 if (!formik?.values?.tokenAddress) {
                   errorToast({ message: "Please enter token address!" });
                   return;
@@ -157,8 +185,13 @@ const ManageToken = ({
                         wallet.publicKey?.toBase58()
                     )
                   );
+                  // setTimeout(() => {
+                  //   setTokenLoading(false);
+                  // }, 1000);
+                  setTokenLoading(false);
                 } else {
                   errorToast({ message: "Please enter valid token address!" });
+                  setTokenLoading(true);
                 }
                 // toggleShowManageTokenData();
                 setShowManageTokenData(true);
@@ -180,6 +213,7 @@ const ManageToken = ({
                 <div className="flex justify-left w-[200px]">
                   <CustomButton
                     disabled={!formik?.values.mintAuthority}
+                    loading={mintLoading}
                     label={formik?.values.mintAuthority ? "Revoke" : "Revoked"}
                     onClick={async () => {
                       await revokeMintAuth();
@@ -202,6 +236,7 @@ const ManageToken = ({
                 <div className="flex justify-left w-[200px]">
                   <CustomButton
                     disabled={!formik?.values.freezeAuthority}
+                    loading={freezeLoading}
                     label={
                       formik?.values.freezeAuthority ? "Revoke" : "Revoked"
                     }
@@ -223,10 +258,12 @@ const ManageToken = ({
                 </p>
                 <div className="flex justify-left w-[200px]">
                   <CustomButton
+                    // disabled={true}
                     label={
                       formik?.values?.mutableMetadata ? "Disable" : "Enable"
                     }
                     onClick={() => {
+                      errorToast({ message: "Coming Soon!" });
                       //   dispatch(setMutableMetadata(!formik?.values?.mutableMetadata));
                     }}
                   />

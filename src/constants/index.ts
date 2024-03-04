@@ -114,6 +114,7 @@ export const sidebarData: SidebarItem[] = [
     description: "Analyse Token Safety Parameters To Be Safe From Rugs",
     icon: "/tokenSafety.svg",
     activeIcon: "/tokenSafetyActive.svg",
+    disabled: true,
   },
   {
     label: "Burn To Claim Rent",
