@@ -155,6 +155,7 @@ const ManageToken = ({
                 setTokenLoading(true);
                 if (!formik?.values?.tokenAddress) {
                   errorToast({ message: "Please enter token address!" });
+                  setTokenLoading(false);
                   return;
                 }
                 try{
