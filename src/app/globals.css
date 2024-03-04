@@ -139,6 +139,15 @@ input:checked + .slider:before {
   background-color: #ffc83a;
 }
 
+.Toastify__toast-theme--light.Toastify__toast--success {
+  background-color: #09a854;
+  max-width: max-content;
+}
+
+.Toastify--animate-icon {
+  display: none !important;
+}
+
 .dropdownContainer {
   margin-top: 10px;
 }

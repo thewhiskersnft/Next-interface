@@ -24,7 +24,7 @@ import { Buffer } from "buffer";
 import CustomInput from "./customInput";
 import Image from "next/image";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { TokenRoutes } from "@/constants";
 import { errorToast } from "./toast";
 
@@ -51,16 +51,22 @@ const Header: React.FC<HeaderProps> = ({
   const wallet = useWallet();
   const router = useRouter();
 
+  const searchParams = useSearchParams();
+  const tokenAction = searchParams.get("action");
+
   useEffect(() => {
     setShowButton(true);
   }, []);
 
   const handleClick = (tag: string) => {
-    if (tag === "TOOLS") {
-      handleClickProp ? handleClickProp() : null;
-      router.push(`/token?action=${TokenRoutes.createToken}`);
+    if (tokenAction) {
     } else {
-      errorToast({ message: "Coming Soon!" });
+      if (tag === "TOOLS") {
+        handleClickProp ? handleClickProp() : null;
+        router.push(`/token?action=${TokenRoutes.createToken}`);
+      } else {
+        errorToast({ message: "Coming Soon!" });
+      }
     }
   };
 
@@ -78,8 +84,12 @@ const Header: React.FC<HeaderProps> = ({
             borderColor: borderColor,
           }}
           onClick={() => {
-            handleClickProp ? handleClickProp() : null;
-            router.push(`/`);
+            if (!tokenAction) {
+              return;
+            } else {
+              handleClickProp ? handleClickProp() : null;
+              router.push(`/`);
+            }
           }}
         >
           <Image

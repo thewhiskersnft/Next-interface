@@ -38,6 +38,7 @@ import CustomRadio from "./customRadio";
 import Image from "next/image";
 import { toMetaplexFileFromBrowser } from "@metaplex-foundation/js";
 import CustomDropdown from "./customDropdown";
+import { errorToast } from "./toast";
 
 type CreateOrEditTokenProps = { isEdit?: boolean; formik?: any };
 
@@ -100,9 +101,10 @@ const CreateOrEditToken = ({
               dispatch(setToggled(false));
               dispatch(setSelectedForm(keyPairs.createV1));
             }}
+            style={{ border: "1px solid #4D4D4D" }}
           >
             v1 Legacy SPL
-            <Image
+            {/* <Image
               src={
                 selectedForm === keyPairs.createV1
                   ? "/helpDark.svg"
@@ -112,7 +114,7 @@ const CreateOrEditToken = ({
               width={14}
               height={5}
               priority
-            />
+            /> */}
           </button>
           <button
             // style={{ border: "1px solid #4D4D4D" }}
@@ -126,12 +128,14 @@ const CreateOrEditToken = ({
                 : "hover:border-yellow1 hover:bg-variant1"
             }`}
             onClick={() => {
-              dispatch(setToggled(false));
-              dispatch(setSelectedForm(keyPairs.createV2));
+              errorToast({ message: "Coming Soon!" });
+              // dispatch(setToggled(false));
+              // dispatch(setSelectedForm(keyPairs.createV2));
             }}
+            style={{ border: "1px solid #4D4D4D" }}
           >
             v2 Token-22 SPL
-            <Image
+            {/* <Image
               src={
                 selectedForm === keyPairs.createV1
                   ? "/help.svg"
@@ -141,7 +145,7 @@ const CreateOrEditToken = ({
               width={14}
               height={5}
               priority
-            />
+            /> */}
           </button>
         </div>
       ) : (

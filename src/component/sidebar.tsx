@@ -103,7 +103,11 @@ const Sidebar = ({}: SidebarProps) => {
               <div>
                 <div
                   className={`${
-                    clicked === label ? "text-white" : "text-white"
+                    disabled
+                      ? "text-disabledLink"
+                      : clicked === label
+                      ? "text-white"
+                      : "text-white"
                   } text-left text-small font-Orbitron  mr-5 font-semibold tracking-normal`}
                   style={{ letterSpacing: "3px" }}
                 >
@@ -111,7 +115,11 @@ const Sidebar = ({}: SidebarProps) => {
                 </div>
                 <div
                   className={`${
-                    clicked === label ? "text-white" : "text-white"
+                    disabled
+                      ? "text-disabledLink"
+                      : clicked === label
+                      ? "text-white"
+                      : "text-white"
                   }  text-xsmall text-left font-Oxanium font-normal mr-5 mt-1`}
                   style={{ letterSpacing: "1.5px" }}
                 >
@@ -171,7 +179,9 @@ const Sidebar = ({}: SidebarProps) => {
                       >
                         <div
                           className={`text-left text-small font-Orbitron  font-medium tracking-normal ${
-                            childClicked === label
+                            disabled
+                              ? "text-disabledLink"
+                              : childClicked === label
                               ? "text-yellow1"
                               : "text-white"
                           }`}
@@ -180,7 +190,9 @@ const Sidebar = ({}: SidebarProps) => {
                           {label}
                         </div>
                         <div
-                          className="text-white font-Oxanium text-xsmall mt-1  text-left font-normal"
+                          className={`${
+                            disabled ? "text-disabledLink" : "text-white"
+                          } font-Oxanium text-xsmall mt-1  text-left font-normal`}
                           style={{ letterSpacing: "1.5px" }}
                         >
                           {`${description}`}

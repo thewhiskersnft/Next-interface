@@ -30,7 +30,22 @@ const config: Config = {
       large: "18px",
       xsmall: "12px",
     },
+    screens: {
+      sm: "640px",
+      // => @media (min-width: 640px) { ... }
 
+      md: "768px",
+      // => @media (min-width: 768px) { ... }
+
+      lg: "1024px",
+      // => @media (min-width: 1024px) { ... }
+
+      xl: "1280px",
+      // => @media (min-width: 1280px) { ... }
+
+      "2xl": "1536px",
+      // => @media (min-width: 1536px) { ... }
+    },
     extend: {
       colors: {
         variant1: "#4D4D4D",
@@ -41,6 +56,7 @@ const config: Config = {
         buttonBlack: "#222222",
         hoverInputBg: "#3f3f3f",
         disabledLink: "#8d8d8d",
+        successGreen: "#09A854",
       },
       keyframes: {
         wiggle: {

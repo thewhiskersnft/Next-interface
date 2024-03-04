@@ -227,9 +227,8 @@ export default function Form() {
           console.log("MP data : ", metaplexFileData);
           console.log("Uploaded Image URI (Arweave)", imgURI);
 
-
           if (imgURI) {
-            successToast({ message: `Image Uri Created ${imgURI}`})
+            successToast({ message: `Image Uri Created` });
             const tokenMetadata = {
               name: name,
               symbol: symbol,
@@ -241,7 +240,7 @@ export default function Form() {
               .uploadMetadata(tokenMetadata);
 
             console.log("Uploaded Metadata URI (Arweave)", uri);
-            successToast({ message: `MetaData Uploaded ${uri}` })
+            successToast({ message: `MetaData Uploaded` });
 
             const txhash = await createSPLTokenTxBuilder(
               name,
@@ -253,11 +252,20 @@ export default function Form() {
               wallet
             );
 
-            console.log("txhash", txhash?.sig);
+            // console.log("txhash", txhash?.sig);
             successToast({
-              message: `Token Created ${txhash?.sig} 
-                        Mint Address ${txhash?.mint}`
-            })
+              keyPairs: {
+                mintAddress: {
+                  value: `${txhash?.mint}`,
+                  linkTo: `https://solscan.io/token/${txhash?.mint}?cluster=devnet`,
+                },
+                signature: {
+                  value: `${txhash?.sig}`,
+                  linkTo: `https://solscan.io/tx/${txhash?.sig}?cluster=devnet`,
+                },
+              },
+              allowCopy: true,
+            });
             setButtonClicked(false);
           } else {
             setButtonClicked(false);
@@ -400,30 +408,31 @@ export default function Form() {
           {tokenAction === TokenRoutes.burnToken && (
             <MintOrBurnToken formik={formik} isBurn={true} />
           )}
-           {tokenAction === TokenRoutes.createToken && (
-          <RightSidebar
-            data={previewData}
-            logo={getImageURL()}
-            showInfo={true}
-            createBtnText={
-              selectedForm === keyPairs.createV1
-                ? "Create v1 SPL Token"
-                : "Create v2 SPL Token"
-            }
-            mediaLinks={{
-              website: formik.values.website,
-              twitter: formik.values.twitter,
-              telegram: formik.values.telegram,
-              discord: formik.values.discord,
-            }}
-            formik={formik}
-            label={
-              tokenAction === TokenRoutes.updateMetadata
-                ? "Preview (Old Metadata)"
-                : "Preview"
-            }
-            loading={buttonClicked}
-          />)}
+          {tokenAction === TokenRoutes.createToken && (
+            <RightSidebar
+              data={previewData}
+              logo={getImageURL()}
+              showInfo={true}
+              createBtnText={
+                selectedForm === keyPairs.createV1
+                  ? "Create v1 SPL Token"
+                  : "Create v2 SPL Token"
+              }
+              mediaLinks={{
+                website: formik.values.website,
+                twitter: formik.values.twitter,
+                telegram: formik.values.telegram,
+                discord: formik.values.discord,
+              }}
+              formik={formik}
+              label={
+                tokenAction === TokenRoutes.updateMetadata
+                  ? "Preview (Old Metadata)"
+                  : "Preview"
+              }
+              loading={buttonClicked}
+            />
+          )}
         </div>
       ) : (
         <div className="flex flex-1 items-center justify-center">
