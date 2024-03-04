@@ -400,7 +400,7 @@ export default function Form() {
           {tokenAction === TokenRoutes.burnToken && (
             <MintOrBurnToken formik={formik} isBurn={true} />
           )}
-
+           {tokenAction === TokenRoutes.createToken && (
           <RightSidebar
             data={previewData}
             logo={getImageURL()}
@@ -423,7 +423,7 @@ export default function Form() {
                 : "Preview"
             }
             loading={buttonClicked}
-          />
+          />)}
         </div>
       ) : (
         <div className="flex flex-1 items-center justify-center">

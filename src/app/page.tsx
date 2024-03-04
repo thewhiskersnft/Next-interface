@@ -74,7 +74,7 @@ export default function Home() {
             </span>
           </span>
         </div>
-        <Spline scene="https://prod.spline.design/Tjc2-0ahKyGXEqHB/scene.splinecode" />
+        <Spline scene="https://prod.spline.design/dex6W6sXGBikSDfO/scene.splinecode" />
         <div className="absolute bottom-[0] w-[100vw]">
           <Marquee>
             <Image
