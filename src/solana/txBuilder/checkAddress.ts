@@ -7,7 +7,7 @@ export const validateAddress = async (
 ) => {
   try {
     const mintAccount = await getMint(connection, tokenMint);
-    console.log("mintAccount", mintAccount);
+    // console.log("mintAccount", mintAccount);
     return mintAccount;
   } catch (e) {}
 };

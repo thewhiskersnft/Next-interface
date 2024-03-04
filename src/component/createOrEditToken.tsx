@@ -245,7 +245,7 @@ const CreateOrEditToken = ({
           value={fileData}
           fileName={(fileData && fileData.name) || ""}
           onChange={async (e) => {
-            // console.log("Image : ", e?.target?.files[0]);
+            // // console.log("Image : ", e?.target?.files[0]);
             if (e?.target?.files && e.target.files[0]) {
               const imgMetaplexFile = await toMetaplexFileFromBrowser(
                 e.target.files[0]

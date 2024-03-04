@@ -32,10 +32,10 @@ const CustomButton: FC<CustomButtonProps> = ({
     >
       <label htmlFor={htmlFor || ""}>
         <span
-          className={`block text-white text-xsmall cursor-pointer text-center border-1 border-yellow1 ${
+          className={`block text-xsmall cursor-pointer text-center border-1 border-yellow1 ${
             disabled || loading
-              ? ""
-              : "hover:bg-yellow1 hover:text-black border-white"
+              ? "text-disabledLink"
+              : "text-white hover:bg-yellow1 hover:text-black border-white"
           } font-Orbitron p-1 px-2 h-[28px] ${
             loading ? "flex w-full items-center justify-center" : ""
           }`}

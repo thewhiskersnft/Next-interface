@@ -137,11 +137,13 @@ input:checked + .slider:before {
 
 .Toastify__toast-theme--light.Toastify__toast--default {
   background-color: #ffc83a;
+  border-radius: 2px;
 }
 
 .Toastify__toast-theme--light.Toastify__toast--success {
   background-color: #09a854;
   max-width: max-content;
+  border-radius: 2px;
 }
 
 .Toastify--animate-icon {

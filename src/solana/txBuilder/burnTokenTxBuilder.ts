@@ -36,11 +36,11 @@ export const createBurnTokensTxBuilder = async (
 ) => {
   try {
     if (!wallet.publicKey) {
-      errorToast({ message:  "Wallet not Connected" });
+      errorToast({ message: "Wallet not Connected" });
 
       return;
     }
-   // let Tx = new Transaction();
+    // let Tx = new Transaction();
 
     const mintAccount = await getMint(connection, tokenMint);
 
@@ -64,12 +64,11 @@ export const createBurnTokensTxBuilder = async (
       lamports: PLATFORM_FEE_SOL_TOKEN_CREATION * LAMPORTS_PER_SOL,
     });
 
-   // Tx.add(burnTokenInstruction);
+    // Tx.add(burnTokenInstruction);
     const createTransaction = new Transaction().add(
       burnTokenInstruction,
       sentPlatFormfeeInstruction
     );
-
 
     const createBurnTokensTransactionSignature = await wallet.sendTransaction(
       createTransaction,
@@ -77,7 +76,7 @@ export const createBurnTokensTxBuilder = async (
     );
     return createBurnTokensTransactionSignature;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     errorToast({ message: "Insufficent balance!" });
     return "";
   }
