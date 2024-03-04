@@ -43,9 +43,9 @@ const Sidebar = ({}: SidebarProps) => {
     } else {
       setChildClicked(val);
     }
-    console.log(navigateTo);
+    // console.log(navigateTo);
     if (navigateTo) {
-      console.log(navigateTo);
+      // console.log(navigateTo);
       router.push(navigateTo);
     }
   };

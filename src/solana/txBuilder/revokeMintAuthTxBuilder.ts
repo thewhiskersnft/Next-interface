@@ -1,11 +1,21 @@
 import { errorToast } from "@/component/toast";
-import { PLATFORM_FEE_SOL_TOKEN_CREATION, PLATFORM_OWNER_ADDRESS } from "@/constants";
+import {
+  PLATFORM_FEE_SOL_TOKEN_CREATION,
+  PLATFORM_OWNER_ADDRESS,
+} from "@/constants";
 import {
   AuthorityType,
   createSetAuthorityInstruction,
 } from "@solana/spl-token";
 import { WalletContextState } from "@solana/wallet-adapter-react";
-import { Connection, LAMPORTS_PER_SOL, PublicKey, Signer, SystemProgram, Transaction } from "@solana/web3.js";
+import {
+  Connection,
+  LAMPORTS_PER_SOL,
+  PublicKey,
+  Signer,
+  SystemProgram,
+  Transaction,
+} from "@solana/web3.js";
 
 export const revokeMintAuthTxBuilder = async (
   connection: Connection,
@@ -14,7 +24,7 @@ export const revokeMintAuthTxBuilder = async (
 ) => {
   try {
     if (!wallet.publicKey) {
-      errorToast({ message:  "Wallet not Connected" });
+      errorToast({ message: "Wallet not Connected" });
 
       return;
     }
@@ -39,7 +49,7 @@ export const revokeMintAuthTxBuilder = async (
       await wallet.sendTransaction(createRevokeMintAuthTransaction, connection);
     return createRevokeMintAuthTransactionSignature;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return "";
   }
 };

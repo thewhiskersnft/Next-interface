@@ -13,8 +13,8 @@ import "react-toastify/dist/ReactToastify.css";
 const inter = Inter({ subsets: ["latin"] });
 
 // export const metadata: Metadata = {
-//   title: "Whiskers",
-//   description: "Whiskers",
+//   title: "Moonly",
+//   description: "Moonly",
 // };
 
 // export default function RootLayout({

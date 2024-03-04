@@ -77,7 +77,7 @@ const CustomImagePicker: FC<CustomImagePickerProps> = ({
               style={{ border: "1px solid #FFC83A" }}
               onClick={() => {
                 // const elem = document.getElementById(`id_${label}`);
-                // console.log(elem?.getAttribute(value));
+                // // console.log(elem?.getAttribute(value));
                 // elem?.setAttribute(value, "");
                 onChange(null);
               }}

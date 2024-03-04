@@ -2,57 +2,44 @@
 import App from "next/app";
 import Image from "next/image";
 import React, { FC, useEffect, useState } from "react";
-import axios from 'axios';
+import axios from "axios";
 
 const borderColor: string = "#4D4D4D";
 
-
-
-
-
-
-
-
 const PrimaryHeader: FC = () => {
-
   const [price, setPrice] = useState();
   const [Volume, setVolume] = useState();
 
-
   useEffect(() => {
     const price = async () => {
-    try{
-      const soltokenpriceData = await axios.get(
-        "https://price.jup.ag/v4/price?ids=SOL"
-      );
-      const soltokenPrice = soltokenpriceData.data.data["SOL"].price;
-      setPrice(parseFloat(soltokenPrice.toFixed(2)) as any)
-    }
-    catch(e){
-         return;
-       }
-    }
+      try {
+        const soltokenpriceData = await axios.get(
+          "https://price.jup.ag/v4/price?ids=SOL"
+        );
+        const soltokenPrice = soltokenpriceData.data.data["SOL"].price;
+        setPrice(parseFloat(soltokenPrice.toFixed(2)) as any);
+      } catch (e) {
+        return;
+      }
+    };
     price();
     const Volume = async () => {
-      try{
+      try {
         const soltokenpriceData = await axios.get(
           "https://cache.jup.ag/stats/day"
         );
-        console.log("soltokenPrice", soltokenpriceData.data.lastXVolumeInUSD);
-        const a = soltokenpriceData.data.lastXVolumeInUSD
-        const language = "en"
-        const b=  Intl.NumberFormat(language, {notation: "compact"}).format((parseFloat(a))) //output - "234K"
-        setVolume(b as any)
-
+        // console.log("soltokenPrice", soltokenpriceData.data.lastXVolumeInUSD);
+        const a = soltokenpriceData.data.lastXVolumeInUSD;
+        const language = "en";
+        const b = Intl.NumberFormat(language, { notation: "compact" }).format(
+          parseFloat(a)
+        ); //output - "234K"
+        setVolume(b as any);
+      } catch (e) {
+        return;
       }
-      catch(e){
-           return;
-         }
-      }
-      Volume()
-
-
-
+    };
+    Volume();
   }, []);
 
   return (
@@ -97,7 +84,7 @@ const PrimaryHeader: FC = () => {
           }}
         >
           <div className="text-center text-white text-xsmall font-Orbitron w-100 cursor-pointer">
-            TSP: 2.778
+            TPS: 2,778
           </div>
         </div>
         <div
@@ -113,34 +100,31 @@ const PrimaryHeader: FC = () => {
         </div>
       </div>
       <div className="flex">
-        <div
-          className="cursor-pointer px-4 flex items-center hover:bg-[]"
+        <span
+          className="flex items-center px-6"
           style={{
-            borderLeftWidth: "0.5px",
+            borderLeftWidth: "2px",
+            borderRightWidth: "2px",
             borderColor: borderColor,
           }}
         >
-          {/* <img
-            src={setting}
-            alt="settings"
-            width={`${20}px`}
-            style={{
-              height: `${20}px`,
-            }}
-          /> */}
           <Image
-            src={"/setting.svg"}
-            alt="setting Logo"
-            width={20}
-            height={20}
+            src={"/online.svg"}
+            alt="online Logo"
+            width={18}
+            height={18}
             // style={{ marginRight: "5px" }}
             priority
           />
-        </div>
+          <p className="font-Orbitron text-xsmall text-textGreen ml-2">
+            Devnet
+          </p>
+        </span>
+
         <div
           className="text-white text-xsmall font-Orbitron text-left items-center px-6 flex flex-row"
           style={{
-            borderLeftWidth: "0.5px",
+            borderRightWidth: "2px",
             borderColor: borderColor,
           }}
         >
@@ -150,17 +134,33 @@ const PrimaryHeader: FC = () => {
           <label className="switch text-xsmall mx-4">
             <input
               onClick={() => {
-                console.log("Toggle theme");
+                // console.log("Toggle theme");
               }}
               checked={true}
               type="checkbox"
-              onChange={() => { }}
+              onChange={() => {}}
             />
             <span className="slider round"></span>
           </label>
           <div className="text-center text-white text-xsmall font-Orbitron w-100 cursor-pointer">
             Pro
           </div>
+        </div>
+        <div
+          className="cursor-pointer px-4 flex items-center hover:bg-[]"
+          style={{
+            borderRightWidth: "2px",
+            borderColor: borderColor,
+          }}
+        >
+          <Image
+            src={"/settingsDisabled.svg"}
+            alt="setting Logo"
+            width={20}
+            height={20}
+            // style={{ marginRight: "5px" }}
+            priority
+          />
         </div>
       </div>
     </div>

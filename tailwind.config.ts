@@ -57,6 +57,7 @@ const config: Config = {
         hoverInputBg: "#3f3f3f",
         disabledLink: "#8d8d8d",
         successGreen: "#09A854",
+        textGreen: "#09A854",
       },
       keyframes: {
         wiggle: {

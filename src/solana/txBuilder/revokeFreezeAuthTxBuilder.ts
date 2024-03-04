@@ -3,10 +3,18 @@ import {
   createSetAuthorityInstruction,
 } from "@solana/spl-token";
 import { WalletContextState } from "@solana/wallet-adapter-react";
-import { Connection, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
+import {
+  Connection,
+  LAMPORTS_PER_SOL,
+  PublicKey,
+  SystemProgram,
+  Transaction,
+} from "@solana/web3.js";
 import { errorToast, successToast } from "../../component/toast";
-import { PLATFORM_FEE_SOL_TOKEN_CREATION, PLATFORM_OWNER_ADDRESS } from "@/constants";
-
+import {
+  PLATFORM_FEE_SOL_TOKEN_CREATION,
+  PLATFORM_OWNER_ADDRESS,
+} from "@/constants";
 
 export const revokeFreezeAuthTxBuilder = async (
   connection: Connection,
@@ -15,7 +23,7 @@ export const revokeFreezeAuthTxBuilder = async (
 ) => {
   try {
     if (!wallet.publicKey) {
-      errorToast({ message:  "Wallet not Connected" });
+      errorToast({ message: "Wallet not Connected" });
       return;
     }
     let Tx = new Transaction();
@@ -26,7 +34,6 @@ export const revokeFreezeAuthTxBuilder = async (
       AuthorityType.FreezeAccount,
       null
     );
-
 
     const sentPlatFormfeeInstruction = SystemProgram.transfer({
       fromPubkey: wallet.publicKey,
@@ -39,7 +46,6 @@ export const revokeFreezeAuthTxBuilder = async (
       sentPlatFormfeeInstruction
     );
 
-
     const createRevokeFreezeAuthTransactionSignature =
       await wallet.sendTransaction(
         createRevokeFreezeAuthTransaction,
@@ -47,7 +53,7 @@ export const revokeFreezeAuthTxBuilder = async (
       );
     return createRevokeFreezeAuthTransactionSignature;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     errorToast({ message: "Please try again" });
     return "";
   }

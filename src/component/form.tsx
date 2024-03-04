@@ -203,10 +203,10 @@ export default function Form() {
   };
 
   const createTokenHandler = async (values: any) => {
-    console.log("Values : ", values);
+    // console.log("Values : ", values);
     if (!wallet.connected) {
       errorToast({ message: "Please connect the wallet" });
-      console.log("Wallet not connected");
+      // console.log("Wallet not connected");
       setButtonClicked(false);
 
       return;
@@ -224,8 +224,8 @@ export default function Form() {
           const imgURI = await metaplexhandler
             .storage()
             .upload(metaplexFileData);
-          console.log("MP data : ", metaplexFileData);
-          console.log("Uploaded Image URI (Arweave)", imgURI);
+          // console.log("MP data : ", metaplexFileData);
+          // console.log("Uploaded Image URI (Arweave)", imgURI);
 
           if (imgURI) {
             successToast({ message: `Image Uri Created` });
@@ -239,7 +239,7 @@ export default function Form() {
               .nfts()
               .uploadMetadata(tokenMetadata);
 
-            console.log("Uploaded Metadata URI (Arweave)", uri);
+            // console.log("Uploaded Metadata URI (Arweave)", uri);
             successToast({ message: `MetaData Uploaded` });
 
             const txhash = await createSPLTokenTxBuilder(
@@ -252,7 +252,7 @@ export default function Form() {
               wallet
             );
 
-            // console.log("txhash", txhash?.sig);
+            // // console.log("txhash", txhash?.sig);
             successToast({
               keyPairs: {
                 mintAddress: {
@@ -274,7 +274,7 @@ export default function Form() {
         } else {
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         setButtonClicked(false);
       }
     } else {
@@ -393,7 +393,7 @@ export default function Form() {
                     <CustomButton
                       label="Load"
                       onClick={() => {
-                        console.log("Load clicked");
+                        // console.log("Load clicked");
                         toggleShowUpdateMetadata();
                       }}
                     />

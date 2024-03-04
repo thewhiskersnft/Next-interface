@@ -58,7 +58,7 @@ const ManageToken = ({
         new PublicKey(formik?.values?.tokenAddress)
       );
 
-      console.log(txhash);
+      // console.log(txhash);
       if (txhash) {
         // correctly revoked
         formik.setFieldValue("mintAuthority", false);
@@ -76,7 +76,7 @@ const ManageToken = ({
       }
       setMintLoading(false);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       errorToast({ message: "Please try again!" });
       setMintLoading(false);
     }
@@ -90,7 +90,7 @@ const ManageToken = ({
         wallet,
         new PublicKey(formik?.values?.tokenAddress)
       );
-      console.log(txhash);
+      // console.log(txhash);
       if (txhash) {
         // correctly revoked
         formik.setFieldValue("freezeAuthority", false);
@@ -108,7 +108,7 @@ const ManageToken = ({
       }
       setFreezeLoading(false);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       errorToast({ message: "Please try again!" });
       setFreezeLoading(false);
     }
@@ -151,53 +151,54 @@ const ManageToken = ({
               label="Load"
               loading={tokenLoading}
               onClick={async () => {
-                // console.log("Load clicked");
+                // // console.log("Load clicked");
                 setTokenLoading(true);
                 if (!formik?.values?.tokenAddress) {
                   errorToast({ message: "Please enter token address!" });
                   setTokenLoading(false);
                   return;
                 }
-                try{
-                let mintAccount = await getMint(
-                  connection,
-                  new PublicKey(formik?.values?.tokenAddress)
-                );
-                
-                
-                console.log("MA : ", mintAccount);
-                if (mintAccount) {
-                  formik.setFieldValue(
-                    "mintAuthority",
-                    mintAccount.mintAuthority?.toBase58() ===
-                      wallet.publicKey?.toBase58()
+                try {
+                  let mintAccount = await getMint(
+                    connection,
+                    new PublicKey(formik?.values?.tokenAddress)
                   );
-                  formik.setFieldValue(
-                    "freezeAuthority",
-                    mintAccount.freezeAuthority?.toBase58() ===
-                      wallet.publicKey?.toBase58()
-                  );
-                  dispatch(
-                    setMintAuthority(
+
+                  // console.log("MA : ", mintAccount);
+                  if (mintAccount) {
+                    formik.setFieldValue(
+                      "mintAuthority",
                       mintAccount.mintAuthority?.toBase58() ===
                         wallet.publicKey?.toBase58()
-                    )
-                  );
-                  dispatch(
-                    setFreezeAuthority(
+                    );
+                    formik.setFieldValue(
+                      "freezeAuthority",
                       mintAccount.freezeAuthority?.toBase58() ===
                         wallet.publicKey?.toBase58()
-                    )
-                  );
-                  // setTimeout(() => {
-                  //   setTokenLoading(false);
-                  // }, 1000);
-                  setTokenLoading(false);
-                } else {
-                  errorToast({ message: "Please enter valid token address!" });
-                  setTokenLoading(false);
-                }
-              }catch(e){
+                    );
+                    dispatch(
+                      setMintAuthority(
+                        mintAccount.mintAuthority?.toBase58() ===
+                          wallet.publicKey?.toBase58()
+                      )
+                    );
+                    dispatch(
+                      setFreezeAuthority(
+                        mintAccount.freezeAuthority?.toBase58() ===
+                          wallet.publicKey?.toBase58()
+                      )
+                    );
+                    // setTimeout(() => {
+                    //   setTokenLoading(false);
+                    // }, 1000);
+                    setTokenLoading(false);
+                  } else {
+                    errorToast({
+                      message: "Please enter valid token address!",
+                    });
+                    setTokenLoading(false);
+                  }
+                } catch (e) {
                   errorToast({ message: "Please Check the address" });
                   setTokenLoading(false);
                   return;
@@ -267,7 +268,7 @@ const ManageToken = ({
                 </p>
                 <div className="flex justify-left w-[200px]">
                   <CustomButton
-                    // disabled={true}
+                    disabled={true}
                     label={
                       formik?.values?.mutableMetadata ? "Disable" : "Enable"
                     }

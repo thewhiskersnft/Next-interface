@@ -28,7 +28,7 @@ const MintOrBurnToken = ({
         connection,
         new PublicKey(formik.values.tokenAddress)
       );
-      console.log("mintAccount", mintAccount);
+      // console.log("mintAccount", mintAccount);
       if (!mintAccount) {
         errorToast({ message: "Please Check the address" });
       } else {
@@ -69,8 +69,9 @@ const MintOrBurnToken = ({
             },
           },
           allowCopy: true,
-        });      }
-      console.log(txhash);
+        });
+      }
+      // console.log(txhash);
       setBurnOrMintLoading(false);
     } catch (e) {
       errorToast({ message: "Please try again" });
@@ -102,8 +103,9 @@ const MintOrBurnToken = ({
             },
           },
           allowCopy: true,
-        });      }
-      console.log(txhash);
+        });
+      }
+      // console.log(txhash);
       setBurnOrMintLoading(false);
     } catch (e) {
       errorToast({ message: "Please try again" });
@@ -184,7 +186,7 @@ const MintOrBurnToken = ({
                   } else {
                     mintToken();
                   }
-                  // console.log("Mint token clicked!");
+                  // // console.log("Mint token clicked!");
                 }}
               />
             </div>
