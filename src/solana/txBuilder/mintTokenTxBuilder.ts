@@ -72,6 +72,7 @@ export const createMintTokensTxBuilder = async (
     );
     return createMintTokensTransactionSignature;
   } catch (error) {
+    errorToast({ message: "Please Try Again!" });
     console.log(error);
     return "";
   }

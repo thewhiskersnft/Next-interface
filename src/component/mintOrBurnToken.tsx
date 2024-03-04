@@ -61,8 +61,15 @@ const MintOrBurnToken = ({
       );
       if (txhash) {
         // correctly revoked
-        successToast({ message: `Minted ${txhash} ` });
-      }
+        successToast({
+          keyPairs: {
+            signature: {
+              value: `${txhash}`,
+              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
+            },
+          },
+          allowCopy: true,
+        });      }
       console.log(txhash);
       setBurnOrMintLoading(false);
     } catch (e) {
@@ -87,8 +94,15 @@ const MintOrBurnToken = ({
       );
       if (txhash) {
         // correctly revoked
-        successToast({ message: `Burned ${txhash} ` });
-      }
+        successToast({
+          keyPairs: {
+            signature: {
+              value: `${txhash}`,
+              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
+            },
+          },
+          allowCopy: true,
+        });      }
       console.log(txhash);
       setBurnOrMintLoading(false);
     } catch (e) {
