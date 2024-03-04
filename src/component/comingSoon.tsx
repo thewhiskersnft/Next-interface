@@ -4,13 +4,15 @@ import Loader from "@/component/loader";
 import PrimaryHeader from "@/component/primaryHeader";
 import Spline from "@splinetool/react-spline";
 import Image from "next/image";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Marquee from "react-fast-marquee";
+
+const FormFallback = () => <Loader visible={true} size={50} />;
 
 export default function ComingSoon() {
   const [loading, setLoading] = useState(false);
   return (
-    <>
+    <Suspense fallback={FormFallback as any}>
       <div
         className={`absolute h-full w-full flex justify-center items-center bg-[rgba(0,0,0,0.5)] z-50 ${
           loading ? "visible" : "hidden"
@@ -124,6 +126,6 @@ export default function ComingSoon() {
           </section>
         </div>
       </div>
-    </>
+    </Suspense>
   );
 }
