@@ -1,10 +1,60 @@
 "use client";
+import App from "next/app";
 import Image from "next/image";
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
+import axios from 'axios';
 
 const borderColor: string = "#4D4D4D";
 
+
+
+
+
+
+
+
 const PrimaryHeader: FC = () => {
+
+  const [price, setPrice] = useState();
+  const [Volume, setVolume] = useState();
+
+
+  useEffect(() => {
+    const price = async () => {
+    try{
+      const soltokenpriceData = await axios.get(
+        "https://price.jup.ag/v4/price?ids=SOL"
+      );
+      const soltokenPrice = soltokenpriceData.data.data["SOL"].price;
+      setPrice(parseFloat(soltokenPrice.toFixed(2)) as any)
+    }
+    catch(e){
+         return;
+       }
+    }
+    price();
+    const Volume = async () => {
+      try{
+        const soltokenpriceData = await axios.get(
+          "https://cache.jup.ag/stats/day"
+        );
+        console.log("soltokenPrice", soltokenpriceData.data.lastXVolumeInUSD);
+        const a = soltokenpriceData.data.lastXVolumeInUSD
+        const language = "en"
+        const b=  Intl.NumberFormat(language, {notation: "compact"}).format((parseFloat(a))) //output - "234K"
+        setVolume(b as any)
+
+      }
+      catch(e){
+           return;
+         }
+      }
+      Volume()
+
+
+
+  }, []);
+
   return (
     <div
       className="w-full bg-black flex justify-between py-[5px]"
@@ -36,7 +86,7 @@ const PrimaryHeader: FC = () => {
               style={{ marginRight: "5px" }}
               priority
             />
-            92.21 USDT
+            {price} USD
           </div>
         </div>
         <div
@@ -58,7 +108,7 @@ const PrimaryHeader: FC = () => {
           }}
         >
           <div className="text-center text-white text-xsmall font-Orbitron w-100 cursor-pointer">
-            24h Volume: 3.2m USDT
+            24h Volume: {Volume} USD
           </div>
         </div>
       </div>
@@ -104,7 +154,7 @@ const PrimaryHeader: FC = () => {
               }}
               checked={true}
               type="checkbox"
-              onChange={() => {}}
+              onChange={() => { }}
             />
             <span className="slider round"></span>
           </label>
