@@ -28,13 +28,13 @@ const CustomRadio: FC<CustomRadioProps> = ({
           {showSymbol && (
             <span>
               {/* <img className="ml-1" src={Help} alt="/help" /> */}
-              <Image
+              {/* <Image
                 src={"/help.svg"}
                 alt="Help Logo"
                 width={14}
                 height={5}
                 priority
-              />
+              /> */}
             </span>
           )}
         </>

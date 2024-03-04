@@ -1,8 +1,6 @@
+"use client";
 import Image from "next/image";
 import React, { FC } from "react";
-// import logo from "../asset/logo.jpeg";
-// import solana from "../asset/solana.png";
-// import setting from "../asset/setting.png";
 
 const borderColor: string = "#4D4D4D";
 
@@ -81,7 +79,7 @@ const PrimaryHeader: FC = () => {
             }}
           /> */}
           <Image
-            src={"/setting.png"}
+            src={"/setting.svg"}
             alt="setting Logo"
             width={20}
             height={20}

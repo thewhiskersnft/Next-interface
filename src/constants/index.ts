@@ -114,6 +114,7 @@ export const sidebarData: SidebarItem[] = [
     description: "Analyse Token Safety Parameters To Be Safe From Rugs",
     icon: "/tokenSafety.svg",
     activeIcon: "/tokenSafetyActive.svg",
+    disabled: true,
   },
   {
     label: "Burn To Claim Rent",
@@ -138,4 +139,4 @@ export const keyPairs: Record<string, string> = {
 
 export const PLATFORM_OWNER_ADDRESS =
   "AZLF3pWCpjh93yJo74hzKJWmiQrfv1hVAZ7wq4DA5x1d";
-export const PLATFORM_FEE_SOL_TOKEN_CREATION = 0.015;
+export const PLATFORM_FEE_SOL_TOKEN_CREATION = 0.0100;

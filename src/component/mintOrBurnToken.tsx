@@ -16,11 +16,14 @@ const MintOrBurnToken = ({
   isBurn,
 }: MintOrBurnTokenProps) => {
   const [showOnLoadClick, setShowOnloadClick] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [burnOrMintloading, setBurnOrMintLoading] = useState(false);
   const { connection } = useConnection();
   const wallet = useWallet();
 
   const checkAddress = async () => {
     try {
+      setLoading(true);
       const mintAccount = await validateAddress(
         connection,
         new PublicKey(formik.values.tokenAddress)
@@ -29,17 +32,25 @@ const MintOrBurnToken = ({
       if (!mintAccount) {
         errorToast({ message: "Please Check the address" });
       } else {
-        setShowOnloadClick(true);
+        if (!isBurn && !mintAccount.mintAuthority) {
+          errorToast({ message: "Mint Authority Disabled!" });
+        } else {
+          setShowOnloadClick(true);
+        }
       }
+      setLoading(false);
     } catch {
       errorToast({ message: "Please Check the address" });
+      setLoading(false);
     }
   };
 
   const mintToken = async () => {
     try {
+      setBurnOrMintLoading(true);
       if (!wallet.publicKey) {
         errorToast({ message: "Please connect the wallet" });
+        setBurnOrMintLoading(false);
         return;
       }
       const txhash = await createMintTokensTxBuilder(
@@ -50,18 +61,29 @@ const MintOrBurnToken = ({
       );
       if (txhash) {
         // correctly revoked
-        successToast({ message: `Minted ${txhash} `})
-      }
+        successToast({
+          keyPairs: {
+            signature: {
+              value: `${txhash}`,
+              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
+            },
+          },
+          allowCopy: true,
+        });      }
       console.log(txhash);
+      setBurnOrMintLoading(false);
     } catch (e) {
       errorToast({ message: "Please try again" });
+      setBurnOrMintLoading(false);
     }
   };
 
   const burnToken = async () => {
+    setBurnOrMintLoading(true);
     try {
       if (!wallet.publicKey) {
         errorToast({ message: "Please connect the wallet" });
+        setBurnOrMintLoading(false);
         return;
       }
       const txhash = await createBurnTokensTxBuilder(
@@ -72,11 +94,20 @@ const MintOrBurnToken = ({
       );
       if (txhash) {
         // correctly revoked
-        successToast({ message: `Burned ${txhash} `})
-      }
+        successToast({
+          keyPairs: {
+            signature: {
+              value: `${txhash}`,
+              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
+            },
+          },
+          allowCopy: true,
+        });      }
       console.log(txhash);
+      setBurnOrMintLoading(false);
     } catch (e) {
       errorToast({ message: "Please try again" });
+      setBurnOrMintLoading(false);
     }
   };
 
@@ -113,6 +144,7 @@ const MintOrBurnToken = ({
         />
         <div className="w-[90px] mt-6 flex justify-left">
           <CustomButton
+            loading={loading}
             label="Load"
             onClick={() => {
               checkAddress();
@@ -139,11 +171,12 @@ const MintOrBurnToken = ({
               }
               errorMessage={formik.errors.mintAmount}
             />
-            <p className="text-xsmall text-yellow1 text-right my-2 mb-6">
+            {/* <p className="text-xsmall text-yellow1 text-right my-2 mb-6">
               Balance: 738,162,324
-            </p>
+            </p> */}
             <div className="w-full mt-6 flex justify-left">
               <CustomButton
+                loading={burnOrMintloading}
                 label={isBurn ? "Burn Token" : "Mint Token"}
                 onClick={() => {
                   if (isBurn) {

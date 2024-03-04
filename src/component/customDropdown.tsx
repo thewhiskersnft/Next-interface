@@ -33,13 +33,13 @@ const CustomDropdown: FC<CustomDropdownProps> = ({
             {label || ""}
             {showSymbol && (
               <span>
-                <Image
+                {/* <Image
                   src={"/help.svg"}
                   alt="Help Logo"
                   width={14}
                   height={5}
                   priority
-                />
+                /> */}
               </span>
             )}
           </p>

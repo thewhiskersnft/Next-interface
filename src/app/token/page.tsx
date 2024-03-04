@@ -1,4 +1,5 @@
 "use client";
+import ComingSoon from "@/component/comingSoon";
 import Form from "@/component/form";
 import Header from "@/component/header";
 import Loader from "@/component/loader";
@@ -13,30 +14,35 @@ export default function Token() {
   const [loading, setLoading] = useState(false);
   return (
     <Suspense fallback={FormFallback as any}>
-      <div
-        className={`absolute h-full w-full flex justify-center items-center bg-[rgba(0,0,0,0.5)] z-50 ${
-          loading ? "visible" : "hidden"
-        }`}
-      >
-        <Loader visible={loading} size={50} />
+      <div className="block lg:hidden">
+        <ComingSoon />
       </div>
-      <div
-        className="width-100 flex flex-col h-max"
-        style={{ height: "100vh", overflow: "hidden" }}
-      >
-        <Header
-          showPrimaryHeader={true}
-          selectedLink="TOOLS"
-          handleClickProp={() => {
-            setLoading(true);
-          }}
-        />
-        <div className="width-100 flex flex-row h-full overflow-hidden bg-black">
-          <Sidebar />
-          <Form />
-          {/* <RightSidebar /> */}
+      <div className="hidden lg:block">
+        <div
+          className={`absolute h-full w-full flex justify-center items-center bg-[rgba(0,0,0,0.5)] z-50 ${
+            loading ? "visible" : "hidden"
+          }`}
+        >
+          <Loader visible={loading} size={50} />
         </div>
-        <PrimaryHeader />
+        <div
+          className="width-100 flex flex-col h-max"
+          style={{ height: "100vh", overflow: "hidden" }}
+        >
+          <Header
+            showPrimaryHeader={true}
+            selectedLink="TOOLS"
+            handleClickProp={() => {
+              setLoading(true);
+            }}
+          />
+          <div className="width-100 flex flex-row h-full overflow-hidden bg-black">
+            <Sidebar />
+            <Form />
+            {/* <RightSidebar /> */}
+          </div>
+          <PrimaryHeader />
+        </div>
       </div>
     </Suspense>
   );
