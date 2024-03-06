@@ -174,6 +174,7 @@ export default function Form() {
     onSubmit: async (values) => {
       setButtonClicked(true);
 
+
       if (tokenAction === TokenRoutes.uploadMetadata) {
         updateMetadataHandler(values);
 
@@ -286,6 +287,7 @@ export default function Form() {
       setButtonClicked(false);
       return;
     }
+
     let balance = 0;
     if (wallet.publicKey != null) {
       balance = await connection.getBalance(wallet.publicKey as any);
@@ -300,7 +302,7 @@ export default function Form() {
             .storage()
             .upload(metaplexFileData);
           // console.log("MP data : ", metaplexFileData);
-          // console.log("Uploaded Image URI (Arweave)", imgURI);
+          console.log("Uploaded Image URI (Arweave)", imgURI);
 
           if (imgURI) {
             successToast({ message: `Image Uri Created` });
@@ -314,7 +316,7 @@ export default function Form() {
               .nfts()
               .uploadMetadata(tokenMetadata);
 
-            // console.log("Uploaded Metadata URI (Arweave)", uri);
+            console.log("Uploaded Metadata URI (Arweave)", uri);
             successToast({ message: `MetaData Uploaded` });
 
             const txhash = await createSPLTokenTxBuilder(
@@ -349,6 +351,7 @@ export default function Form() {
         } else {
         }
       } catch (error) {
+
         errorToast({ message: "Try Again!" });
 
         // console.log(error);
