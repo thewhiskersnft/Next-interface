@@ -74,11 +74,11 @@ const Header: React.FC<HeaderProps> = ({
     <div>
       {/* {showPrimaryHeader && <PrimaryHeader />} */}
       <div
-        className="w-full bg-black flex items-center h-[46px]"
+        className="w-full bg-black items-center h-[46px] hidden lg:flex py-2" // desktop view header
         style={{ borderBottomWidth: "0.2px", borderColor: borderColor }}
       >
         <div
-          className="cursor-pointer px-4 flex items-center"
+          className="cursor-pointer px-4 flex items-center h-full"
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -101,20 +101,12 @@ const Header: React.FC<HeaderProps> = ({
           />
         </div>
         <div
-          className="cursor-pointer px-4 flex items-center"
+          className="cursor-pointer px-4 flex items-center h-full"
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
           }}
         >
-          {/* <img
-            src={menu}
-            alt="menu"
-            width={`${16}px`}
-            style={{
-              height: `${16}px`,
-            }}
-          /> */}
           <Image
             src={"/menuDisabled.png"}
             alt="menu Logo"
@@ -124,7 +116,7 @@ const Header: React.FC<HeaderProps> = ({
           />
         </div>
         <div
-          className="px-4 flex items-center"
+          className="px-4 flex items-center h-full"
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -139,7 +131,7 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
         <div
-          className="px-4 flex items-center"
+          className="px-4 flex items-center h-full"
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -154,7 +146,7 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
         <div
-          className="px-4 flex items-center"
+          className="px-4 flex items-center h-full"
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -171,7 +163,7 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
         <div
-          className="px-4 flex items-center"
+          className="px-4 flex items-center h-full"
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -196,15 +188,6 @@ const Header: React.FC<HeaderProps> = ({
             flex: 1,
           }}
         >
-          {/* <img
-            src={search}
-            alt="search"
-            width={`${20}px`}
-            style={{
-              height: `${20}px`,
-              marginRight: "10px",
-            }}
-          /> */}
           <Image
             src={"/search.svg"}
             alt="search Logo"
@@ -236,14 +219,6 @@ const Header: React.FC<HeaderProps> = ({
           {wallet.connected ? (
             <></>
           ) : (
-            // <img
-            //   src={walletImg}
-            //   alt="wallet"
-            //   width={`${20}px`}
-            //   style={{
-            //     height: `${20}px`,
-            //   }}
-            // />
             <Image
               src={"/walletImg.png"}
               alt="wallet Logo"
@@ -252,9 +227,6 @@ const Header: React.FC<HeaderProps> = ({
               priority
             />
           )}
-          {/* <div className="text-center text-white font-Orbitron w-100 cursor-pointer ml-3">
-            Connect Wallet
-          </div> */}
           <div style={{}}>
             {showButton && (
               <WalletMultiButton
@@ -275,6 +247,119 @@ const Header: React.FC<HeaderProps> = ({
               />
             )}
           </div>
+        </div>
+      </div>
+      <div
+        className="w-full bg-black py-2 flex items-center h-[46px] block lg:hidden" // mobile view header
+        style={{ borderBottomWidth: "0.2px", borderColor: borderColor }}
+      >
+        <div
+          className="cursor-pointer px-4 flex items-center h-full"
+          style={{
+            borderRightWidth: "2px",
+            borderColor: borderColor,
+          }}
+          onClick={() => {
+            if (!tokenAction) {
+              return;
+            } else {
+              handleClickProp ? handleClickProp() : null;
+              router.push(`/`);
+            }
+          }}
+        >
+          <Image
+            src={"/logo.jpeg"}
+            alt="logo Logo"
+            width={20}
+            height={20}
+            priority
+          />
+        </div>
+        <div
+          className="px-4"
+          style={{
+            borderColor: borderColor,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flex: 1,
+          }}
+        >
+          <Image
+            src={"/search.svg"}
+            alt="search Logo"
+            width={20}
+            height={20}
+            style={{ marginRight: "10px" }}
+            priority
+          />
+          <CustomInput
+            label={""}
+            value={""}
+            onChange={(e) => {
+              setSearchVal(e.target.value);
+            }}
+            containerStyles={{ marginTop: 0 }}
+            // inputStyles={{ backgroundColor: "#FFC83A1A" }}
+            placeholderColor={"#989C9F"}
+            placeholder={"Search"}
+            type={"string"}
+          />
+        </div>
+        <div
+          className="px-4 h-full flex items-center justify-center"
+          style={{
+            borderLeftWidth: "2px",
+            borderColor: borderColor,
+          }}
+        >
+          {wallet.connected ? (
+            <></>
+          ) : (
+            <Image
+              src={"/walletImg.png"}
+              alt="wallet Logo"
+              width={20}
+              height={20}
+              priority
+            />
+          )}
+          <div style={{ borderLeftWidth: "2px", borderColor: borderColor }}>
+            {/* {showButton && (
+              <WalletMultiButton
+                style={{
+                  borderRadius: "10px",
+                  width: "100px",
+                  backgroundColor: "transparent",
+                  border: "0px solid #67676F",
+                  marginLeft: "10px",
+                  color: "white",
+                  fontWeight: "600",
+                  fontSize: "12px",
+                  padding: "5px",
+                  height: "32px",
+                  fontFamily: "Orbitron",
+                  letterSpacing: "2px",
+                }}
+              />
+            )} */}
+          </div>
+        </div>
+        <div
+          className="cursor-pointer px-4 flex items-center h-full"
+          style={{
+            borderLeftWidth: "2px",
+            borderColor: borderColor,
+          }}
+        >
+          <Image
+            src={"/menuDisabled.png"}
+            alt="menu Logo"
+            width={20}
+            height={20}
+            priority
+          />
         </div>
       </div>
     </div>

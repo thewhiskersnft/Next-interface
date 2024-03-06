@@ -148,10 +148,12 @@ const PrimaryHeader: FC = () => {
         </div>
         <div
           className="cursor-pointer px-4 flex items-center hover:bg-[]"
-          style={{
-            borderRightWidth: "2px",
-            borderColor: borderColor,
-          }}
+          style={
+            {
+              // borderRightWidth: "2px",
+              // borderColor: borderColor,
+            }
+          }
         >
           <Image
             src={"/settingsDisabled.svg"}

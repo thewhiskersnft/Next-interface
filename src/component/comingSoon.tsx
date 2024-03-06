@@ -26,26 +26,13 @@ export default function ComingSoon() {
           overflow: "scroll",
         }}
       >
-        <section className="hidden lg:block">
-          <Header
-            showPrimaryHeader={true}
-            handleClickProp={() => {
-              setLoading(true);
-            }}
-          />
-        </section>
-        <section
-          className="block lg:hidden absolute top-[40px]"
-          style={{ alignSelf: "center" }}
-        >
-          <Image
-            src={"/mobileHeader.svg"}
-            alt="mobileHeader Logo"
-            width={118}
-            height={36}
-            priority
-          />
-        </section>
+        <Header
+          showPrimaryHeader={true}
+          handleClickProp={() => {
+            setLoading(true);
+          }}
+        />
+
         <div
           className="bg-gradient-to-t from-black to-transparent absolute h-[90vh] w-[100vw] bottom-[30px] flex items-center justify-center"
           style={{
