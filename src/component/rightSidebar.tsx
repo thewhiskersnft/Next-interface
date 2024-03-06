@@ -151,7 +151,7 @@ const RightSidebar: FC<SidebarProps> = ({
               />
             ) : (
               <Image
-                src={"/cat1.png"}
+                src={"/cat1.svg"}
                 alt="Cat Logo"
                 width={254}
                 height={254}

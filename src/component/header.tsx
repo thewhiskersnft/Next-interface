@@ -1,9 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-// import logo from "../asset/logo.jpeg";
-// import menu from "../asset/menu.png";
-// import search from "../asset/search.png";
-// import walletImg from "../asset/walletImg.png";
+
 import PrimaryHeader from "./primaryHeader";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import {
@@ -93,7 +90,7 @@ const Header: React.FC<HeaderProps> = ({
           }}
         >
           <Image
-            src={"/logo.jpeg"}
+            src={"/logo.svg"}
             alt="logo Logo"
             width={20}
             height={20}
@@ -108,7 +105,7 @@ const Header: React.FC<HeaderProps> = ({
           }}
         >
           <Image
-            src={"/menuDisabled.png"}
+            src={"/menuDisabled.svg"}
             alt="menu Logo"
             width={16}
             height={16}
@@ -220,7 +217,7 @@ const Header: React.FC<HeaderProps> = ({
             <></>
           ) : (
             <Image
-              src={"/walletImg.png"}
+              src={"/walletImg.svg"}
               alt="wallet Logo"
               width={20}
               height={20}
@@ -269,7 +266,7 @@ const Header: React.FC<HeaderProps> = ({
           }}
         >
           <Image
-            src={"/logo.jpeg"}
+            src={"/logo.svg"}
             alt="logo Logo"
             width={20}
             height={20}
@@ -318,7 +315,7 @@ const Header: React.FC<HeaderProps> = ({
             <></>
           ) : (
             <Image
-              src={"/walletImg.png"}
+              src={"/walletImg.svg"}
               alt="wallet Logo"
               width={20}
               height={20}
@@ -354,7 +351,7 @@ const Header: React.FC<HeaderProps> = ({
           }}
         >
           <Image
-            src={"/menuDisabled.png"}
+            src={"/menuDisabled.svg"}
             alt="menu Logo"
             width={20}
             height={20}

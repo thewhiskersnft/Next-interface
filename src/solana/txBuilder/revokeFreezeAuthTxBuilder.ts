@@ -23,7 +23,7 @@ export const revokeFreezeAuthTxBuilder = async (
 ) => {
   try {
     if (!wallet.publicKey) {
-      errorToast({ message: "Wallet not Connected" });
+      errorToast({ message: "Wallet Not Connected" });
       return;
     }
     let Tx = new Transaction();
