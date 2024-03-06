@@ -1,7 +1,6 @@
 import { Metaplex } from "@metaplex-foundation/js";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { ENV, TokenListProvider } from "@solana/spl-token-registry";
-import { AppENVConfig } from "@/global/config/config";
 
 export const getTokenMetadata = async (
   mintAddress: PublicKey,
