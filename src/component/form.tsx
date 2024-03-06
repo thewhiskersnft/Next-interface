@@ -58,6 +58,7 @@ import { createMintTokensTxBuilder } from "@/solana/txBuilder/mintTokenTxBuilder
 import { createBurnTokensTxBuilder } from "@/solana/txBuilder/burnTokenTxBuilder";
 import Loader from "./loader";
 import ManageToken from "./manageToken";
+import { updateSPLTokenMetadataTxBuilder } from "@/solana/txBuilder/updateMetadataTxBuilder";
 
 const initialV1Token: PreviewData = {
   "Token Details": {
@@ -170,11 +171,21 @@ export default function Form() {
     validateOnChange: false,
     validateOnBlur: false,
     validate: (values) => createTokenValidator(values),
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       setButtonClicked(true);
       if (selectedForm === keyPairs.createV1) {
         // v1 token creation
-        createTokenHandler(values);
+        console.log("hiot");
+        //createTokenHandler(values);
+        const txData = await updateSPLTokenMetadataTxBuilder(
+          "MOHSIN",
+          "MOH",
+          "https://arweave.net/b5DaqXH2nKLbCE8W2O37_Df6sF61yf6gtvtty3iokS0",
+          connection,
+          wallet,
+          new PublicKey("JBhXUpMEST67ZaD2KeGFSaUPnS1HP6o8LX1vt5j3SZzh")
+        );
+        console.log("txData", txData?.sig);
       }
     },
   });
