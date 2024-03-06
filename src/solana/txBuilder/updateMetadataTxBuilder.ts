@@ -21,6 +21,7 @@ import {
   fromWeb3JsPublicKey,
   toWeb3JsPublicKey,
 } from "@metaplex-foundation/umi-web3js-adapters";
+import { errorToast, successToast } from "../../component/toast";
 
 import {
   Connection,
@@ -48,6 +49,7 @@ export const updateSPLTokenMetadataTxBuilder = async (
 ) => {
   try {
     if (!wallet.publicKey) {
+      errorToast({ message: "Wallet Not Connected" });
       return;
     }
     const ON_CHAIN_METADATA = {
@@ -136,6 +138,7 @@ export const updateSPLTokenMetadataTxBuilder = async (
       mint: mintAddress.toBase58(),
     };
   } catch (error) {
+    errorToast({ message: "Please Try Again!" });
     console.log(error);
   }
 };

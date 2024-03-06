@@ -173,22 +173,87 @@ export default function Form() {
     validate: (values) => createTokenValidator(values),
     onSubmit: async (values) => {
       setButtonClicked(true);
-      if (selectedForm === keyPairs.createV1) {
-        // v1 token creation
-        console.log("hiot");
-        //createTokenHandler(values);
-        const txData = await updateSPLTokenMetadataTxBuilder(
-          "MOHSIN",
-          "MOH",
-          "https://arweave.net/b5DaqXH2nKLbCE8W2O37_Df6sF61yf6gtvtty3iokS0",
-          connection,
-          wallet,
-          new PublicKey("JBhXUpMEST67ZaD2KeGFSaUPnS1HP6o8LX1vt5j3SZzh")
-        );
-        console.log("txData", txData?.sig);
+
+      if (tokenAction === TokenRoutes.uploadMetadata) {
+        updateMetadataHandler(values);
+
+      }
+
+      else {
+        if (selectedForm === keyPairs.createV1) {
+          // v1 token creation
+          console.log("hiot");
+          createTokenHandler(values);
+
+        }
       }
     },
   });
+
+
+  const updateMetadataHandler = async (values: any) => {
+    if (!wallet.connected) {
+      errorToast({ message: "Please connect the wallet" });
+      // console.log("Wallet not connected");
+      setButtonClicked(false);
+      return;
+    }
+    try {
+      const metaplexhandler = await metaplexBuilder(wallet, connection);
+      const imgURI = await metaplexhandler
+        .storage()
+        .upload(metaplexFileData);
+
+      if (imgURI) {
+        successToast({ message: `Image Uri Created` });
+        const tokenMetadata = {
+          name: name,//Name for the updatemetadata form
+          symbol: symbol,
+          description: description,
+          image: imgURI,
+        };
+        const { uri } = await metaplexhandler
+          .nfts()
+          .uploadMetadata(tokenMetadata);
+
+        // console.log("Uploaded Metadata URI (Arweave)", uri);
+        successToast({ message: `MetaData Uploaded` });
+        const txData = await updateSPLTokenMetadataTxBuilder(
+          "MOHSIN", //  need to change this with name , symbol
+          "MOH",
+          uri,
+          connection,
+          wallet,
+          new PublicKey("JBhXUpMEST67ZaD2KeGFSaUPnS1HP6o8LX1vt5j3SZzh") // inside this mint address will come
+        );
+        console.log("txData", txData?.sig);
+        successToast({
+          keyPairs: {
+            mintAddress: {
+              value: `${txData?.mint}`,
+              linkTo: `https://solscan.io/token/${txData?.mint}?cluster=devnet`,
+            },
+            signature: {
+              value: `${txData?.sig}`,
+              linkTo: `https://solscan.io/tx/${txData?.sig}?cluster=devnet`,
+            },
+          },
+          allowCopy: true,
+        });
+
+      }
+      else {
+        errorToast({ message: "Error In Uploading Logo" });
+
+      }
+    }
+
+    catch (e) {
+      errorToast({ message: "Try Again!" });
+    }
+
+  }
+
 
   const createTokenValidator = (values: any) => {
     let resp = {} as any;
@@ -219,7 +284,6 @@ export default function Form() {
       errorToast({ message: "Please connect the wallet" });
       // console.log("Wallet not connected");
       setButtonClicked(false);
-
       return;
     }
     let balance = 0;
@@ -285,6 +349,8 @@ export default function Form() {
         } else {
         }
       } catch (error) {
+        errorToast({ message: "Try Again!" });
+
         // console.log(error);
         setButtonClicked(false);
       }
