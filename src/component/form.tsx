@@ -284,12 +284,24 @@ export default function Form() {
   };
 
   const toggleShowUpdateMetadata = () => {
+    // fetch and update token metadata in formik here!
     setShowUpdateMetadata(!showUpdateMetadata);
   };
 
   const getImageURL = () => {
     if (fileData && fileData.name) return URL.createObjectURL(fileData);
     return "";
+  };
+
+  const enableRightSidebar = () => {
+    if (
+      [TokenRoutes.createToken, TokenRoutes.updateMetadata].includes(
+        tokenAction || ""
+      )
+    ) {
+      return true;
+    }
+    return false;
   };
 
   useEffect(() => {
@@ -328,7 +340,16 @@ export default function Form() {
       }
     } else if (tokenAction === TokenRoutes.updateMetadata) {
       // update metadata
-      updatedPreviewData = { ...initialV1Token };
+      // updatedPreviewData = { ...initialV1Token };
+      updatedPreviewData = {
+        "Token Details": {
+          "Token Name": formik.values.name,
+          Description: formik.values.description,
+          Symbol: formik.values.symbol,
+          Supply: formik.values.supply,
+          Decimals: formik.values.decimal,
+        },
+      };
     } else {
       // default cond (setting to empty vals)
       updatedPreviewData = { ...initialV1Token };
@@ -378,16 +399,19 @@ export default function Form() {
                 </div>
                 <CustomInput
                   label="Token Address"
-                  value={tokenAddress}
-                  onChange={(e) => {
-                    dispatch(setTokenAddress(e.target.value));
-                  }}
+                  value={formik?.values?.tokenAddress}
+                  id="tokenAddress"
+                  name="tokenAddress"
+                  onChange={formik?.handleChange}
+                  // onChange={(e) => {
+                  //   dispatch(setTokenAddress(e.target.value));
+                  // }}
                   showSymbol={false}
                   type={"text"}
                   placeholder={"Enter Token Address"}
                 />
                 {showUpdateMetadata ? (
-                  <CreateOrEditToken isEdit={true} />
+                  <CreateOrEditToken isEdit={true} formik={formik} />
                 ) : (
                   <div className="w-[90px] mt-6 flex justify-left">
                     <CustomButton
@@ -408,7 +432,7 @@ export default function Form() {
           {tokenAction === TokenRoutes.burnToken && (
             <MintOrBurnToken formik={formik} isBurn={true} />
           )}
-          {tokenAction === TokenRoutes.createToken && (
+          {enableRightSidebar() && (
             <RightSidebar
               data={previewData}
               logo={getImageURL()}
