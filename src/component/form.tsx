@@ -175,17 +175,16 @@ export default function Form() {
       setButtonClicked(true);
       if (selectedForm === keyPairs.createV1) {
         // v1 token creation
-        console.log("hiot");
-        //createTokenHandler(values);
-        const txData = await updateSPLTokenMetadataTxBuilder(
-          "MOHSIN",
-          "MOH",
-          "https://arweave.net/b5DaqXH2nKLbCE8W2O37_Df6sF61yf6gtvtty3iokS0",
-          connection,
-          wallet,
-          new PublicKey("JBhXUpMEST67ZaD2KeGFSaUPnS1HP6o8LX1vt5j3SZzh")
-        );
-        console.log("txData", txData?.sig);
+        createTokenHandler(values);
+        // const txData = await updateSPLTokenMetadataTxBuilder(
+        //   "MOHSIN",
+        //   "MOH",
+        //   "https://arweave.net/b5DaqXH2nKLbCE8W2O37_Df6sF61yf6gtvtty3iokS0",
+        //   connection,
+        //   wallet,
+        //   new PublicKey("JBhXUpMEST67ZaD2KeGFSaUPnS1HP6o8LX1vt5j3SZzh")
+        // );
+        // console.log("txData", txData?.sig);
       }
     },
   });
@@ -222,6 +221,7 @@ export default function Form() {
 
       return;
     }
+
     let balance = 0;
     if (wallet.publicKey != null) {
       balance = await connection.getBalance(wallet.publicKey as any);
@@ -236,7 +236,7 @@ export default function Form() {
             .storage()
             .upload(metaplexFileData);
           // console.log("MP data : ", metaplexFileData);
-          // console.log("Uploaded Image URI (Arweave)", imgURI);
+          console.log("Uploaded Image URI (Arweave)", imgURI);
 
           if (imgURI) {
             successToast({ message: `Image Uri Created` });
@@ -250,7 +250,7 @@ export default function Form() {
               .nfts()
               .uploadMetadata(tokenMetadata);
 
-            // console.log("Uploaded Metadata URI (Arweave)", uri);
+            console.log("Uploaded Metadata URI (Arweave)", uri);
             successToast({ message: `MetaData Uploaded` });
 
             const txhash = await createSPLTokenTxBuilder(
@@ -285,7 +285,7 @@ export default function Form() {
         } else {
         }
       } catch (error) {
-        // console.log(error);
+        console.log(error);
         setButtonClicked(false);
       }
     } else {
