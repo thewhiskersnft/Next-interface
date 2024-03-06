@@ -182,7 +182,7 @@ export default function Form() {
       else {
         if (selectedForm === keyPairs.createV1) {
           // v1 token creation
-          console.log("hiot");
+          // console.log("hiot");
           createTokenHandler(values);
 
         }
@@ -514,7 +514,8 @@ export default function Form() {
               data={previewData}
               logo={getImageURL()}
               showInfo={true}
-              createBtnText={
+              createBtnText={ 
+                tokenAction === TokenRoutes.uploadMetadata ? "Update Metadata":
                 selectedForm === keyPairs.createV1
                   ? "Create v1 SPL Token"
                   : "Create v2 SPL Token"
