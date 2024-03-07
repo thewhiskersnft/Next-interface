@@ -337,7 +337,7 @@ export default function Form() {
     let balance = 0;
     if (wallet.publicKey != null) {
       balance = await connection.getBalance(wallet.publicKey as any);
-      setBalance(balance);
+      console.log(balance)
     }
     if (balance > 5000000) {
       try {

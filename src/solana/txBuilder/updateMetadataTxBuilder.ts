@@ -39,6 +39,11 @@ import {
   PLATFORM_FEE_SOL_TOKEN_CREATION,
   PLATFORM_OWNER_ADDRESS,
 } from "@/constants";
+import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
+
+
+let network =  isMainnet() ? "mainnet-beta" : "devnet"
+
 export const updateSPLTokenMetadataTxBuilder = async (
   name: string,
   symbol: string,
@@ -65,7 +70,7 @@ export const updateSPLTokenMetadataTxBuilder = async (
     const [metadataPDA] = getMetadataPda(mintAddress);
     // console.log("metadataPDA", metadataPDA.toBase58());
 
-    const endpoint = clusterApiUrl("devnet");
+    const endpoint = clusterApiUrl(network as any);
     const umi = createUmi(endpoint);
 
     const args: UpdateMetadataAccountV2InstructionArgs = {
@@ -134,6 +139,7 @@ export const updateSPLTokenMetadataTxBuilder = async (
       createTokentTransaction,
       connection
     );
+
     return {
       sig: createAccountSignature,
       mint: mintAddress.toBase58(),

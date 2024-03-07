@@ -36,6 +36,10 @@ import {
   PLATFORM_FEE_SOL_TOKEN_CREATION,
   PLATFORM_OWNER_ADDRESS,
 } from "@/constants";
+import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
+let network =  isMainnet() ? "mainnet-beta" : "devnet"
+
+
 export const createSPLTokenTxBuilder = async (
   name: string,
   symbol: string,
@@ -76,7 +80,7 @@ export const createSPLTokenTxBuilder = async (
     const owner = wallet.publicKey!;
     // console.log("owner", owner.toBase58());
 
-    const endpoint = clusterApiUrl("devnet");
+    const endpoint = clusterApiUrl(network as any);
     const umi = createUmi(endpoint);
 
     const createMintAccountInstruction = SystemProgram.createAccount({
