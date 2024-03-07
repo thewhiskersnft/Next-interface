@@ -34,7 +34,7 @@ export const getTokenMetadata = async (
   } else {
     const provider = await new TokenListProvider().resolve();
     const tokenList = provider.filterByChainId(ENV.MainnetBeta).getList();
-    console.log(tokenList);
+    // console.log(tokenList);
     const tokenMap = tokenList.reduce((map, item) => {
       map.set(item.address, item);
       return map;

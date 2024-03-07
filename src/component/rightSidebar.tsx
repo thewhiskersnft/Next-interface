@@ -165,6 +165,9 @@ const RightSidebar: FC<SidebarProps> = ({
               target="_blank"
               rel="noopener noreferrer"
               href={mediaLinks.website}
+              onClick={(e) => {
+                if (!mediaLinks.website) e.preventDefault();
+              }}
             >
               <Image
                 src={
@@ -181,6 +184,9 @@ const RightSidebar: FC<SidebarProps> = ({
               href={mediaLinks.twitter}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => {
+                if (!mediaLinks.twitter) e.preventDefault();
+              }}
             >
               <Image
                 src={
@@ -197,6 +203,9 @@ const RightSidebar: FC<SidebarProps> = ({
               href={mediaLinks.telegram}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => {
+                if (!mediaLinks.telegram) e.preventDefault();
+              }}
             >
               <Image
                 src={
@@ -215,6 +224,9 @@ const RightSidebar: FC<SidebarProps> = ({
               href={mediaLinks.discord}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => {
+                if (!mediaLinks.discord) e.preventDefault();
+              }}
             >
               <Image
                 src={

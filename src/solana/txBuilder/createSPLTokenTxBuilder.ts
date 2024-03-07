@@ -37,8 +37,7 @@ import {
   PLATFORM_OWNER_ADDRESS,
 } from "@/constants";
 import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
-let network =  isMainnet() ? "mainnet-beta" : "devnet"
-
+let network = isMainnet() ? "mainnet-beta" : "devnet";
 
 export const createSPLTokenTxBuilder = async (
   name: string,

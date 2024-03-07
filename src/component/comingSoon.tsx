@@ -108,7 +108,7 @@ export default function ComingSoon() {
               src={"/marquelmg.svg"}
               alt="Coming Soon Logo"
               height={48}
-              width={2188}
+              width={2166}
               priority
             />
           </Marquee>

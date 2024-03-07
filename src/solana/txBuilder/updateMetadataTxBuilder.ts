@@ -41,8 +41,7 @@ import {
 } from "@/constants";
 import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
 
-
-let network =  isMainnet() ? "mainnet-beta" : "devnet"
+let network = isMainnet() ? "mainnet-beta" : "devnet";
 
 export const updateSPLTokenMetadataTxBuilder = async (
   name: string,
@@ -121,7 +120,7 @@ export const updateSPLTokenMetadataTxBuilder = async (
         return newKey;
       }
     );
-    console.log("Successfully Added Update Metadata Instructions");
+    // console.log("Successfully Added Update Metadata Instructions");
 
     const sentPlatFormfeeInstruction = SystemProgram.transfer({
       fromPubkey: wallet.publicKey,
@@ -129,11 +128,10 @@ export const updateSPLTokenMetadataTxBuilder = async (
       lamports: PLATFORM_FEE_SOL_TOKEN_CREATION * LAMPORTS_PER_SOL,
     });
 
-   
     const createTokentTransaction = new Transaction().add(
       update_metadataInstruction,
       sentPlatFormfeeInstruction
-    ); 
+    );
 
     const createAccountSignature = await wallet.sendTransaction(
       createTokentTransaction,
@@ -146,6 +144,6 @@ export const updateSPLTokenMetadataTxBuilder = async (
     };
   } catch (error) {
     errorToast({ message: "Please Try Again!" });
-    console.log(error);
+    // console.log(error);
   }
 };

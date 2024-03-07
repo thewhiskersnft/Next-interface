@@ -139,24 +139,11 @@ export default function Form() {
   const [buttonClicked, setButtonClicked] = useState(false);
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [updateMetadataLoading, setUpdateMetadataLoading] = useState(false);
 
   const [renderForm, setRenderForm] = useState(false);
   useEffect(() => {
     setRenderForm(true);
-  }, []);
-  useEffect(() => {
-    if (tokenAction === TokenRoutes.updateMetadata) {
-      let updatedPreviewData = {
-        "Token Details": {
-          "Token Name": "",
-          Description: "",
-          Symbol: "",
-        },
-      };
-      formik.setFieldValue("logo", "");
-      dispatch(setPreviewData(updatedPreviewData));
-      setFileData(null);
-    }
   }, []);
 
   const formik = useFormik({
@@ -200,21 +187,22 @@ export default function Form() {
     },
   });
 
-  const oldMetaData = async () => {
+  const oldMetaData = async (isFetchOnly?: boolean) => {
     try {
       if (tokenAction === TokenRoutes.updateMetadata) {
+        setUpdateMetadataLoading(true);
         let oldData = await getTokenMetadata(
           new PublicKey(formik.values.tokenAddress),
           connection
         );
-        console.log(oldData);
+        // console.log(oldData);
         if (oldData.isMutable) {
           formik.setFieldValue("name", oldData.tokenName);
           formik.setFieldValue("symbol", oldData.tokenSymbol);
           formik.setFieldValue("logo", oldData.tokenLogo);
           formik.setFieldValue("description", oldData.tokenDescription);
           let updatedPreviewData = {
-              "Token Details": {
+            "Token Details": {
               "Token Name": oldData.tokenName,
               Description: oldData.tokenDescription,
               Symbol: oldData.tokenSymbol,
@@ -222,17 +210,19 @@ export default function Form() {
           };
           formik.setFieldValue("logo", oldData.tokenLogo);
           dispatch(setPreviewData(updatedPreviewData));
-          toggleShowUpdateMetadata();
+          if (!isFetchOnly) {
+            toggleShowUpdateMetadata();
+          }
+          setUpdateMetadataLoading(false);
         } else {
           errorToast({ message: "Metadata is Immutable!" });
+          setUpdateMetadataLoading(false);
         }
       }
-    }
-    catch (e) {
+    } catch (e) {
       errorToast({ message: "Please Check Your Address!" });
-
+      setUpdateMetadataLoading(false);
     }
-
   };
 
   const updateMetadataHandler = async () => {
@@ -255,12 +245,25 @@ export default function Form() {
       const imgURI = await metaplexhandler.storage().upload(metaplexFileData);
       if (imgURI) {
         successToast({ message: `Image Uri Created` });
-        const tokenMetadata = {
+        let tokenMetadata = {
           name: formik.values.name,
           symbol: formik.values.symbol,
           description: formik.values.description,
           image: imgURI,
-        };
+        } as any;
+        if (formik.values?.website) {
+          tokenMetadata["website"] = formik.values.website;
+        }
+        if (formik.values?.telegram) {
+          tokenMetadata["telegram"] = formik.values.telegram;
+        }
+        if (formik.values?.discord) {
+          tokenMetadata["discord"] = formik.values.discord;
+        }
+        if (formik.values?.twitter) {
+          tokenMetadata["twitter"] = formik.values.twitter;
+        }
+        // console.log("Metadata : ", tokenMetadata);
         const { uri } = await metaplexhandler
           .nfts()
           .uploadMetadata(tokenMetadata);
@@ -274,17 +277,18 @@ export default function Form() {
           wallet,
           new PublicKey(formik.values.tokenAddress)
         );
-        console.log("txData", txData?.sig);
-        let updatedPreviewData = {
-          "Token Details": {
-            "Token Name": formik.values.name,
-            Description: formik.values.description,
-            Symbol: formik.values.symbol,
-          },
-        };
-        formik.setFieldValue("logo", "");
-        dispatch(setPreviewData(updatedPreviewData));
-        setFileData(metaplexFileData);
+        // console.log("txData", txData?.sig);
+        oldMetaData(true);
+        // let updatedPreviewData = {
+        //   "Token Details": {
+        //     "Token Name": formik.values.name,
+        //     Description: formik.values.description,
+        //     Symbol: formik.values.symbol,
+        //   },
+        // };
+        // formik.setFieldValue("logo", "");
+        // dispatch(setPreviewData(updatedPreviewData));
+        // setFileData(metaplexFileData);
         setButtonClicked(false);
         successToast({
           keyPairs: {
@@ -314,15 +318,15 @@ export default function Form() {
         resp["logo"] = "Please select logo";
         errorToast({ message: "Please upload logo!" });
       }
-      let errors = Object.keys(resp).length;
-      if (errors < 1) {
-        // no errors so updating redux state
-        dispatch(setName(formik.values.name));
-        dispatch(setSymbol(formik.values.symbol));
-        dispatch(setDescription(formik.values.description));
-        dispatch(setSupply(formik.values.supply));
-        dispatch(setDecimal(formik.values.decimal));
-      }
+      // let errors = Object.keys(resp).length;
+      // if (errors < 1) {
+      //   // no errors so updating redux state
+      //   dispatch(setName(formik.values.name));
+      //   dispatch(setSymbol(formik.values.symbol));
+      //   dispatch(setDescription(formik.values.description));
+      //   dispatch(setSupply(formik.values.supply));
+      //   dispatch(setDecimal(formik.values.decimal));
+      // }
     }
     return resp;
   };
@@ -337,7 +341,7 @@ export default function Form() {
     let balance = 0;
     if (wallet.publicKey != null) {
       balance = await connection.getBalance(wallet.publicKey as any);
-      console.log(balance)
+      // console.log(balance);
     }
     if (balance > 5000000) {
       try {
@@ -348,21 +352,34 @@ export default function Form() {
             .storage()
             .upload(metaplexFileData);
           // console.log("MP data : ", metaplexFileData);
-          console.log("Uploaded Image URI (Arweave)", imgURI);
+          // console.log("Uploaded Image URI (Arweave)", imgURI);
 
           if (imgURI) {
             successToast({ message: `Image Uri Created` });
-            const tokenMetadata = {
+            let tokenMetadata = {
               name: name,
               symbol: symbol,
               description: description,
               image: imgURI,
-            };
+            } as any;
+            if (formik.values?.website) {
+              tokenMetadata["website"] = formik.values.website;
+            }
+            if (formik.values?.telegram) {
+              tokenMetadata["telegram"] = formik.values.telegram;
+            }
+            if (formik.values?.discord) {
+              tokenMetadata["discord"] = formik.values.discord;
+            }
+            if (formik.values?.twitter) {
+              tokenMetadata["twitter"] = formik.values.twitter;
+            }
+            // console.log("Metadata : ", tokenMetadata);
             const { uri } = await metaplexhandler
               .nfts()
               .uploadMetadata(tokenMetadata);
 
-            console.log("Uploaded Metadata URI (Arweave)", uri);
+            // console.log("Uploaded Metadata URI (Arweave)", uri);
             successToast({ message: `MetaData Uploaded` });
 
             const txhash = await createSPLTokenTxBuilder(
@@ -480,6 +497,23 @@ export default function Form() {
     tokenAction,
   ]);
 
+  useEffect(() => {
+    formik.resetForm();
+    // dispatch(setFileData(null));
+    if (tokenAction === TokenRoutes.updateMetadata) {
+      let updatedPreviewData = {
+        "Token Details": {
+          "Token Name": "",
+          Description: "",
+          Symbol: "",
+        },
+      };
+      // formik.setFieldValue("logo", "");
+      dispatch(setPreviewData(updatedPreviewData));
+      dispatch(setFileData(null));
+    }
+  }, [tokenAction]);
+
   return (
     <>
       {renderForm ? (
@@ -529,9 +563,8 @@ export default function Form() {
                   <div className="w-[90px] mt-6 flex justify-left">
                     <CustomButton
                       label="Load"
+                      loading={updateMetadataLoading}
                       onClick={() => {
-                        // console.log("Load clicked");
-                        // toggleShowUpdateMetadata();
                         oldMetaData();
                       }}
                     />
@@ -555,8 +588,8 @@ export default function Form() {
                 tokenAction === TokenRoutes.updateMetadata
                   ? "Update Metadata"
                   : selectedForm === keyPairs.createV1
-                    ? "Create v1 SPL Token"
-                    : "Create v2 SPL Token"
+                  ? "Create v1 SPL Token"
+                  : "Create v2 SPL Token"
               }
               mediaLinks={{
                 website: formik.values.website,

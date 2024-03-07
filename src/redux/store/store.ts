@@ -39,6 +39,13 @@ if (isClient) {
 } else {
   store = configureStore({
     reducer: rootReducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        // serializableCheck: {
+        //  // ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        // },
+        serializableCheck: false,
+      }),
   });
   // persistor = persistStore(store);
 }

@@ -5,6 +5,6 @@ export const getConnectedClusterInfo = () => {
 };
 
 export const isMainnet = () => {
-  console.log("getConnectedClusterInfo", getConnectedClusterInfo());
+  // console.log("getConnectedClusterInfo", getConnectedClusterInfo());
   return getConnectedClusterInfo() === "production";
 };
