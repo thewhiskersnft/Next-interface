@@ -59,6 +59,8 @@ import { createBurnTokensTxBuilder } from "@/solana/txBuilder/burnTokenTxBuilder
 import Loader from "./loader";
 import ManageToken from "./manageToken";
 import { updateSPLTokenMetadataTxBuilder } from "@/solana/txBuilder/updateMetadataTxBuilder";
+import { validateAddress } from "@/solana/txBuilder/checkAddress";
+import { getTokenMetadata } from "@/metaplex/getTokenMetadata";
 
 const initialV1Token: PreviewData = {
   "Token Details": {
@@ -136,10 +138,25 @@ export default function Form() {
   const [showUpdateMetadata, setShowUpdateMetadata] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
   const [balance, setBalance] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const [renderForm, setRenderForm] = useState(false);
   useEffect(() => {
     setRenderForm(true);
+  }, []);
+  useEffect(() => {
+    if (tokenAction === TokenRoutes.updateMetadata) {
+      let updatedPreviewData = {
+        "Token Details": {
+          "Token Name": "",
+          Description: "",
+          Symbol: "",
+        },
+      };
+      formik.setFieldValue("logo", "");
+      dispatch(setPreviewData(updatedPreviewData));
+      setFileData(null);
+    }
   }, []);
 
   const formik = useFormik({
@@ -173,95 +190,126 @@ export default function Form() {
     validate: (values) => createTokenValidator(values),
     onSubmit: async (values) => {
       setButtonClicked(true);
-
-
-      if (tokenAction === TokenRoutes.uploadMetadata) {
-        updateMetadataHandler(values);
-
-      }
-
-      else {
+      if (tokenAction === TokenRoutes.updateMetadata) {
+        updateMetadataHandler();
+      } else if (tokenAction === TokenRoutes.createToken) {
         if (selectedForm === keyPairs.createV1) {
-          // v1 token creation
-          // console.log("hiot");
           createTokenHandler(values);
-
         }
       }
     },
   });
 
+  const oldMetaData = async () => {
+    try {
+      if (tokenAction === TokenRoutes.updateMetadata) {
+        let oldData = await getTokenMetadata(
+          new PublicKey(formik.values.tokenAddress),
+          connection
+        );
+        console.log(oldData);
+        if (oldData.isMutable) {
+          formik.setFieldValue("name", oldData.tokenName);
+          formik.setFieldValue("symbol", oldData.tokenSymbol);
+          formik.setFieldValue("logo", oldData.tokenLogo);
+          formik.setFieldValue("description", oldData.tokenDescription);
+          let updatedPreviewData = {
+              "Token Details": {
+              "Token Name": oldData.tokenName,
+              Description: oldData.tokenDescription,
+              Symbol: oldData.tokenSymbol,
+            },
+          };
+          formik.setFieldValue("logo", oldData.tokenLogo);
+          dispatch(setPreviewData(updatedPreviewData));
+          toggleShowUpdateMetadata();
+        } else {
+          errorToast({ message: "Metadata is Immutable!" });
+        }
+      }
+    }
+    catch (e) {
+      errorToast({ message: "Please Check Your Address!" });
 
-  const updateMetadataHandler = async (values: any) => {
+    }
+
+  };
+
+  const updateMetadataHandler = async () => {
     if (!wallet.connected) {
-      errorToast({ message: "Please connect the wallet" });
-      // console.log("Wallet not connected");
+      errorToast({ message: "Please Connect The Wallet" });
       setButtonClicked(false);
+      return;
+    }
+    let balance = 0;
+
+    if (wallet.publicKey != null) {
+      balance = await connection.getBalance(wallet.publicKey as any);
+    }
+    if (balance < 3000000) {
+      errorToast({ message: "Insufficent Balance" });
       return;
     }
     try {
       const metaplexhandler = await metaplexBuilder(wallet, connection);
-      const imgURI = await metaplexhandler
-        .storage()
-        .upload(metaplexFileData);
-
+      const imgURI = await metaplexhandler.storage().upload(metaplexFileData);
       if (imgURI) {
         successToast({ message: `Image Uri Created` });
         const tokenMetadata = {
-          name: name,//Name for the updatemetadata form
-          symbol: symbol,
-          description: description,
+          name: formik.values.name,
+          symbol: formik.values.symbol,
+          description: formik.values.description,
           image: imgURI,
         };
         const { uri } = await metaplexhandler
           .nfts()
           .uploadMetadata(tokenMetadata);
 
-        // console.log("Uploaded Metadata URI (Arweave)", uri);
         successToast({ message: `MetaData Uploaded` });
         const txData = await updateSPLTokenMetadataTxBuilder(
-          "MOHSIN", //  need to change this with name , symbol
-          "MOH",
+          formik.values.name,
+          formik.values.symbol,
           uri,
           connection,
           wallet,
-          new PublicKey("JBhXUpMEST67ZaD2KeGFSaUPnS1HP6o8LX1vt5j3SZzh") // inside this mint address will come
+          new PublicKey(formik.values.tokenAddress)
         );
         console.log("txData", txData?.sig);
+        let updatedPreviewData = {
+          "Token Details": {
+            "Token Name": formik.values.name,
+            Description: formik.values.description,
+            Symbol: formik.values.symbol,
+          },
+        };
+        formik.setFieldValue("logo", "");
+        dispatch(setPreviewData(updatedPreviewData));
+        setFileData(metaplexFileData);
+        setButtonClicked(false);
         successToast({
           keyPairs: {
-            mintAddress: {
-              value: `${txData?.mint}`,
-              linkTo: `https://solscan.io/token/${txData?.mint}?cluster=devnet`,
-            },
             signature: {
               value: `${txData?.sig}`,
-              linkTo: `https://solscan.io/tx/${txData?.sig}?cluster=devnet`,
+              linkTo: `https://solscan.io/tx/${txData?.sig}`,
             },
           },
           allowCopy: true,
         });
-
-      }
-      else {
+      } else {
         errorToast({ message: "Error In Uploading Logo" });
-
+        setButtonClicked(false);
       }
-    }
-
-    catch (e) {
+    } catch (e) {
       errorToast({ message: "Try Again!" });
+      setButtonClicked(false);
     }
-
-  }
-
+  };
 
   const createTokenValidator = (values: any) => {
     let resp = {} as any;
     if (selectedForm === keyPairs.createV1) {
       // v1 token validator
       resp = v1TokenValidation(values);
-      // check if logo added
       if (!fileData?.name) {
         resp["logo"] = "Please select logo";
         errorToast({ message: "Please upload logo!" });
@@ -280,10 +328,8 @@ export default function Form() {
   };
 
   const createTokenHandler = async (values: any) => {
-    // console.log("Values : ", values);
     if (!wallet.connected) {
-      errorToast({ message: "Please connect the wallet" });
-      // console.log("Wallet not connected");
+      errorToast({ message: "Please Connect The Wallet" });
       setButtonClicked(false);
       return;
     }
@@ -328,17 +374,15 @@ export default function Form() {
               connection,
               wallet
             );
-
-            // // console.log("txhash", txhash?.sig);
             successToast({
               keyPairs: {
                 mintAddress: {
                   value: `${txhash?.mint}`,
-                  linkTo: `https://solscan.io/token/${txhash?.mint}?cluster=devnet`,
+                  linkTo: `https://solscan.io/token/${txhash?.mint}`,
                 },
                 signature: {
                   value: `${txhash?.sig}`,
-                  linkTo: `https://solscan.io/tx/${txhash?.sig}?cluster=devnet`,
+                  linkTo: `https://solscan.io/tx/${txhash?.sig}`,
                 },
               },
               allowCopy: true,
@@ -346,19 +390,18 @@ export default function Form() {
             setButtonClicked(false);
           } else {
             setButtonClicked(false);
-            errorToast({ message: "Error in creating token please retry" });
+            errorToast({ message: "Error In Creating Token Please Retry" });
           }
         } else {
         }
       } catch (error) {
-
         errorToast({ message: "Try Again!" });
 
         // console.log(error);
         setButtonClicked(false);
       }
     } else {
-      errorToast({ message: "Insufficent balance" });
+      errorToast({ message: "Insufficent Balance" });
       setButtonClicked(false);
     }
   };
@@ -418,23 +461,8 @@ export default function Form() {
           },
         };
       }
-    } else if (tokenAction === TokenRoutes.updateMetadata) {
-      // update metadata
-      // updatedPreviewData = { ...initialV1Token };
-      updatedPreviewData = {
-        "Token Details": {
-          "Token Name": formik.values.name,
-          Description: formik.values.description,
-          Symbol: formik.values.symbol,
-          Supply: formik.values.supply,
-          Decimals: formik.values.decimal,
-        },
-      };
-    } else {
-      // default cond (setting to empty vals)
-      updatedPreviewData = { ...initialV1Token };
+      dispatch(setPreviewData(cloneDeep(updatedPreviewData)));
     }
-    dispatch(setPreviewData(cloneDeep(updatedPreviewData)));
   }, [
     formik.values.name,
     formik.values.symbol,
@@ -456,6 +484,11 @@ export default function Form() {
     <>
       {renderForm ? (
         <div className="flex flex-row flex-1 h-full overflow-auto scroll-smooth">
+          {loading && (
+            <div className=" absolute top-[0] bottom-[0] left-[0] right-[0] bg-loaderBG flex flex-1 items-center justify-center">
+              <Loader visible={loading} size={50} />
+            </div>
+          )}
           {tokenAction === TokenRoutes.createToken && (
             <CreateOrEditToken formik={formik} />
           )}
@@ -498,7 +531,8 @@ export default function Form() {
                       label="Load"
                       onClick={() => {
                         // console.log("Load clicked");
-                        toggleShowUpdateMetadata();
+                        // toggleShowUpdateMetadata();
+                        oldMetaData();
                       }}
                     />
                   </div>
@@ -517,11 +551,12 @@ export default function Form() {
               data={previewData}
               logo={getImageURL()}
               showInfo={true}
-              createBtnText={ 
-                tokenAction === TokenRoutes.uploadMetadata ? "Update Metadata":
-                selectedForm === keyPairs.createV1
-                  ? "Create v1 SPL Token"
-                  : "Create v2 SPL Token"
+              createBtnText={
+                tokenAction === TokenRoutes.updateMetadata
+                  ? "Update Metadata"
+                  : selectedForm === keyPairs.createV1
+                    ? "Create v1 SPL Token"
+                    : "Create v2 SPL Token"
               }
               mediaLinks={{
                 website: formik.values.website,

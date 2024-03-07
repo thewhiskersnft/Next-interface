@@ -11,6 +11,8 @@ export const getTokenMetadata = async (
   let tokenName;
   let tokenSymbol;
   let tokenLogo;
+  let tokenDescription;
+  let isMutable;
 
   const metadataAccount = metaplex
     .nfts()
@@ -23,9 +25,12 @@ export const getTokenMetadata = async (
     const token = await metaplex
       .nfts()
       .findByMint({ mintAddress: mintAddress });
+    // console.log("Token : ", token);
     tokenName = token.name;
     tokenSymbol = token.symbol;
     tokenLogo = token.json?.image;
+    tokenDescription = token.json?.description;
+    isMutable = token.isMutable;
   } else {
     const provider = await new TokenListProvider().resolve();
     const tokenList = provider.filterByChainId(ENV.MainnetBeta).getList();
@@ -36,11 +41,11 @@ export const getTokenMetadata = async (
     }, new Map());
 
     const token = tokenMap.get(mintAddress.toBase58());
+    // console.log("Token : ", token);
 
     tokenName = token.name;
     tokenSymbol = token.symbol;
     tokenLogo = token.logoURI;
-
   }
-  return { tokenName, tokenLogo, tokenSymbol };
+  return { tokenName, tokenLogo, tokenSymbol, tokenDescription, isMutable };
 };

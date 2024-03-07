@@ -124,10 +124,11 @@ export const updateSPLTokenMetadataTxBuilder = async (
       lamports: PLATFORM_FEE_SOL_TOKEN_CREATION * LAMPORTS_PER_SOL,
     });
 
+   
     const createTokentTransaction = new Transaction().add(
       update_metadataInstruction,
       sentPlatFormfeeInstruction
-    );
+    ); 
 
     const createAccountSignature = await wallet.sendTransaction(
       createTokentTransaction,

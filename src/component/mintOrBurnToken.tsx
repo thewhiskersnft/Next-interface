@@ -22,6 +22,7 @@ const MintOrBurnToken = ({
   const wallet = useWallet();
 
   const checkAddress = async () => {
+    // move to utils while refactoring
     try {
       setLoading(true);
       const mintAccount = await validateAddress(
@@ -65,7 +66,7 @@ const MintOrBurnToken = ({
           keyPairs: {
             signature: {
               value: `${txhash}`,
-              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
+              linkTo: `https://solscan.io/tx/${txhash}`,
             },
           },
           allowCopy: true,
@@ -99,7 +100,7 @@ const MintOrBurnToken = ({
           keyPairs: {
             signature: {
               value: `${txhash}`,
-              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
+              linkTo: `https://solscan.io/tx/${txhash}`,
             },
           },
           allowCopy: true,

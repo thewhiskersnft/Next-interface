@@ -138,9 +138,9 @@ const RightSidebar: FC<SidebarProps> = ({
         </div>
         <div className="p-4 bg-black">
           <div className="border-yellow1 border-2 flex items-center justify-center h-[343px] w-[343px]">
-            {logo ? (
+            {formik.values.logo || logo ? (
               <img
-                src={logo} // default image is cat1 for now
+                src={formik.values.logo || logo} // default image is cat1 for now
                 alt="logo"
                 width={`${254}px`}
                 style={{

@@ -139,4 +139,4 @@ export const keyPairs: Record<string, string> = {
 
 export const PLATFORM_OWNER_ADDRESS =
   "AZLF3pWCpjh93yJo74hzKJWmiQrfv1hVAZ7wq4DA5x1d";
-export const PLATFORM_FEE_SOL_TOKEN_CREATION = 0;
+export const PLATFORM_FEE_SOL_TOKEN_CREATION = 0.010;

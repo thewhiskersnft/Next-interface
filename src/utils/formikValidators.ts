@@ -24,6 +24,8 @@ export const v1TokenValidation = (values: createV1TokenSchema) => {
   if (values.symbol.length > 8) {
     errors.symbol = "Symbol cannot be more than 8 characters";
   }
-  // console.log("Errors : ", errors);
+  if (values.decimal > 10) {
+    errors.decimal = "decimal cannot be more than 10";
+  }
   return errors;
 };
