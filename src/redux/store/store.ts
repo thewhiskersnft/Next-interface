@@ -12,7 +12,8 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-const isClient = typeof window !== "undefined";
+// const isClient = typeof window !== "undefined";
+const isClient = false; // removing persist
 
 let store;
 let persistor;
@@ -34,12 +35,12 @@ if (isClient) {
       }),
   });
 
-  persistor = persistStore(store);
+  // persistor = persistStore(store);
 } else {
   store = configureStore({
     reducer: rootReducer,
   });
-  persistor = persistStore(store);
+  // persistor = persistStore(store);
 }
 
 export type RootState = ReturnType<typeof store.getState>;

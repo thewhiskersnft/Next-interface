@@ -22,6 +22,7 @@ const MintOrBurnToken = ({
   const wallet = useWallet();
 
   const checkAddress = async () => {
+    // move to utils while refactoring
     try {
       setLoading(true);
       const mintAccount = await validateAddress(
