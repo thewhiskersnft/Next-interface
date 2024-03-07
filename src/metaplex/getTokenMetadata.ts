@@ -40,6 +40,7 @@ export const getTokenMetadata = async (
     tokenName = token.name;
     tokenSymbol = token.symbol;
     tokenLogo = token.logoURI;
+
   }
   return { tokenName, tokenLogo, tokenSymbol };
 };
