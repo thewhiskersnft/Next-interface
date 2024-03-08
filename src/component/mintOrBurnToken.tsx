@@ -72,6 +72,10 @@ const MintOrBurnToken = ({
           allowCopy: true,
         });
       }
+      else{
+        errorToast({ message: "Please try again" });
+      }
+      
       // console.log(txhash);
       setBurnOrMintLoading(false);
     } catch (e) {
@@ -105,6 +109,9 @@ const MintOrBurnToken = ({
           },
           allowCopy: true,
         });
+      }
+      else{
+        errorToast({ message: "Please try again" });
       }
       // console.log(txhash);
       setBurnOrMintLoading(false);

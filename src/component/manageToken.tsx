@@ -55,6 +55,9 @@ const ManageToken = ({
           allowCopy: true,
         });
       }
+      else{
+        errorToast({ message: "Please try again" });
+      }
       setMintLoading(false);
     } catch (error) {
       errorToast({ message: "Please try again!" });
@@ -85,6 +88,9 @@ const ManageToken = ({
           },
           allowCopy: true,
         });
+      }
+      else{
+        errorToast({ message: "Please try again" });
       }
       setFreezeLoading(false);
     } catch (error) {

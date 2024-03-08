@@ -72,23 +72,6 @@ const initialV1Token: PreviewData = {
   },
 };
 
-// const initialV2Token: PreviewData = {
-//   "Token Details": {
-//     "Token Name": "",
-//     Description: "",
-//     Symbol: "",
-//     Supply: "",
-//     Decimals: "",
-//   },
-//   Extensions: {
-//     "Fee %": "",
-//     "Max Fee": "",
-//     "Interest Rate": "",
-//     "Account State": "",
-//     "Permanent Delegate": "",
-//     "Non Transferable": "",
-//   },
-// };
 
 export default function Form() {
   const {
@@ -157,7 +140,7 @@ export default function Form() {
       twitter: twitter,
       telegram: telegram,
       discord: discord,
-      logo: "", // not currently used here (used from redux state)
+      logo: "", 
       fee: "",
       maxFee: maxFee,
       withdrawAuthority: withdrawAuthority,
@@ -195,7 +178,6 @@ export default function Form() {
           new PublicKey(formik.values.tokenAddress),
           connection
         );
-        // console.log(oldData);
         if (oldData.isMutable) {
           formik.setFieldValue("name", oldData.tokenName);
           formik.setFieldValue("symbol", oldData.tokenSymbol);
@@ -241,6 +223,7 @@ export default function Form() {
       return;
     }
     try {
+
       const metaplexhandler = await metaplexBuilder(wallet, connection);
       const imgURI = await metaplexhandler.storage().upload(metaplexFileData);
       if (imgURI) {
@@ -263,11 +246,15 @@ export default function Form() {
         if (formik.values?.twitter) {
           tokenMetadata["twitter"] = formik.values.twitter;
         }
-        // console.log("Metadata : ", tokenMetadata);
         const { uri } = await metaplexhandler
           .nfts()
           .uploadMetadata(tokenMetadata);
-
+          if(!uri)
+          {
+           setButtonClicked(false);
+           errorToast({ message: "Error In Creating Uri" });
+           return;
+          }
         successToast({ message: `MetaData Uploaded` });
         const txData = await updateSPLTokenMetadataTxBuilder(
           formik.values.name,
@@ -277,18 +264,12 @@ export default function Form() {
           wallet,
           new PublicKey(formik.values.tokenAddress)
         );
-        // console.log("txData", txData?.sig);
         oldMetaData(true);
-        // let updatedPreviewData = {
-        //   "Token Details": {
-        //     "Token Name": formik.values.name,
-        //     Description: formik.values.description,
-        //     Symbol: formik.values.symbol,
-        //   },
-        // };
-        // formik.setFieldValue("logo", "");
-        // dispatch(setPreviewData(updatedPreviewData));
-        // setFileData(metaplexFileData);
+        if(!txData){
+          setButtonClicked(false);
+          errorToast({ message: "Please Try Again" });
+          return;
+        }
         setButtonClicked(false);
         successToast({
           keyPairs: {
@@ -312,25 +293,15 @@ export default function Form() {
   const createTokenValidator = (values: any) => {
     let resp = {} as any;
     if (selectedForm === keyPairs.createV1) {
-      // v1 token validator
       resp = v1TokenValidation(values);
-      if (!fileData?.name) {
+      //console.log(metaplexFileData)
+      if (!metaplexFileData?.fileName) {
         resp["logo"] = "Please select logo";
         errorToast({ message: "Please upload logo!" });
       }
-      // let errors = Object.keys(resp).length;
-      // if (errors < 1) {
-      //   // no errors so updating redux state
-      //   dispatch(setName(formik.values.name));
-      //   dispatch(setSymbol(formik.values.symbol));
-      //   dispatch(setDescription(formik.values.description));
-      //   dispatch(setSupply(formik.values.supply));
-      //   dispatch(setDecimal(formik.values.decimal));
-      // }
     }
     return resp;
   };
-
   const createTokenHandler = async (values: any) => {
     if (!wallet.connected) {
       errorToast({ message: "Please Connect The Wallet" });
@@ -341,25 +312,20 @@ export default function Form() {
     let balance = 0;
     if (wallet.publicKey != null) {
       balance = await connection.getBalance(wallet.publicKey as any);
-       console.log(balance);
+   //    console.log(balance);
     }
     if (balance > 5000000) {
       try {
         const isSPL = true;
         if (isSPL) {
-          console.log("1");
 
           const metaplexhandler = await metaplexBuilder(wallet, connection);
+       //   console.log("gvhgvghvhg",metaplexFileData)
+
           const imgURI = await metaplexhandler
             .storage()
             .upload(metaplexFileData);
-            console.log("2");
-
-          // console.log("MP data : ", metaplexFileData);
-          // console.log("Uploaded Image URI (Arweave)", imgURI);
-
           if (imgURI) {          
-            console.log("3");
             successToast({ message: `Image Uri Created` });
             let tokenMetadata = {
               name: formik.values.name,
@@ -379,29 +345,39 @@ export default function Form() {
             if (formik.values?.twitter) {
               tokenMetadata["twitter"] = formik.values.twitter;
             }
-            // console.log("Metadata : ", tokenMetadata);
-            console.log("5");
+          //  console.log(tokenMetadata)
+
 
             const { uri } = await metaplexhandler
               .nfts()
               .uploadMetadata(tokenMetadata);
-
-            // console.log("Uploaded Metadata URI (Arweave)", uri);
-            console.log("6");
-
+             if(!uri)
+             {
+              setButtonClicked(false);
+              errorToast({ message: "Error In Creating Uri" });
+              return;
+             }
             successToast({ message: `MetaData Uploaded` });
             const endpoint= connection.rpcEndpoint;
-            
+          
             const txhash = await createSPLTokenTxBuilder(
-              name,
-              symbol,
-              decimal,
+              formik.values.name,
+              formik.values.symbol,
+              formik.values.decimal,
               uri,
-              supply,
+              formik.values.supply,
               connection,
               wallet,
               endpoint
             );
+
+            if(!txhash){
+              setButtonClicked(false);
+              errorToast({ message: "Please Try Again" });
+              return;
+
+            }
+       
             successToast({
               keyPairs: {
                 mintAddress: {
@@ -421,11 +397,10 @@ export default function Form() {
             errorToast({ message: "Error In Creating Token Please Retry" });
           }
         } else {
+
         }
       } catch (error) {
         errorToast({ message: "Try Again!" });
-
-        // console.log(error);
         setButtonClicked(false);
       }
     } else {
@@ -435,7 +410,6 @@ export default function Form() {
   };
 
   const toggleShowUpdateMetadata = () => {
-    // fetch and update token metadata in formik here!
     setShowUpdateMetadata(!showUpdateMetadata);
   };
 
