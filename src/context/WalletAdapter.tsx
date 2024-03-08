@@ -29,9 +29,13 @@ export const SolanaWalletAdapter: FC<WalletProps> = ({ children }) => {
     : WalletAdapterNetwork.Devnet;
 
   // You can also provide a custom RPC endpoint.
-  const endpoint = isMainnet()
-    ? AppENVConfig.primary_mainnet_rpc_url
-    : useMemo(() => clusterApiUrl(network), [network]);
+  const endpoint = useMemo(
+    () =>
+      isMainnet()
+        ? AppENVConfig.primary_mainnet_rpc_url
+        : clusterApiUrl(network),
+    [network]
+  );
 
   const wallets = useMemo(
     () => [

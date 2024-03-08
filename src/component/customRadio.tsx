@@ -27,7 +27,6 @@ const CustomRadio: FC<CustomRadioProps> = ({
           {label || ""}
           {showSymbol && (
             <span>
-              {/* <img className="ml-1" src={Help} alt="/help" /> */}
               {/* <Image
                 src={"/help.svg"}
                 alt="Help Logo"
