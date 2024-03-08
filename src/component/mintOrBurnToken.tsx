@@ -66,7 +66,7 @@ const MintOrBurnToken = ({
           keyPairs: {
             signature: {
               value: `${txhash}`,
-              linkTo: `https://solscan.io/tx/${txhash}`,
+              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
             },
           },
           allowCopy: true,
@@ -104,7 +104,7 @@ const MintOrBurnToken = ({
           keyPairs: {
             signature: {
               value: `${txhash}`,
-              linkTo: `https://solscan.io/tx/${txhash}`,
+              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
             },
           },
           allowCopy: true,

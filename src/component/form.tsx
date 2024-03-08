@@ -270,12 +270,13 @@ export default function Form() {
           errorToast({ message: "Please Try Again" });
           return;
         }
+
         setButtonClicked(false);
         successToast({
           keyPairs: {
             signature: {
               value: `${txData?.sig}`,
-              linkTo: `https://solscan.io/tx/${txData?.sig}`,
+              linkTo: `https://solscan.io/tx/${txData?.sig}?cluster=devnet`,
             },
           },
           allowCopy: true,
@@ -320,7 +321,7 @@ export default function Form() {
         if (isSPL) {
 
           const metaplexhandler = await metaplexBuilder(wallet, connection);
-       //   console.log("gvhgvghvhg",metaplexFileData)
+         // console.log("gvhgvghvhg",metaplexFileData)
 
           const imgURI = await metaplexhandler
             .storage()
@@ -359,6 +360,8 @@ export default function Form() {
              }
             successToast({ message: `MetaData Uploaded` });
             const endpoint= connection.rpcEndpoint;
+
+            //console.log(endpoint)
           
             const txhash = await createSPLTokenTxBuilder(
               formik.values.name,
@@ -382,11 +385,11 @@ export default function Form() {
               keyPairs: {
                 mintAddress: {
                   value: `${txhash?.mint}`,
-                  linkTo: `https://solscan.io/token/${txhash?.mint}`,
+                  linkTo: `https://solscan.io/token/${txhash?.mint}?cluster=devnet`,
                 },
                 signature: {
                   value: `${txhash?.sig}`,
-                  linkTo: `https://solscan.io/tx/${txhash?.sig}`,
+                  linkTo: `https://solscan.io/tx/${txhash?.sig}?cluster=devnet`,
                 },
               },
               allowCopy: true,

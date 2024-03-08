@@ -119,7 +119,7 @@ const PrimaryHeader: FC = () => {
             priority
           />
           <p className="font-Orbitron text-xsmall text-textGreen ml-2">
-            {envs.mainnet}
+            {envs.devnet}
           </p>
         </span>
 

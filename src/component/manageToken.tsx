@@ -49,7 +49,7 @@ const ManageToken = ({
           keyPairs: {
             signature: {
               value: `${txhash}`,
-              linkTo: `https://solscan.io/tx/${txhash}`,
+              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
             },
           },
           allowCopy: true,
@@ -83,7 +83,7 @@ const ManageToken = ({
           keyPairs: {
             signature: {
               value: `${txhash}`,
-              linkTo: `https://solscan.io/tx/${txhash}`,
+              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
             },
           },
           allowCopy: true,
