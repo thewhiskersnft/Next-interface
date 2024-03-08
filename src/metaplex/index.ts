@@ -14,6 +14,9 @@ export const metaplexBuilder = async (
   wallet: WalletContextState,
   solanaConnection: Connection
 ) => {
+  console.log("4");
+  console.log(isMainnet());
+
   const metaplex = Metaplex.make(solanaConnection)
     .use(walletAdapterIdentity(wallet))
     .use(

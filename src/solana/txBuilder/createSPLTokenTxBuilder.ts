@@ -46,7 +46,8 @@ export const createSPLTokenTxBuilder = async (
   uri: string,
   tokenSupply: number,
   connection: Connection,
-  wallet: WalletContextState
+  wallet: WalletContextState,
+  endpoint:string
 ) => {
   try {
     if (!wallet.publicKey) {
@@ -79,7 +80,8 @@ export const createSPLTokenTxBuilder = async (
     const owner = wallet.publicKey!;
     // console.log("owner", owner.toBase58());
 
-    const endpoint = clusterApiUrl(network as any);
+    
+
     const umi = createUmi(endpoint);
 
     const createMintAccountInstruction = SystemProgram.createAccount({

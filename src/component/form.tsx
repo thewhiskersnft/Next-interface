@@ -341,25 +341,30 @@ export default function Form() {
     let balance = 0;
     if (wallet.publicKey != null) {
       balance = await connection.getBalance(wallet.publicKey as any);
-      // console.log(balance);
+       console.log(balance);
     }
     if (balance > 5000000) {
       try {
         const isSPL = true;
         if (isSPL) {
+          console.log("1");
+
           const metaplexhandler = await metaplexBuilder(wallet, connection);
           const imgURI = await metaplexhandler
             .storage()
             .upload(metaplexFileData);
+            console.log("2");
+
           // console.log("MP data : ", metaplexFileData);
           // console.log("Uploaded Image URI (Arweave)", imgURI);
 
-          if (imgURI) {
+          if (imgURI) {          
+            console.log("3");
             successToast({ message: `Image Uri Created` });
             let tokenMetadata = {
-              name: name,
-              symbol: symbol,
-              description: description,
+              name: formik.values.name,
+              symbol: formik.values.symbol,
+              description: formik.values.description,
               image: imgURI,
             } as any;
             if (formik.values?.website) {
@@ -375,13 +380,18 @@ export default function Form() {
               tokenMetadata["twitter"] = formik.values.twitter;
             }
             // console.log("Metadata : ", tokenMetadata);
+            console.log("5");
+
             const { uri } = await metaplexhandler
               .nfts()
               .uploadMetadata(tokenMetadata);
 
             // console.log("Uploaded Metadata URI (Arweave)", uri);
-            successToast({ message: `MetaData Uploaded` });
+            console.log("6");
 
+            successToast({ message: `MetaData Uploaded` });
+            const endpoint= connection.rpcEndpoint;
+            
             const txhash = await createSPLTokenTxBuilder(
               name,
               symbol,
@@ -389,7 +399,8 @@ export default function Form() {
               uri,
               supply,
               connection,
-              wallet
+              wallet,
+              endpoint
             );
             successToast({
               keyPairs: {
