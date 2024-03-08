@@ -31,7 +31,7 @@ export const sidebarData: SidebarItem[] = [
         label: "Update Metadata",
         description: "Update Token Metadata",
         navigateTo: `/token?action=${TokenRoutes.updateMetadata}`,
-        disabled: true,
+        // disabled: true,
       },
       {
         label: "Get Token Verified",
@@ -139,4 +139,9 @@ export const keyPairs: Record<string, string> = {
 
 export const PLATFORM_OWNER_ADDRESS =
   "AZLF3pWCpjh93yJo74hzKJWmiQrfv1hVAZ7wq4DA5x1d";
-export const PLATFORM_FEE_SOL_TOKEN_CREATION = 0.0100;
+export const PLATFORM_FEE_SOL_TOKEN_CREATION = 0.01;
+
+export const envs: Record<string, string> = {
+  devnet: "Devnet",
+  mainnet: "Mainnet-Beta",
+};

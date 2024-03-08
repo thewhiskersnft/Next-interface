@@ -34,7 +34,6 @@ const CustomImagePicker: FC<CustomImagePickerProps> = ({
         {label || ""}
         {showSymbol && (
           <span className="flex items-center">
-            {/* <img className="ml-1" src={Help} alt="/help" /> */}
             {/* <Image
               src={"/help.svg"}
               alt="Help Logo"
@@ -51,11 +50,8 @@ const CustomImagePicker: FC<CustomImagePickerProps> = ({
           className={`outline-none w-100 bg-background text-xsmall font-Orbitron placeholder:${
             placeholderColor ? `text-${placeholderColor}` : "text-darkGrey"
           } p-1 px-[16px] text-white w-[100%] customInp hover:bg-hoverInputBg`}
-          //   style={{ ...inputStyles }}
           style={{ display: "none" }}
           type={"file"}
-          // value={value}
-          //   placeholder={placeholder || ""}
           onChange={onChange}
         />
         <section className="flex">
@@ -64,21 +60,16 @@ const CustomImagePicker: FC<CustomImagePickerProps> = ({
               placeholderColor ? `text-${placeholderColor}` : "text-darkGrey"
             } p-1 px-[16px] text-white w-[100%] customInp hover:bg-hoverInputBg`}
             style={{ ...inputStyles }}
-            //   style={{ display: "none" }}
             type={"text"}
             value={fileName}
             placeholder={placeholder || ""}
             readOnly={true}
-            //   onChange={onChange}
           />
           <label htmlFor={``}>
             <span
               className="text-white text-xsmall border-1 border-yellow1 mx-1 cursor-pointer hover:bg-yellow1 hover:text-black font-Orbitron p-1 h-[28px] px-[16px]"
               style={{ border: "1px solid #FFC83A" }}
               onClick={() => {
-                // const elem = document.getElementById(`id_${label}`);
-                // // console.log(elem?.getAttribute(value));
-                // elem?.setAttribute(value, "");
                 onChange(null);
               }}
             >

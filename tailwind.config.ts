@@ -58,6 +58,7 @@ const config: Config = {
         disabledLink: "#8d8d8d",
         successGreen: "#09A854",
         textGreen: "#09A854",
+        loaderBG: "rgba(0,0,0,0.5)",
       },
       keyframes: {
         wiggle: {

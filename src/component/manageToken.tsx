@@ -30,23 +30,6 @@ const ManageToken = ({
   const revokeMintAuth = async () => {
     setMintLoading(true);
     try {
-      // handler to mint TOKEns
-      // const amount = "1000000000000"; // multiply with decimal later
-      // const txhash = await createMintTokensTxBuilder(
-      //   connection,
-      //   wallet,
-      //   new PublicKey(tokenAddress),
-      //   amount
-      // );
-
-      // handler to burn tokens
-      // const amount = "1000000000000";
-      // const txhash = await createBurnTokensTxBuilder(
-      //   connection,
-      //   wallet,
-      //   new PublicKey(tokenAddress),
-      //   amount
-      // );
       if (!formik?.values?.tokenAddress) {
         errorToast({ message: "Please enter token address" });
         return;
@@ -57,8 +40,6 @@ const ManageToken = ({
         wallet,
         new PublicKey(formik?.values?.tokenAddress)
       );
-
-      // console.log(txhash);
       if (txhash) {
         // correctly revoked
         formik.setFieldValue("mintAuthority", false);
@@ -74,9 +55,11 @@ const ManageToken = ({
           allowCopy: true,
         });
       }
+      else{
+        errorToast({ message: "Please try again" });
+      }
       setMintLoading(false);
     } catch (error) {
-      // console.log(error);
       errorToast({ message: "Please try again!" });
       setMintLoading(false);
     }
@@ -105,6 +88,9 @@ const ManageToken = ({
           },
           allowCopy: true,
         });
+      }
+      else{
+        errorToast({ message: "Please try again" });
       }
       setFreezeLoading(false);
     } catch (error) {
@@ -188,9 +174,6 @@ const ManageToken = ({
                           wallet.publicKey?.toBase58()
                       )
                     );
-                    // setTimeout(() => {
-                    //   setTokenLoading(false);
-                    // }, 1000);
                     setTokenLoading(false);
                   } else {
                     errorToast({

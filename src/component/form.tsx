@@ -58,6 +58,9 @@ import { createMintTokensTxBuilder } from "@/solana/txBuilder/mintTokenTxBuilder
 import { createBurnTokensTxBuilder } from "@/solana/txBuilder/burnTokenTxBuilder";
 import Loader from "./loader";
 import ManageToken from "./manageToken";
+import { updateSPLTokenMetadataTxBuilder } from "@/solana/txBuilder/updateMetadataTxBuilder";
+import { validateAddress } from "@/solana/txBuilder/checkAddress";
+import { getTokenMetadata } from "@/metaplex/getTokenMetadata";
 
 const initialV1Token: PreviewData = {
   "Token Details": {
@@ -69,23 +72,6 @@ const initialV1Token: PreviewData = {
   },
 };
 
-// const initialV2Token: PreviewData = {
-//   "Token Details": {
-//     "Token Name": "",
-//     Description: "",
-//     Symbol: "",
-//     Supply: "",
-//     Decimals: "",
-//   },
-//   Extensions: {
-//     "Fee %": "",
-//     "Max Fee": "",
-//     "Interest Rate": "",
-//     "Account State": "",
-//     "Permanent Delegate": "",
-//     "Non Transferable": "",
-//   },
-// };
 
 export default function Form() {
   const {
@@ -135,6 +121,8 @@ export default function Form() {
   const [showUpdateMetadata, setShowUpdateMetadata] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
   const [balance, setBalance] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [updateMetadataLoading, setUpdateMetadataLoading] = useState(false);
 
   const [renderForm, setRenderForm] = useState(false);
   useEffect(() => {
@@ -152,7 +140,7 @@ export default function Form() {
       twitter: twitter,
       telegram: telegram,
       discord: discord,
-      logo: "", // not currently used here (used from redux state)
+      logo: "", 
       fee: "",
       maxFee: maxFee,
       withdrawAuthority: withdrawAuthority,
@@ -170,89 +158,229 @@ export default function Form() {
     validateOnChange: false,
     validateOnBlur: false,
     validate: (values) => createTokenValidator(values),
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       setButtonClicked(true);
-      if (selectedForm === keyPairs.createV1) {
-        // v1 token creation
-        createTokenHandler(values);
+      if (tokenAction === TokenRoutes.updateMetadata) {
+        updateMetadataHandler();
+      } else if (tokenAction === TokenRoutes.createToken) {
+        if (selectedForm === keyPairs.createV1) {
+          createTokenHandler(values);
+        }
       }
     },
   });
 
+  const oldMetaData = async (isFetchOnly?: boolean) => {
+    try {
+      if (tokenAction === TokenRoutes.updateMetadata) {
+        setUpdateMetadataLoading(true);
+        let oldData = await getTokenMetadata(
+          new PublicKey(formik.values.tokenAddress),
+          connection
+        );
+        if (oldData.isMutable) {
+          formik.setFieldValue("name", oldData.tokenName);
+          formik.setFieldValue("symbol", oldData.tokenSymbol);
+          formik.setFieldValue("logo", oldData.tokenLogo);
+          formik.setFieldValue("description", oldData.tokenDescription);
+          let updatedPreviewData = {
+            "Token Details": {
+              "Token Name": oldData.tokenName,
+              Description: oldData.tokenDescription,
+              Symbol: oldData.tokenSymbol,
+            },
+          };
+          formik.setFieldValue("logo", oldData.tokenLogo);
+          dispatch(setPreviewData(updatedPreviewData));
+          if (!isFetchOnly) {
+            toggleShowUpdateMetadata();
+          }
+          setUpdateMetadataLoading(false);
+        } else {
+          errorToast({ message: "Metadata is Immutable!" });
+          setUpdateMetadataLoading(false);
+        }
+      }
+    } catch (e) {
+      errorToast({ message: "Please Check Your Address!" });
+      setUpdateMetadataLoading(false);
+    }
+  };
+
+  const updateMetadataHandler = async () => {
+    if (!wallet.connected) {
+      errorToast({ message: "Please Connect The Wallet" });
+      setButtonClicked(false);
+      return;
+    }
+    let balance = 0;
+
+    if (wallet.publicKey != null) {
+      balance = await connection.getBalance(wallet.publicKey as any);
+    }
+    if (balance < 3000000) {
+      errorToast({ message: "Insufficent Balance" });
+      return;
+    }
+    try {
+
+      const metaplexhandler = await metaplexBuilder(wallet, connection);
+      const imgURI = await metaplexhandler.storage().upload(metaplexFileData);
+      if (imgURI) {
+        successToast({ message: `Image Uri Created` });
+        let tokenMetadata = {
+          name: formik.values.name,
+          symbol: formik.values.symbol,
+          description: formik.values.description,
+          image: imgURI,
+        } as any;
+        if (formik.values?.website) {
+          tokenMetadata["website"] = formik.values.website;
+        }
+        if (formik.values?.telegram) {
+          tokenMetadata["telegram"] = formik.values.telegram;
+        }
+        if (formik.values?.discord) {
+          tokenMetadata["discord"] = formik.values.discord;
+        }
+        if (formik.values?.twitter) {
+          tokenMetadata["twitter"] = formik.values.twitter;
+        }
+        const { uri } = await metaplexhandler
+          .nfts()
+          .uploadMetadata(tokenMetadata);
+          if(!uri)
+          {
+           setButtonClicked(false);
+           errorToast({ message: "Error In Creating Uri" });
+           return;
+          }
+        successToast({ message: `MetaData Uploaded` });
+        const txData = await updateSPLTokenMetadataTxBuilder(
+          formik.values.name,
+          formik.values.symbol,
+          uri,
+          connection,
+          wallet,
+          new PublicKey(formik.values.tokenAddress)
+        );
+        oldMetaData(true);
+        if(!txData){
+          setButtonClicked(false);
+          errorToast({ message: "Please Try Again" });
+          return;
+        }
+
+        setButtonClicked(false);
+        successToast({
+          keyPairs: {
+            signature: {
+              value: `${txData?.sig}`,
+              linkTo: `https://solscan.io/tx/${txData?.sig}?cluster=devnet`,
+            },
+          },
+          allowCopy: true,
+        });
+      } else {
+        errorToast({ message: "Error In Uploading Logo" });
+        setButtonClicked(false);
+      }
+    } catch (e) {
+      errorToast({ message: "Try Again!" });
+      setButtonClicked(false);
+    }
+  };
+
   const createTokenValidator = (values: any) => {
     let resp = {} as any;
     if (selectedForm === keyPairs.createV1) {
-      // v1 token validator
       resp = v1TokenValidation(values);
-      // check if logo added
-      if (!fileData?.name) {
+      //console.log(metaplexFileData)
+      if (!metaplexFileData?.fileName) {
         resp["logo"] = "Please select logo";
         errorToast({ message: "Please upload logo!" });
-      }
-      let errors = Object.keys(resp).length;
-      if (errors < 1) {
-        // no errors so updating redux state
-        dispatch(setName(formik.values.name));
-        dispatch(setSymbol(formik.values.symbol));
-        dispatch(setDescription(formik.values.description));
-        dispatch(setSupply(formik.values.supply));
-        dispatch(setDecimal(formik.values.decimal));
       }
     }
     return resp;
   };
-
   const createTokenHandler = async (values: any) => {
-    // console.log("Values : ", values);
     if (!wallet.connected) {
-      errorToast({ message: "Please connect the wallet" });
-      // console.log("Wallet not connected");
+      errorToast({ message: "Please Connect The Wallet" });
       setButtonClicked(false);
-
       return;
     }
+
     let balance = 0;
     if (wallet.publicKey != null) {
       balance = await connection.getBalance(wallet.publicKey as any);
-      setBalance(balance);
+   //    console.log(balance);
     }
     if (balance > 5000000) {
       try {
         const isSPL = true;
         if (isSPL) {
+
           const metaplexhandler = await metaplexBuilder(wallet, connection);
+         // console.log("gvhgvghvhg",metaplexFileData)
+
           const imgURI = await metaplexhandler
             .storage()
             .upload(metaplexFileData);
-          // console.log("MP data : ", metaplexFileData);
-          // console.log("Uploaded Image URI (Arweave)", imgURI);
-
-          if (imgURI) {
+          if (imgURI) {          
             successToast({ message: `Image Uri Created` });
-            const tokenMetadata = {
-              name: name,
-              symbol: symbol,
-              description: description,
+            let tokenMetadata = {
+              name: formik.values.name,
+              symbol: formik.values.symbol,
+              description: formik.values.description,
               image: imgURI,
-            };
+            } as any;
+            if (formik.values?.website) {
+              tokenMetadata["website"] = formik.values.website;
+            }
+            if (formik.values?.telegram) {
+              tokenMetadata["telegram"] = formik.values.telegram;
+            }
+            if (formik.values?.discord) {
+              tokenMetadata["discord"] = formik.values.discord;
+            }
+            if (formik.values?.twitter) {
+              tokenMetadata["twitter"] = formik.values.twitter;
+            }
+          //  console.log(tokenMetadata)
+
+
             const { uri } = await metaplexhandler
               .nfts()
               .uploadMetadata(tokenMetadata);
-
-            // console.log("Uploaded Metadata URI (Arweave)", uri);
+             if(!uri)
+             {
+              setButtonClicked(false);
+              errorToast({ message: "Error In Creating Uri" });
+              return;
+             }
             successToast({ message: `MetaData Uploaded` });
+            const endpoint= connection.rpcEndpoint;
 
+            //console.log(endpoint)
+          
             const txhash = await createSPLTokenTxBuilder(
-              name,
-              symbol,
-              decimal,
+              formik.values.name,
+              formik.values.symbol,
+              formik.values.decimal,
               uri,
-              supply,
+              formik.values.supply,
               connection,
-              wallet
+              wallet,
+              endpoint
             );
 
-            // // console.log("txhash", txhash?.sig);
+            if(!txhash){
+              setButtonClicked(false);
+              errorToast({ message: "Please Try Again" });
+              return;
+
+            }
+       
             successToast({
               keyPairs: {
                 mintAddress: {
@@ -269,16 +397,17 @@ export default function Form() {
             setButtonClicked(false);
           } else {
             setButtonClicked(false);
-            errorToast({ message: "Error in creating token please retry" });
+            errorToast({ message: "Error In Creating Token Please Retry" });
           }
         } else {
+
         }
       } catch (error) {
-        // console.log(error);
+        errorToast({ message: "Try Again!" });
         setButtonClicked(false);
       }
     } else {
-      errorToast({ message: "Insufficent balance" });
+      errorToast({ message: "Insufficent Balance" });
       setButtonClicked(false);
     }
   };
@@ -290,6 +419,17 @@ export default function Form() {
   const getImageURL = () => {
     if (fileData && fileData.name) return URL.createObjectURL(fileData);
     return "";
+  };
+
+  const enableRightSidebar = () => {
+    if (
+      [TokenRoutes.createToken, TokenRoutes.updateMetadata].includes(
+        tokenAction || ""
+      )
+    ) {
+      return true;
+    }
+    return false;
   };
 
   useEffect(() => {
@@ -326,14 +466,8 @@ export default function Form() {
           },
         };
       }
-    } else if (tokenAction === TokenRoutes.updateMetadata) {
-      // update metadata
-      updatedPreviewData = { ...initialV1Token };
-    } else {
-      // default cond (setting to empty vals)
-      updatedPreviewData = { ...initialV1Token };
+      dispatch(setPreviewData(cloneDeep(updatedPreviewData)));
     }
-    dispatch(setPreviewData(cloneDeep(updatedPreviewData)));
   }, [
     formik.values.name,
     formik.values.symbol,
@@ -351,10 +485,32 @@ export default function Form() {
     tokenAction,
   ]);
 
+  useEffect(() => {
+    formik.resetForm();
+    // dispatch(setFileData(null));
+    if (tokenAction === TokenRoutes.updateMetadata) {
+      let updatedPreviewData = {
+        "Token Details": {
+          "Token Name": "",
+          Description: "",
+          Symbol: "",
+        },
+      };
+      // formik.setFieldValue("logo", "");
+      dispatch(setPreviewData(updatedPreviewData));
+      dispatch(setFileData(null));
+    }
+  }, [tokenAction]);
+
   return (
     <>
       {renderForm ? (
         <div className="flex flex-row flex-1 h-full overflow-auto scroll-smooth">
+          {loading && (
+            <div className=" absolute top-[0] bottom-[0] left-[0] right-[0] bg-loaderBG flex flex-1 items-center justify-center">
+              <Loader visible={loading} size={50} />
+            </div>
+          )}
           {tokenAction === TokenRoutes.createToken && (
             <CreateOrEditToken formik={formik} />
           )}
@@ -378,23 +534,26 @@ export default function Form() {
                 </div>
                 <CustomInput
                   label="Token Address"
-                  value={tokenAddress}
-                  onChange={(e) => {
-                    dispatch(setTokenAddress(e.target.value));
-                  }}
+                  value={formik?.values?.tokenAddress}
+                  id="tokenAddress"
+                  name="tokenAddress"
+                  onChange={formik?.handleChange}
+                  // onChange={(e) => {
+                  //   dispatch(setTokenAddress(e.target.value));
+                  // }}
                   showSymbol={false}
                   type={"text"}
                   placeholder={"Enter Token Address"}
                 />
                 {showUpdateMetadata ? (
-                  <CreateOrEditToken isEdit={true} />
+                  <CreateOrEditToken isEdit={true} formik={formik} />
                 ) : (
                   <div className="w-[90px] mt-6 flex justify-left">
                     <CustomButton
                       label="Load"
+                      loading={updateMetadataLoading}
                       onClick={() => {
-                        // console.log("Load clicked");
-                        toggleShowUpdateMetadata();
+                        oldMetaData();
                       }}
                     />
                   </div>
@@ -408,13 +567,15 @@ export default function Form() {
           {tokenAction === TokenRoutes.burnToken && (
             <MintOrBurnToken formik={formik} isBurn={true} />
           )}
-          {tokenAction === TokenRoutes.createToken && (
+          {enableRightSidebar() && (
             <RightSidebar
               data={previewData}
               logo={getImageURL()}
               showInfo={true}
               createBtnText={
-                selectedForm === keyPairs.createV1
+                tokenAction === TokenRoutes.updateMetadata
+                  ? "Update Metadata"
+                  : selectedForm === keyPairs.createV1
                   ? "Create v1 SPL Token"
                   : "Create v2 SPL Token"
               }

@@ -26,26 +26,12 @@ export default function ComingSoon() {
           overflow: "scroll",
         }}
       >
-        <section className="hidden lg:block">
-          <Header
-            showPrimaryHeader={true}
-            handleClickProp={() => {
-              setLoading(true);
-            }}
-          />
-        </section>
-        <section
-          className="block lg:hidden absolute top-[40px]"
-          style={{ alignSelf: "center" }}
-        >
-          <Image
-            src={"/mobileHeader.svg"}
-            alt="mobileHeader Logo"
-            width={118}
-            height={36}
-            priority
-          />
-        </section>
+        <Header
+          handleClickProp={() => {
+            setLoading(true);
+          }}
+        />
+
         <div
           className="bg-gradient-to-t from-black to-transparent absolute h-[90vh] w-[100vw] bottom-[30px] flex items-center justify-center"
           style={{
@@ -93,9 +79,10 @@ export default function ComingSoon() {
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ pointerEvents: "auto" }}
+                onClick={(e) => e.preventDefault()}
               >
                 <Image
-                  src={"/discord.svg"}
+                  src={"/discordDisabled.svg"}
                   alt="discord Logo"
                   width={20}
                   height={20}
@@ -121,7 +108,7 @@ export default function ComingSoon() {
               src={"/marquelmg.svg"}
               alt="Coming Soon Logo"
               height={48}
-              width={2188}
+              width={2166}
               priority
             />
           </Marquee>

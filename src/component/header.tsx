@@ -1,26 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-// import logo from "../asset/logo.jpeg";
-// import menu from "../asset/menu.png";
-// import search from "../asset/search.png";
-// import walletImg from "../asset/walletImg.png";
-import PrimaryHeader from "./primaryHeader";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import {
-  PhantomWalletAdapter,
-  SolflareWalletAdapter,
-  TorusWalletAdapter,
-} from "@solana/wallet-adapter-wallets";
-import {
-  Connection,
-  SystemProgram,
-  Transaction,
-  LAMPORTS_PER_SOL,
-  clusterApiUrl,
-  PublicKey,
-} from "@solana/web3.js";
 import "@solana/wallet-adapter-react-ui/styles.css";
-import { Buffer } from "buffer";
 import CustomInput from "./customInput";
 import Image from "next/image";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -31,20 +12,11 @@ import { errorToast } from "./toast";
 const borderColor: string = "#4D4D4D";
 
 interface HeaderProps {
-  showPrimaryHeader: boolean;
   selectedLink?: string;
   handleClickProp?: Function;
 }
 
-const Header: React.FC<HeaderProps> = ({
-  showPrimaryHeader,
-  selectedLink,
-  handleClickProp,
-}) => {
-  const [points, setPoints] = useState<number>(0);
-  const [userAddress, setWalletAddress] = useState<null | string>(null);
-  const [apiResponse, setApiResponse] = useState<any[]>([]);
-  const [showDropdown, setShowDropdown] = useState<boolean>(false);
+const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
   const [searchVal, setSearchVal] = useState<string>("");
   const [showButton, setShowButton] = useState(false);
 
@@ -72,13 +44,12 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <div>
-      {/* {showPrimaryHeader && <PrimaryHeader />} */}
       <div
-        className="w-full bg-black flex items-center h-[46px]"
+        className="w-full bg-black items-center h-[46px] hidden lg:flex py-2" // desktop view header
         style={{ borderBottomWidth: "0.2px", borderColor: borderColor }}
       >
         <div
-          className="cursor-pointer px-4 flex items-center"
+          className="cursor-pointer px-4 flex items-center h-full"
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -93,7 +64,7 @@ const Header: React.FC<HeaderProps> = ({
           }}
         >
           <Image
-            src={"/logo.jpeg"}
+            src={"/logo.svg"}
             alt="logo Logo"
             width={20}
             height={20}
@@ -101,22 +72,14 @@ const Header: React.FC<HeaderProps> = ({
           />
         </div>
         <div
-          className="cursor-pointer px-4 flex items-center"
+          className="cursor-pointer px-4 flex items-center h-full"
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
           }}
         >
-          {/* <img
-            src={menu}
-            alt="menu"
-            width={`${16}px`}
-            style={{
-              height: `${16}px`,
-            }}
-          /> */}
           <Image
-            src={"/menuDisabled.png"}
+            src={"/menuDisabled.svg"}
             alt="menu Logo"
             width={16}
             height={16}
@@ -124,7 +87,7 @@ const Header: React.FC<HeaderProps> = ({
           />
         </div>
         <div
-          className="px-4 flex items-center"
+          className="px-4 flex items-center h-full"
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -139,7 +102,7 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
         <div
-          className="px-4 flex items-center"
+          className="px-4 flex items-center h-full"
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -154,7 +117,7 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
         <div
-          className="px-4 flex items-center"
+          className="px-4 flex items-center h-full"
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -171,7 +134,7 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
         <div
-          className="px-4 flex items-center"
+          className="px-4 flex items-center h-full"
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -196,15 +159,6 @@ const Header: React.FC<HeaderProps> = ({
             flex: 1,
           }}
         >
-          {/* <img
-            src={search}
-            alt="search"
-            width={`${20}px`}
-            style={{
-              height: `${20}px`,
-              marginRight: "10px",
-            }}
-          /> */}
           <Image
             src={"/search.svg"}
             alt="search Logo"
@@ -236,25 +190,14 @@ const Header: React.FC<HeaderProps> = ({
           {wallet.connected ? (
             <></>
           ) : (
-            // <img
-            //   src={walletImg}
-            //   alt="wallet"
-            //   width={`${20}px`}
-            //   style={{
-            //     height: `${20}px`,
-            //   }}
-            // />
             <Image
-              src={"/walletImg.png"}
+              src={"/walletImg.svg"}
               alt="wallet Logo"
               width={20}
               height={20}
               priority
             />
           )}
-          {/* <div className="text-center text-white font-Orbitron w-100 cursor-pointer ml-3">
-            Connect Wallet
-          </div> */}
           <div style={{}}>
             {showButton && (
               <WalletMultiButton
@@ -275,6 +218,101 @@ const Header: React.FC<HeaderProps> = ({
               />
             )}
           </div>
+        </div>
+      </div>
+      <div
+        className="w-full bg-black py-2 flex items-center h-[46px] block lg:hidden" // mobile view header
+        style={{ borderBottomWidth: "0.2px", borderColor: borderColor }}
+      >
+        <div
+          className="cursor-pointer px-4 flex items-center h-full"
+          style={{
+            borderRightWidth: "2px",
+            borderColor: borderColor,
+          }}
+          onClick={() => {
+            if (!tokenAction) {
+              return;
+            } else {
+              handleClickProp ? handleClickProp() : null;
+              router.push(`/`);
+            }
+          }}
+        >
+          <Image
+            src={"/logo.svg"}
+            alt="logo Logo"
+            width={20}
+            height={20}
+            priority
+          />
+        </div>
+        <div
+          className="px-4"
+          style={{
+            borderColor: borderColor,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flex: 1,
+          }}
+        >
+          <Image
+            src={"/search.svg"}
+            alt="search Logo"
+            width={20}
+            height={20}
+            style={{ marginRight: "10px" }}
+            priority
+          />
+          <CustomInput
+            label={""}
+            value={""}
+            onChange={(e) => {
+              setSearchVal(e.target.value);
+            }}
+            containerStyles={{ marginTop: 0 }}
+            placeholderColor={"#989C9F"}
+            placeholder={"Search"}
+            type={"string"}
+          />
+        </div>
+        <div
+          className="px-4 h-full flex items-center justify-center"
+          style={{
+            borderLeftWidth: "2px",
+            borderColor: borderColor,
+          }}
+        >
+          {wallet.connected ? (
+            <></>
+          ) : (
+            <Image
+              src={"/walletImg.svg"}
+              alt="wallet Logo"
+              width={20}
+              height={20}
+              priority
+            />
+          )}
+          <div
+            style={{ borderLeftWidth: "2px", borderColor: borderColor }}
+          ></div>
+        </div>
+        <div
+          className="cursor-pointer px-4 flex items-center h-full"
+          style={{
+            borderLeftWidth: "2px",
+            borderColor: borderColor,
+          }}
+        >
+          <Image
+            src={"/menuDisabled.svg"}
+            alt="menu Logo"
+            width={20}
+            height={20}
+            priority
+          />
         </div>
       </div>
     </div>

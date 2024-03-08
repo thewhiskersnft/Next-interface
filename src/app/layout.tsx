@@ -12,25 +12,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
-// export const metadata: Metadata = {
-//   title: "Moonly",
-//   description: "Moonly",
-// };
-
-// export default function RootLayout({
-//   children,
-// }: Readonly<{
-//   children: React.ReactNode;
-// }>) {
-//   return (
-//     <html lang="en">
-//       <Provider store={store}>
-//         <body className={inter.className}>{children}</body>
-//       </Provider>
-//     </html>
-//   );
-// }
-
 type ReduxProviderProps = {
   children: React.ReactNode;
 };
@@ -55,14 +36,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      {/* <SolanaWalletAdapter>
-        <ReduxProvider>
-          <ToastContainer /> */}
+      <title>Moonly</title>
+      <meta
+        name="description"
+        content="Moonly is a lightning-fast trading dApp with a built in CLI trading bot, Advanced Token Analytics, and Gem Finding tools being built for all the Power Users on Solana."
+      />
       <body className={inter.className}>
         {<ProviderChild>{children}</ProviderChild>}
       </body>
-      {/* </ReduxProvider>
-      </SolanaWalletAdapter> */}
     </html>
   );
 }
