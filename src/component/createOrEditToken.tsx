@@ -1,41 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  setConfigAuthority,
-  setDecimal,
   setDefaultAccountState,
-  setDefaultAccountStateOption,
-  setDelegate,
-  setDescription,
-  setDiscord,
   setEnableExtensions,
-  setFee,
   setInterestBearing,
-  setMaxFee,
-  setName,
   setNonTransferable,
   setPermanentDelegate,
-  setPreviewData,
-  setRate,
   setSelectedForm,
-  setSupply,
-  setSymbol,
-  setTelegram,
   setToggled,
   setFileData,
   setMetaplexFileData,
   setTransferTax,
-  setTwitter,
-  setWebsite,
-  setWithdrawAuthority,
 } from "../redux/slice/formDataSlice";
 import { keyPairs } from "../constants";
-// import help from "../asset/help.svg";
-// import helpDark from "../asset/helpDark.png";
 import CustomInput from "./customInput";
 import CustomImagePicker from "./customImagePicker";
 import CustomRadio from "./customRadio";
-import Image from "next/image";
 import { toMetaplexFileFromBrowser } from "@metaplex-foundation/js";
 import CustomDropdown from "./customDropdown";
 import { errorToast } from "./toast";
@@ -47,15 +27,6 @@ const CreateOrEditToken = ({
   formik = { errors: {}, values: {}, touched: {} },
 }: CreateOrEditTokenProps) => {
   const {
-    name,
-    previewData,
-    delegate,
-    defaultAccountStateOption,
-    rate,
-    configAuthority,
-    withdrawAuthority,
-    maxFee,
-    fee,
     nonTransferable,
     permanentDelegate,
     defaultAccountState,
@@ -64,15 +35,7 @@ const CreateOrEditToken = ({
     enableExtensions,
     selectedForm,
     isToggled,
-    discord,
-    telegram,
-    twitter,
     fileData,
-    website,
-    decimal,
-    supply,
-    description,
-    symbol,
   } = useSelector((state: any) => state.formDataSlice);
 
   const dispatch = useDispatch();
@@ -117,7 +80,6 @@ const CreateOrEditToken = ({
             /> */}
           </button>
           <button
-            // style={{ border: "1px solid #4D4D4D" }}
             className={`${
               selectedForm === keyPairs.createV2
                 ? "bg-yellow1 text-black font-semibold"
@@ -245,7 +207,6 @@ const CreateOrEditToken = ({
           value={fileData}
           fileName={(fileData && fileData.name) || ""}
           onChange={async (e) => {
-            // // console.log("Image : ", e?.target?.files[0]);
             if (e?.target?.files && e.target.files[0]) {
               const imgMetaplexFile = await toMetaplexFileFromBrowser(
                 e.target.files[0]

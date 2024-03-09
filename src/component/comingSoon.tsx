@@ -27,7 +27,6 @@ export default function ComingSoon() {
         }}
       >
         <Header
-          showPrimaryHeader={true}
           handleClickProp={() => {
             setLoading(true);
           }}
@@ -80,9 +79,10 @@ export default function ComingSoon() {
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ pointerEvents: "auto" }}
+                onClick={(e) => e.preventDefault()}
               >
                 <Image
-                  src={"/discord.svg"}
+                  src={"/discordDisabled.svg"}
                   alt="discord Logo"
                   width={20}
                   height={20}
@@ -108,7 +108,7 @@ export default function ComingSoon() {
               src={"/marquelmg.svg"}
               alt="Coming Soon Logo"
               height={48}
-              width={2188}
+              width={2166}
               priority
             />
           </Marquee>

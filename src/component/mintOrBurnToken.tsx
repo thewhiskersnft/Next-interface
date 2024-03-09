@@ -22,6 +22,7 @@ const MintOrBurnToken = ({
   const wallet = useWallet();
 
   const checkAddress = async () => {
+    // move to utils while refactoring
     try {
       setLoading(true);
       const mintAccount = await validateAddress(
@@ -71,6 +72,10 @@ const MintOrBurnToken = ({
           allowCopy: true,
         });
       }
+      else{
+        errorToast({ message: "Please try again" });
+      }
+      
       // console.log(txhash);
       setBurnOrMintLoading(false);
     } catch (e) {
@@ -104,6 +109,9 @@ const MintOrBurnToken = ({
           },
           allowCopy: true,
         });
+      }
+      else{
+        errorToast({ message: "Please try again" });
       }
       // console.log(txhash);
       setBurnOrMintLoading(false);

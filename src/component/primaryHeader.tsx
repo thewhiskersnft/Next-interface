@@ -3,6 +3,7 @@ import App from "next/app";
 import Image from "next/image";
 import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
+import { envs } from "@/constants";
 
 const borderColor: string = "#4D4D4D";
 
@@ -101,12 +102,13 @@ const PrimaryHeader: FC = () => {
       </div>
       <div className="flex">
         <span
-          className="flex items-center px-6"
+          className="flex items-center px-6 cursor-pointer"
           style={{
             borderLeftWidth: "2px",
             borderRightWidth: "2px",
             borderColor: borderColor,
           }}
+          onClick={() => {}}
         >
           <Image
             src={"/online.svg"}
@@ -117,7 +119,7 @@ const PrimaryHeader: FC = () => {
             priority
           />
           <p className="font-Orbitron text-xsmall text-textGreen ml-2">
-            Devnet
+            {envs.devnet}
           </p>
         </span>
 

@@ -138,9 +138,9 @@ const RightSidebar: FC<SidebarProps> = ({
         </div>
         <div className="p-4 bg-black">
           <div className="border-yellow1 border-2 flex items-center justify-center h-[343px] w-[343px]">
-            {logo ? (
+            {formik.values.logo || logo ? (
               <img
-                src={logo} // default image is cat1 for now
+                src={formik.values.logo || logo} // default image is cat1 for now
                 alt="logo"
                 width={`${254}px`}
                 style={{
@@ -151,7 +151,7 @@ const RightSidebar: FC<SidebarProps> = ({
               />
             ) : (
               <Image
-                src={"/cat1.png"}
+                src={"/cat1.svg"}
                 alt="Cat Logo"
                 width={254}
                 height={254}
@@ -165,6 +165,9 @@ const RightSidebar: FC<SidebarProps> = ({
               target="_blank"
               rel="noopener noreferrer"
               href={mediaLinks.website}
+              onClick={(e) => {
+                if (!mediaLinks.website) e.preventDefault();
+              }}
             >
               <Image
                 src={
@@ -181,6 +184,9 @@ const RightSidebar: FC<SidebarProps> = ({
               href={mediaLinks.twitter}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => {
+                if (!mediaLinks.twitter) e.preventDefault();
+              }}
             >
               <Image
                 src={
@@ -197,6 +203,9 @@ const RightSidebar: FC<SidebarProps> = ({
               href={mediaLinks.telegram}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => {
+                if (!mediaLinks.telegram) e.preventDefault();
+              }}
             >
               <Image
                 src={
@@ -215,6 +224,9 @@ const RightSidebar: FC<SidebarProps> = ({
               href={mediaLinks.discord}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => {
+                if (!mediaLinks.discord) e.preventDefault();
+              }}
             >
               <Image
                 src={
