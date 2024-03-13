@@ -1,46 +1,39 @@
-"use client";
 import ComingSoon from "@/component/comingSoon";
-import Form from "@/component/form";
+import Form from "@/component/form/form";
 import Header from "@/component/header";
-import Loader from "@/component/loader";
 import PrimaryHeader from "@/component/primaryHeader";
-import Sidebar from "@/component/sidebar";
-import { Suspense, useState } from "react";
-
-const FormFallback = () => <Loader visible={true} size={50} />;
+import Sidebar from "@/component/form/sidebar";
+import { Suspense } from "react";
+import { isMobile } from "react-device-detect";
+import Loader from "@/component/loader";
 
 export default function Token() {
-  const [loading, setLoading] = useState(false);
   return (
-    <Suspense fallback={FormFallback as any}>
-      <div className="block lg:hidden">
-        <ComingSoon />
-      </div>
-      <div className="hidden lg:block">
-        <div
-          className={`absolute h-full w-full flex justify-center items-center bg-[rgba(0,0,0,0.5)] z-50 ${
-            loading ? "visible" : "hidden"
-          }`}
-        >
-          <Loader visible={loading} size={50} />
+    <Suspense
+      fallback={
+        <div className="flex h-[100vh] w-[100vw] justify-center items-center absolute top-[0]">
+          <Loader visible={true} size={80} />
         </div>
-        <div
-          className="width-100 flex flex-col h-max"
-          style={{ height: "100vh", overflow: "hidden" }}
-        >
-          <Header
-            selectedLink="TOOLS"
-            handleClickProp={() => {
-              setLoading(true);
-            }}
-          />
-          <div className="width-100 flex flex-row h-full overflow-hidden bg-black">
-            <Sidebar />
-            <Form />
+      }
+    >
+      <>
+        <div className="block lg:hidden">
+          <ComingSoon hideOnWeb={true} />
+        </div>
+        <div className="hidden lg:block">
+          <div
+            className="width-100 flex flex-col h-max"
+            style={{ height: "100vh", overflow: "hidden" }}
+          >
+            <Header selectedLink="TOOLS" />
+            <div className="width-100 flex flex-row h-full overflow-hidden bg-black">
+              <Sidebar />
+              <Form />
+            </div>
+            <PrimaryHeader />
           </div>
-          <PrimaryHeader />
         </div>
-      </div>
+      </>
     </Suspense>
   );
 }

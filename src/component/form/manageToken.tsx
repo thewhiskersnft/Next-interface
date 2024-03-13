@@ -1,12 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import CustomInput from "./customInput";
-import CustomButton from "./customButton";
+import CustomInput from "../customInput";
+import CustomButton from "../customButton";
 import { revokeMintAuthTxBuilder } from "@/solana/txBuilder/revokeMintAuthTxBuilder";
 import { PublicKey } from "@metaplex-foundation/js";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { revokeFreezeAuthTxBuilder } from "@/solana/txBuilder/revokeFreezeAuthTxBuilder";
-import { errorToast, successToast } from "./toast";
+import { errorToast, successToast } from "../toast";
 import { getMint } from "@solana/spl-token";
 import { useDispatch } from "react-redux";
 import {
@@ -54,8 +54,7 @@ const ManageToken = ({
           },
           allowCopy: true,
         });
-      }
-      else{
+      } else {
         errorToast({ message: "Please try again" });
       }
       setMintLoading(false);
@@ -88,8 +87,7 @@ const ManageToken = ({
           },
           allowCopy: true,
         });
-      }
-      else{
+      } else {
         errorToast({ message: "Please try again" });
       }
       setFreezeLoading(false);

@@ -57,15 +57,6 @@ const PrimaryHeader: FC = () => {
           }}
         >
           <div className="text-center text-white text-xsmall font-Orbitron w-100 cursor-pointer flex items-center">
-            {/* <img
-              src={solana}
-              alt="settings"
-              width={`${16}px`}
-              style={{
-                height: `${16}px`,
-                marginRight: "5px",
-              }}
-            /> */}
             <Image
               src={"/solana.svg"}
               alt="solana Logo"

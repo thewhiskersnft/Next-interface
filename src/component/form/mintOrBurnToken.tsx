@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from "react";
-import CustomInput from "./customInput";
-import CustomButton from "./customButton";
+import CustomInput from "../customInput";
+import CustomButton from "../customButton";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 
-import { createMintTokensTxBuilder } from "../solana/txBuilder/mintTokenTxBuilder";
+import { createMintTokensTxBuilder } from "../../solana/txBuilder/mintTokenTxBuilder";
 import { validateAddress } from "@/solana/txBuilder/checkAddress";
-import { errorToast, successToast } from "./toast";
+import { errorToast, successToast } from "../toast";
 import { createBurnTokensTxBuilder } from "@/solana/txBuilder/burnTokenTxBuilder";
 
 type MintOrBurnTokenProps = { isBurn?: boolean; formik?: any };
@@ -71,11 +71,10 @@ const MintOrBurnToken = ({
           },
           allowCopy: true,
         });
-      }
-      else{
+      } else {
         errorToast({ message: "Please try again" });
       }
-      
+
       // console.log(txhash);
       setBurnOrMintLoading(false);
     } catch (e) {
@@ -109,8 +108,7 @@ const MintOrBurnToken = ({
           },
           allowCopy: true,
         });
-      }
-      else{
+      } else {
         errorToast({ message: "Please try again" });
       }
       // console.log(txhash);

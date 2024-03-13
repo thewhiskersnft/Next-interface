@@ -6,9 +6,11 @@ import "./globals.css";
 import { Provider } from "react-redux";
 // @ts-ignore
 import { store } from "@/redux/store/store";
-import { SolanaWalletAdapter } from "@/context/WalletAdapter";
+import { SolanaWalletProviders } from "@/context/WalletAdapter";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+// import useInitRefreshTransactionStatus from "@/application/transaction/useInitRefreshTransactionStatus";
+// import useSyncTxHistoryWithLocalStorage from "@/application/transaction/useSyncTxHistoryWithLocalStorage";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,18 +18,22 @@ type ReduxProviderProps = {
   children: React.ReactNode;
 };
 
-function ReduxProvider({ children }: ReduxProviderProps) {
+function WalletProvider({ children }: ReduxProviderProps) {
   return (
-    <SolanaWalletAdapter>
+    <SolanaWalletProviders>
       <ToastContainer style={{ width: "max-content" }} />
-      {/* 
-// @ts-ignore */}
-      <Provider store={store}>{children}</Provider>
-    </SolanaWalletAdapter>
+      {/* <ApplicationInitializations /> */}
+      {children}
+    </SolanaWalletProviders>
   );
 }
 function ProviderChild({ children }: any) {
-  return <ReduxProvider>{children}</ReduxProvider>;
+  return (
+    // @ts-ignore
+    <Provider store={store}>
+      <WalletProvider>{children}</WalletProvider>
+    </Provider>
+  );
 }
 export default function RootLayout({
   children,
@@ -47,3 +53,11 @@ export default function RootLayout({
     </html>
   );
 }
+
+// function ApplicationInitializations() {
+//   /********************** txHistory **********************/
+//   useInitRefreshTransactionStatus();
+//   useSyncTxHistoryWithLocalStorage();
+
+//   return null;
+// }

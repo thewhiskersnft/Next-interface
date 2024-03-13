@@ -1,13 +1,13 @@
 "use client";
 import React, { FC } from "react";
-import { Extensions, PreviewData, TokenDetails } from "../interfaces";
+import { Extensions, PreviewData, TokenDetails } from "../../interfaces";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { metaplexBuilder } from "@/metaplex";
 import { MetaplexFile } from "@metaplex-foundation/js";
 import { createSPLTokenTxBuilder } from "@/solana/txBuilder/createSPLTokenTxBuilder";
-import CustomButton from "./customButton";
+import CustomButton from "../customButton";
 
 interface SidebarProps {
   data: PreviewData;

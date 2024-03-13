@@ -1,77 +1,32 @@
 "use client";
 import React, { useEffect, useState, Suspense } from "react";
-import CustomInput from "./customInput";
-import CustomRadio from "./customRadio";
+import CustomInput from "../customInput";
 import RightSidebar from "./rightSidebar";
-import { TokenRoutes, keyPairs } from "../constants";
-import { PreviewData } from "../interfaces";
+import { TokenRoutes, keyPairs } from "../../constants";
+import { PreviewData } from "../../interfaces";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  setConfigAuthority,
-  setDecimal,
-  setDefaultAccountState,
-  setDefaultAccountStateOption,
-  setDelegate,
-  setDescription,
-  setDiscord,
-  setEnableExtensions,
-  setFee,
-  setInterestBearing,
-  setMaxFee,
-  setName,
-  setNonTransferable,
-  setPermanentDelegate,
-  setPreviewData,
-  setRate,
-  setSelectedForm,
-  setSupply,
-  setSymbol,
-  setTelegram,
-  setToggled,
-  setFileData,
-  setTransferTax,
-  setTwitter,
-  setWebsite,
-  setWithdrawAuthority,
-  setTokenAddress,
-  setMintAuthority,
-  setFreezeAuthority,
-  setMutableMetadata,
-} from "../redux/slice/formDataSlice";
+import { setPreviewData, setFileData } from "../../redux/slice/formDataSlice";
 import { useSearchParams } from "next/navigation";
-import CustomButton from "./customButton";
+import CustomButton from "../customButton";
 import CreateOrEditToken from "./createOrEditToken";
 import { useFormik, Formik } from "formik";
 import { metaplexBuilder } from "@/metaplex";
-import { MetaplexFile } from "@metaplex-foundation/js";
 import { createSPLTokenTxBuilder } from "@/solana/txBuilder/createSPLTokenTxBuilder";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { v1TokenValidation } from "../utils/formikValidators";
+import { v1TokenValidation } from "../../utils/formikValidators";
 import { cloneDeep } from "lodash";
-import { errorToast, successToast } from "./toast";
+import { errorToast, successToast } from "../toast";
 import MintOrBurnToken from "./mintOrBurnToken";
-import { getMint } from "@solana/spl-token";
 import { PublicKey } from "@solana/web3.js";
-import { revokeMintAuthTxBuilder } from "@/solana/txBuilder/revokeMintAuthTxBuilder";
-import { revokeFreezeAuthTxBuilder } from "@/solana/txBuilder/revokeFreezeAuthTxBuilder";
-import { createMintTokensTxBuilder } from "@/solana/txBuilder/mintTokenTxBuilder";
-import { createBurnTokensTxBuilder } from "@/solana/txBuilder/burnTokenTxBuilder";
-import Loader from "./loader";
 import ManageToken from "./manageToken";
 import { updateSPLTokenMetadataTxBuilder } from "@/solana/txBuilder/updateMetadataTxBuilder";
-import { validateAddress } from "@/solana/txBuilder/checkAddress";
 import { getTokenMetadata } from "@/metaplex/getTokenMetadata";
-
-const initialV1Token: PreviewData = {
-  "Token Details": {
-    "Token Name": "",
-    Description: "",
-    Symbol: "",
-    Supply: "",
-    Decimals: "",
-  },
-};
-
+import Loader from "../loader";
+import caculateEndpointUrlByRpcConfig from "@/application/connection/calculateEndpointUrlByRpcConfig";
+import { setCurrentEndpoint } from "@/redux/slice/connectionSlice";
+// import { addHistoryItem } from "@/application/transaction/txHistory";
+// import { setAlltxHistory } from "@/redux/slice/txDataSlice";
+import { recursiveCheckTransitionStatus } from "@/utils/transactions";
 
 export default function Form() {
   const {
@@ -83,15 +38,8 @@ export default function Form() {
     configAuthority,
     withdrawAuthority,
     maxFee,
-    fee,
     nonTransferable,
-    permanentDelegate,
-    defaultAccountState,
-    interestBearing,
-    transferTax,
-    enableExtensions,
     selectedForm,
-    isToggled,
     discord,
     telegram,
     twitter,
@@ -108,7 +56,13 @@ export default function Form() {
     mutableMetadata,
     mintAmount,
   } = useSelector((state: any) => state.formDataSlice);
-
+  const { appLoading } = useSelector((state: any) => state.appDataSlice);
+  const { allDevEndpoints, allMainEndpoints, currentEndpoint } = useSelector(
+    (state: any) => state.connectionDataSlice
+  );
+  // const { txHistory, alltxHistory } = useSelector(
+  //   (state: any) => state.txDataSlice
+  // );
   const dispatch = useDispatch();
 
   const wallet = useWallet();
@@ -120,14 +74,28 @@ export default function Form() {
 
   const [showUpdateMetadata, setShowUpdateMetadata] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
-  const [balance, setBalance] = useState(0);
-  const [loading, setLoading] = useState(false);
   const [updateMetadataLoading, setUpdateMetadataLoading] = useState(false);
 
   const [renderForm, setRenderForm] = useState(false);
   useEffect(() => {
     setRenderForm(true);
+    checkAndUpdateRPC();
   }, []);
+
+  const checkAndUpdateRPC = async () => {
+    console.log("........................ main ", allMainEndpoints);
+    let data = {
+      strategy: "speed",
+      success: true,
+      rpcs: allMainEndpoints,
+      devrpcs: allDevEndpoints,
+    };
+    const selectedEndpointUrl = await caculateEndpointUrlByRpcConfig(
+      data as any
+    );
+    dispatch(setCurrentEndpoint(selectedEndpointUrl));
+    console.log("Selected endpoint : ", selectedEndpointUrl);
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -140,7 +108,7 @@ export default function Form() {
       twitter: twitter,
       telegram: telegram,
       discord: discord,
-      logo: "", 
+      logo: "",
       fee: "",
       maxFee: maxFee,
       withdrawAuthority: withdrawAuthority,
@@ -223,7 +191,6 @@ export default function Form() {
       return;
     }
     try {
-
       const metaplexhandler = await metaplexBuilder(wallet, connection);
       const imgURI = await metaplexhandler.storage().upload(metaplexFileData);
       if (imgURI) {
@@ -249,12 +216,11 @@ export default function Form() {
         const { uri } = await metaplexhandler
           .nfts()
           .uploadMetadata(tokenMetadata);
-          if(!uri)
-          {
-           setButtonClicked(false);
-           errorToast({ message: "Error In Creating Uri" });
-           return;
-          }
+        if (!uri) {
+          setButtonClicked(false);
+          errorToast({ message: "Error In Creating Uri" });
+          return;
+        }
         successToast({ message: `MetaData Uploaded` });
         const txData = await updateSPLTokenMetadataTxBuilder(
           formik.values.name,
@@ -265,7 +231,7 @@ export default function Form() {
           new PublicKey(formik.values.tokenAddress)
         );
         oldMetaData(true);
-        if(!txData){
+        if (!txData) {
           setButtonClicked(false);
           errorToast({ message: "Please Try Again" });
           return;
@@ -313,20 +279,20 @@ export default function Form() {
     let balance = 0;
     if (wallet.publicKey != null) {
       balance = await connection.getBalance(wallet.publicKey as any);
-   //    console.log(balance);
+      //    console.log(balance);
     }
     if (balance > 5000000) {
       try {
         const isSPL = true;
         if (isSPL) {
-
           const metaplexhandler = await metaplexBuilder(wallet, connection);
-         // console.log("gvhgvghvhg",metaplexFileData)
+          console.log("gvhgvghvhg", metaplexFileData);
 
           const imgURI = await metaplexhandler
             .storage()
             .upload(metaplexFileData);
-          if (imgURI) {          
+          console.log("Image uri : ", imgURI);
+          if (imgURI) {
             successToast({ message: `Image Uri Created` });
             let tokenMetadata = {
               name: formik.values.name,
@@ -346,23 +312,18 @@ export default function Form() {
             if (formik.values?.twitter) {
               tokenMetadata["twitter"] = formik.values.twitter;
             }
-          //  console.log(tokenMetadata)
-
+            console.log(tokenMetadata);
 
             const { uri } = await metaplexhandler
               .nfts()
               .uploadMetadata(tokenMetadata);
-             if(!uri)
-             {
+            console.log("URI : ", uri);
+            if (!uri) {
               setButtonClicked(false);
               errorToast({ message: "Error In Creating Uri" });
               return;
-             }
+            }
             successToast({ message: `MetaData Uploaded` });
-            const endpoint= connection.rpcEndpoint;
-
-            //console.log(endpoint)
-          
             const txhash = await createSPLTokenTxBuilder(
               formik.values.name,
               formik.values.symbol,
@@ -371,36 +332,47 @@ export default function Form() {
               formik.values.supply,
               connection,
               wallet,
-              endpoint
+              currentEndpoint
             );
 
-            if(!txhash){
+            console.log("txhash : ", txhash);
+            if (!txhash) {
               setButtonClicked(false);
               errorToast({ message: "Please Try Again" });
               return;
-
             }
-       
-            successToast({
-              keyPairs: {
-                mintAddress: {
-                  value: `${txhash?.mint}`,
-                  linkTo: `https://solscan.io/token/${txhash?.mint}?cluster=devnet`,
+            let resp = await recursiveCheckTransitionStatus(
+              Date.now(),
+              txhash.sig,
+              connection,
+              wallet,
+              txhash.mint
+            );
+            console.log(resp, ".............resp");
+            if (resp) {
+              successToast({
+                keyPairs: {
+                  mintAddress: {
+                    value: `${txhash?.mint}`,
+                    linkTo: `https://solscan.io/token/${txhash?.mint}?cluster=devnet`,
+                  },
+                  signature: {
+                    value: `${txhash?.sig}`,
+                    linkTo: `https://solscan.io/tx/${txhash?.sig}?cluster=devnet`,
+                  },
                 },
-                signature: {
-                  value: `${txhash?.sig}`,
-                  linkTo: `https://solscan.io/tx/${txhash?.sig}?cluster=devnet`,
-                },
-              },
-              allowCopy: true,
-            });
+                allowCopy: true,
+              });
+            } else {
+              errorToast({ message: `${resp}` });
+            }
+
             setButtonClicked(false);
           } else {
             setButtonClicked(false);
             errorToast({ message: "Error In Creating Token Please Retry" });
           }
         } else {
-
         }
       } catch (error) {
         errorToast({ message: "Try Again!" });
@@ -506,11 +478,6 @@ export default function Form() {
     <>
       {renderForm ? (
         <div className="flex flex-row flex-1 h-full overflow-auto scroll-smooth">
-          {loading && (
-            <div className=" absolute top-[0] bottom-[0] left-[0] right-[0] bg-loaderBG flex flex-1 items-center justify-center">
-              <Loader visible={loading} size={50} />
-            </div>
-          )}
           {tokenAction === TokenRoutes.createToken && (
             <CreateOrEditToken formik={formik} />
           )}
@@ -538,9 +505,6 @@ export default function Form() {
                   id="tokenAddress"
                   name="tokenAddress"
                   onChange={formik?.handleChange}
-                  // onChange={(e) => {
-                  //   dispatch(setTokenAddress(e.target.value));
-                  // }}
                   showSymbol={false}
                   type={"text"}
                   placeholder={"Enter Token Address"}
@@ -597,7 +561,7 @@ export default function Form() {
         </div>
       ) : (
         <div className="flex flex-1 items-center justify-center">
-          <Loader visible={true} size={30} />
+          {appLoading ? <></> : <Loader visible={true} size={30} />}
         </div>
       )}
     </>

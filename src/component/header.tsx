@@ -8,6 +8,9 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { TokenRoutes } from "@/constants";
 import { errorToast } from "./toast";
+import Loader from "./loader";
+import { setAppLoading } from "../redux/slice/appDataSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const borderColor: string = "#4D4D4D";
 
@@ -22,19 +25,27 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
 
   const wallet = useWallet();
   const router = useRouter();
-
+  const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const tokenAction = searchParams.get("action");
 
+  const { appLoading } = useSelector((state: any) => state.appDataSlice);
+
   useEffect(() => {
     setShowButton(true);
+    return () => {
+      if (appLoading) {
+        dispatch(setAppLoading(false));
+      }
+    };
   }, []);
 
   const handleClick = (tag: string) => {
     if (tokenAction) {
     } else {
       if (tag === "TOOLS") {
-        handleClickProp ? handleClickProp() : null;
+        // handleClickProp ? handleClickProp() : null;
+        dispatch(setAppLoading(true));
         router.push(`/token?action=${TokenRoutes.createToken}`);
       } else {
         errorToast({ message: "Coming Soon!" });
@@ -49,6 +60,13 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
         style={{ borderBottomWidth: "0.2px", borderColor: borderColor }}
       >
         <div
+          className={`absolute h-[100vh] w-[100vw] top-[0] flex justify-center items-center bg-[rgba(0,0,0,0.5)] z-50 ${
+            appLoading ? "visible" : "hidden"
+          }`}
+        >
+          <Loader visible={appLoading} size={50} />
+        </div>
+        <div
           className="cursor-pointer px-4 flex items-center h-full"
           style={{
             borderRightWidth: "2px",
@@ -58,7 +76,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             if (!tokenAction) {
               return;
             } else {
-              handleClickProp ? handleClickProp() : null;
+              dispatch(setAppLoading(true));
               router.push(`/`);
             }
           }}
@@ -174,7 +192,6 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
               setSearchVal(e.target.value);
             }}
             containerStyles={{ marginTop: 0 }}
-            // inputStyles={{ backgroundColor: "#FFC83A1A" }}
             placeholderColor={"#989C9F"}
             placeholder={"Search for symbol, name, contract, or wallets"}
             type={"string"}

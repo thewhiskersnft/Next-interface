@@ -21,6 +21,7 @@ import {
 } from "@metaplex-foundation/umi-web3js-adapters";
 
 import {
+  ComputeBudgetProgram,
   Connection,
   Keypair,
   LAMPORTS_PER_SOL,
@@ -37,6 +38,7 @@ import {
   PLATFORM_OWNER_ADDRESS,
 } from "@/constants";
 import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
+import { errorToast } from "@/component/toast";
 let network = isMainnet() ? "mainnet-beta" : "devnet";
 
 export const createSPLTokenTxBuilder = async (
@@ -47,7 +49,7 @@ export const createSPLTokenTxBuilder = async (
   tokenSupply: number,
   connection: Connection,
   wallet: WalletContextState,
-  endpoint:string
+  endpoint: string
 ) => {
   try {
     if (!wallet.publicKey) {
@@ -79,8 +81,6 @@ export const createSPLTokenTxBuilder = async (
 
     const owner = wallet.publicKey!;
     // console.log("owner", owner.toBase58());
-
-    
 
     const umi = createUmi(endpoint);
 
@@ -174,14 +174,17 @@ export const createSPLTokenTxBuilder = async (
       toPubkey: new PublicKey(PLATFORM_OWNER_ADDRESS),
       lamports: PLATFORM_FEE_SOL_TOKEN_CREATION * LAMPORTS_PER_SOL,
     });
-
+    const PRIORITY_FEE_IX = ComputeBudgetProgram.setComputeUnitPrice({
+      microLamports: 300,
+    });
     const createTokentTransaction = new Transaction().add(
       createMintAccountInstruction,
       InitMint,
       createATAInstruction,
       mintInstruction,
       metadataInstruction,
-      sentPlatFormfeeInstruction
+      sentPlatFormfeeInstruction,
+      PRIORITY_FEE_IX
     );
 
     const createAccountSignature = await wallet.sendTransaction(
@@ -189,6 +192,22 @@ export const createSPLTokenTxBuilder = async (
       connection,
       { signers: [mint_account] }
     );
+
+    const startTime = Date.now();
+    // while()
+    console.log(" Now : ", startTime);
+    // 2afRSao7JckbxdV4p1Ak3jcD7uKsW4C7kY2tRukyXLtncdiTW4jpiaZDSR4nKYveok1WYzXgyc337PY3bAmJkzoK', mint: '5Pm6NTDoRYHjyy36XyJy3bY8ezpPHnzfLvug1zrHuhKK
+    // let resp = await recursiveCheckTransitionStatus(
+    //   startTime,
+    //   // "2afRSao7JckbxdV4p1Ak3jcD7uKsW4C7kY2tRukyXLtncdiTW4jpiaZDSR4nKYveok1WYzXgyc337PY3bAmJkzoK",
+    //   createAccountSignature,
+    //   connection,
+    //   wallet,
+    //   createTokentTransaction,
+    //   mint_account,
+    //   0
+    // );
+    // console.log("Resp : ", resp);
     return {
       sig: createAccountSignature,
       mint: mint_account.publicKey.toBase58(),
