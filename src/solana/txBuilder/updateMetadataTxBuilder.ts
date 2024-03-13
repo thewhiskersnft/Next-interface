@@ -40,6 +40,7 @@ import {
   PLATFORM_OWNER_ADDRESS,
 } from "@/constants";
 import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
+import { recursiveCheckTransitionStatus } from "@/utils/transactions";
 
 let network = isMainnet() ? "mainnet-beta" : "devnet";
 
@@ -136,6 +137,14 @@ export const updateSPLTokenMetadataTxBuilder = async (
     const createAccountSignature = await wallet.sendTransaction(
       createTokentTransaction,
       connection
+    );
+
+    let resp = await recursiveCheckTransitionStatus(
+      Date.now(),
+      createAccountSignature,
+      connection,
+      wallet
+      // mint_account.publicKey.toBase58()
     );
 
     return {

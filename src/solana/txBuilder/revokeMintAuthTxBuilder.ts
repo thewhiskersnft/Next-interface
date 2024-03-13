@@ -3,6 +3,7 @@ import {
   PLATFORM_FEE_SOL_TOKEN_CREATION,
   PLATFORM_OWNER_ADDRESS,
 } from "@/constants";
+import { recursiveCheckTransitionStatus } from "@/utils/transactions";
 import {
   AuthorityType,
   createSetAuthorityInstruction,
@@ -47,6 +48,18 @@ export const revokeMintAuthTxBuilder = async (
     );
     const createRevokeMintAuthTransactionSignature =
       await wallet.sendTransaction(createRevokeMintAuthTransaction, connection);
+
+      let resp = await recursiveCheckTransitionStatus(
+        Date.now(),
+        createRevokeMintAuthTransactionSignature,
+        connection,
+        wallet
+        // mint_account.publicKey.toBase58()
+      );
+      if (resp) {
+      }
+      
+
     return createRevokeMintAuthTransactionSignature;
   } catch (error) {
     // console.log(error);

@@ -346,7 +346,7 @@ export default function Form() {
               txhash.sig,
               connection,
               wallet,
-              txhash.mint
+              // txhash.mint
             );
             console.log(resp, ".............resp");
             if (resp) {

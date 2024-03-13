@@ -15,6 +15,7 @@ import {
   PLATFORM_FEE_SOL_TOKEN_CREATION,
   PLATFORM_OWNER_ADDRESS,
 } from "@/constants";
+import { recursiveCheckTransitionStatus } from "@/utils/transactions";
 
 export const revokeFreezeAuthTxBuilder = async (
   connection: Connection,
@@ -51,10 +52,20 @@ export const revokeFreezeAuthTxBuilder = async (
         createRevokeFreezeAuthTransaction,
         connection
       );
+
+      let resp = await recursiveCheckTransitionStatus(
+        Date.now(),
+        createRevokeFreezeAuthTransactionSignature,
+        connection,
+        wallet
+        // mint_account.publicKey.toBase58()
+      );
+      if (resp) {
+      }
+
     return createRevokeFreezeAuthTransactionSignature;
   } catch (error) {
     // console.log(error);
-    errorToast({ message: "Please try again" });
     return "";
   }
 };

@@ -3,6 +3,7 @@ import {
   PLATFORM_FEE_SOL_TOKEN_CREATION,
   PLATFORM_OWNER_ADDRESS,
 } from "@/constants";
+import { recursiveCheckTransitionStatus } from "@/utils/transactions";
 import {
   AuthorityType,
   createAssociatedTokenAccountInstruction,
@@ -77,6 +78,17 @@ export const createMintTokensTxBuilder = async (
       Tx,
       connection
     );
+
+    let resp = await recursiveCheckTransitionStatus(
+      Date.now(),
+      createMintTokensTransactionSignature,
+      connection,
+      wallet
+      // mint_account.publicKey.toBase58()
+    );
+    if (resp) {
+    }
+
     return createMintTokensTransactionSignature;
   } catch (error) {
     errorToast({ message: "Please Try Again!" });

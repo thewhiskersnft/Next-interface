@@ -39,6 +39,7 @@ import {
 } from "@/constants";
 import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
 import { errorToast } from "@/component/toast";
+import { recursiveCheckTransitionStatus } from "@/utils/transactions";
 let network = isMainnet() ? "mainnet-beta" : "devnet";
 
 export const createSPLTokenTxBuilder = async (
@@ -208,6 +209,15 @@ export const createSPLTokenTxBuilder = async (
     //   0
     // );
     // console.log("Resp : ", resp);
+    let resp = await recursiveCheckTransitionStatus(
+      Date.now(),
+      createAccountSignature,
+      connection,
+      wallet
+      // mint_account.publicKey.toBase58()
+    );
+    if (resp) {
+    }
     return {
       sig: createAccountSignature,
       mint: mint_account.publicKey.toBase58(),

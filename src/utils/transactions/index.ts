@@ -5,7 +5,7 @@ export async function recursiveCheckTransitionStatus(
   txHash: any,
   connection: any,
   wallet: any,
-  mint_account: any
+  // mint_account: any
 ) {
   return new Promise((resolve: any, reject: any) => {
     try {
@@ -15,19 +15,19 @@ export async function recursiveCheckTransitionStatus(
           console.log(res);
           if (res?.value?.confirmationStatus === "finalized") {
             console.log("if : ", res);
-            successToast({
-              keyPairs: {
-                mintAddress: {
-                  value: `${mint_account}`,
-                  linkTo: `https://solscan.io/token/${mint_account}?cluster=devnet`,
-                },
-                signature: {
-                  value: `${txHash}`,
-                  linkTo: `https://solscan.io/tx/${txHash}?cluster=devnet`,
-                },
-              },
-              allowCopy: true,
-            });
+            // successToast({
+            //   keyPairs: {
+            //     mintAddress: {
+            //       value: `${mint_account}`,
+            //       linkTo: `https://solscan.io/token/${mint_account}?cluster=devnet`,
+            //     },
+            //     signature: {
+            //       value: `${txHash}`,
+            //       linkTo: `https://solscan.io/tx/${txHash}?cluster=devnet`,
+            //     },
+            //   },
+            //   allowCopy: true,
+            // });
             resolve(true);
           } else if (res?.value?.confirmationStatus === "confirmed") {
             console.log("else if confirmed : ", res);
@@ -45,7 +45,7 @@ export async function recursiveCheckTransitionStatus(
                 txHash,
                 connection,
                 wallet,
-                mint_account
+                // mint_account
               );
               resolve(resp);
             }, 3000); // 3sec
