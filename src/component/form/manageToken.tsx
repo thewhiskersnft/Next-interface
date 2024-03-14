@@ -14,10 +14,11 @@ import {
   setMintAuthority,
 } from "@/redux/slice/formDataSlice";
 
-type ManageTokenProps = { isBurn?: boolean; formik?: any };
+type ManageTokenProps = { formik?: any; priorityFees: number };
 
 const ManageToken = ({
   formik = { errors: {}, values: {}, touched: {} },
+  priorityFees,
 }: ManageTokenProps) => {
   const { connection } = useConnection();
   const wallet = useWallet();
@@ -38,22 +39,23 @@ const ManageToken = ({
       const txhash = await revokeMintAuthTxBuilder(
         connection,
         wallet,
-        new PublicKey(formik?.values?.tokenAddress)
+        new PublicKey(formik?.values?.tokenAddress),
+        priorityFees
       );
       if (txhash) {
         // correctly revoked
         formik.setFieldValue("mintAuthority", false);
         dispatch(setMintAuthority(false));
         // successToast({ message: ` Successfully Revoked ${txhash} `})
-        successToast({
-          keyPairs: {
-            signature: {
-              value: `${txhash}`,
-              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
-            },
-          },
-          allowCopy: true,
-        });
+        // successToast({
+        //   keyPairs: {
+        //     signature: {
+        //       value: `${txhash}`,
+        //       linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
+        //     },
+        //   },
+        //   allowCopy: true,
+        // });
       } else {
         errorToast({ message: "Please try again" });
       }
@@ -70,7 +72,8 @@ const ManageToken = ({
       const txhash = await revokeFreezeAuthTxBuilder(
         connection,
         wallet,
-        new PublicKey(formik?.values?.tokenAddress)
+        new PublicKey(formik?.values?.tokenAddress),
+        priorityFees
       );
       // console.log(txhash);
       if (txhash) {
@@ -78,15 +81,15 @@ const ManageToken = ({
         formik.setFieldValue("freezeAuthority", false);
         dispatch(setFreezeAuthority(false));
         // successToast({ message: `SuccessfullyRevoked ${txhash} ` });
-        successToast({
-          keyPairs: {
-            signature: {
-              value: `${txhash}`,
-              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
-            },
-          },
-          allowCopy: true,
-        });
+        // successToast({
+        //   keyPairs: {
+        //     signature: {
+        //       value: `${txhash}`,
+        //       linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
+        //     },
+        //   },
+        //   allowCopy: true,
+        // });
       } else {
         errorToast({ message: "Please try again" });
       }

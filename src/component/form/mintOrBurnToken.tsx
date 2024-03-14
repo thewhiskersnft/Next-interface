@@ -9,11 +9,17 @@ import { createMintTokensTxBuilder } from "../../solana/txBuilder/mintTokenTxBui
 import { validateAddress } from "@/solana/txBuilder/checkAddress";
 import { errorToast, successToast } from "../toast";
 import { createBurnTokensTxBuilder } from "@/solana/txBuilder/burnTokenTxBuilder";
+import { getSignatureURL } from "@/utils/redirectURLs";
 
-type MintOrBurnTokenProps = { isBurn?: boolean; formik?: any };
+type MintOrBurnTokenProps = {
+  isBurn?: boolean;
+  formik?: any;
+  priorityFees: number;
+};
 const MintOrBurnToken = ({
   formik = { errors: {}, values: {}, touched: {} },
   isBurn,
+  priorityFees,
 }: MintOrBurnTokenProps) => {
   const [showOnLoadClick, setShowOnloadClick] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -58,22 +64,23 @@ const MintOrBurnToken = ({
         connection,
         wallet,
         new PublicKey(formik.values.tokenAddress),
-        formik.values.mintAmount
+        formik.values.mintAmount,
+        priorityFees
       );
-      if (txhash) {
-        // correctly revoked
-        successToast({
-          keyPairs: {
-            signature: {
-              value: `${txhash}`,
-              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
-            },
-          },
-          allowCopy: true,
-        });
-      } else {
-        errorToast({ message: "Please try again" });
-      }
+      // if (txhash) {
+      //   // correctly revoked
+      //   successToast({
+      //     keyPairs: {
+      //       signature: {
+      //         value: `${txhash}`,
+      //         linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
+      //       },
+      //     },
+      //     allowCopy: true,
+      //   });
+      // } else {
+      //   errorToast({ message: "Please try again" });
+      // }
 
       // console.log(txhash);
       setBurnOrMintLoading(false);
@@ -95,19 +102,21 @@ const MintOrBurnToken = ({
         connection,
         wallet,
         new PublicKey(formik.values.tokenAddress),
-        formik.values.mintAmount
+        formik.values.mintAmount,
+        priorityFees
       );
       if (txhash) {
         // correctly revoked
-        successToast({
-          keyPairs: {
-            signature: {
-              value: `${txhash}`,
-              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
-            },
-          },
-          allowCopy: true,
-        });
+        // successToast({
+        //   keyPairs: {
+        //     signature: {
+        //       value: `${txhash}`,
+        //       // linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
+        //       linkTo: getSignatureURL(txhash),
+        //     },
+        //   },
+        //   allowCopy: true,
+        // });
       } else {
         errorToast({ message: "Please try again" });
       }

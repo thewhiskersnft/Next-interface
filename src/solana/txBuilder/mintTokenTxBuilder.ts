@@ -1,9 +1,11 @@
-import { errorToast } from "@/component/toast";
+import { errorToast, successToast } from "@/component/toast";
 import {
   PLATFORM_FEE_SOL_TOKEN_CREATION,
   PLATFORM_OWNER_ADDRESS,
 } from "@/constants";
+import { getSignatureURL } from "@/utils/redirectURLs";
 import { recursiveCheckTransitionStatus } from "@/utils/transactions";
+import { getPriorityLambports } from "@/utils/transactions/getPriorityLambports";
 import {
   AuthorityType,
   createAssociatedTokenAccountInstruction,
@@ -27,7 +29,8 @@ export const createMintTokensTxBuilder = async (
   connection: Connection,
   wallet: WalletContextState,
   tokenMint: PublicKey,
-  tokenAmount: string
+  tokenAmount: string,
+  priorityFees: number
 ) => {
   try {
     if (!wallet.publicKey) {
@@ -73,7 +76,8 @@ export const createMintTokensTxBuilder = async (
     });
 
     Tx.add(sentPlatFormfeeInstruction);
-
+    const PRIORITY_FEE_IX = getPriorityLambports(priorityFees);
+    Tx.add(PRIORITY_FEE_IX);
     const createMintTokensTransactionSignature = await wallet.sendTransaction(
       Tx,
       connection
@@ -87,6 +91,16 @@ export const createMintTokensTxBuilder = async (
       // mint_account.publicKey.toBase58()
     );
     if (resp) {
+      successToast({
+        keyPairs: {
+          signature: {
+            value: `${createMintTokensTransactionSignature}`,
+            // linkTo: `https://solscan.io/tx/${createMintTokensTransactionSignature}?cluster=devnet`,
+            linkTo: getSignatureURL(createMintTokensTransactionSignature),
+          },
+        },
+        allowCopy: true,
+      });
     }
 
     return createMintTokensTransactionSignature;

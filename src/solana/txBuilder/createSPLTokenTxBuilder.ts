@@ -38,8 +38,10 @@ import {
   PLATFORM_OWNER_ADDRESS,
 } from "@/constants";
 import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
-import { errorToast } from "@/component/toast";
+import { errorToast, successToast } from "@/component/toast";
 import { recursiveCheckTransitionStatus } from "@/utils/transactions";
+import { getMintURL, getSignatureURL } from "@/utils/redirectURLs";
+import { getPriorityLambports } from "@/utils/transactions/getPriorityLambports";
 let network = isMainnet() ? "mainnet-beta" : "devnet";
 
 export const createSPLTokenTxBuilder = async (
@@ -50,7 +52,8 @@ export const createSPLTokenTxBuilder = async (
   tokenSupply: number,
   connection: Connection,
   wallet: WalletContextState,
-  endpoint: string
+  endpoint: string,
+  priorityFees: number
 ) => {
   try {
     if (!wallet.publicKey) {
@@ -175,9 +178,7 @@ export const createSPLTokenTxBuilder = async (
       toPubkey: new PublicKey(PLATFORM_OWNER_ADDRESS),
       lamports: PLATFORM_FEE_SOL_TOKEN_CREATION * LAMPORTS_PER_SOL,
     });
-    const PRIORITY_FEE_IX = ComputeBudgetProgram.setComputeUnitPrice({
-      microLamports: 300,
-    });
+    const PRIORITY_FEE_IX = getPriorityLambports(priorityFees);
     const createTokentTransaction = new Transaction().add(
       createMintAccountInstruction,
       InitMint,
@@ -214,9 +215,25 @@ export const createSPLTokenTxBuilder = async (
       createAccountSignature,
       connection,
       wallet
-      // mint_account.publicKey.toBase58()
     );
     if (resp) {
+      successToast({
+        keyPairs: {
+          mintAddress: {
+            value: `${mint_account.publicKey.toBase58()}`,
+            // linkTo: `https://solscan.io/token/${mint_account.publicKey.toBase58()}?cluster=devnet`,
+            linkTo: getMintURL(mint_account.publicKey.toBase58()),
+          },
+          signature: {
+            value: `${createAccountSignature}`,
+            // linkTo: `https://solscan.io/tx/${createAccountSignature}?cluster=devnet`,
+            linkTo: getSignatureURL(createAccountSignature),
+          },
+        },
+        allowCopy: true,
+      });
+    } else {
+      // error message already displayed in recursiveCheckTransitionStatus
     }
     return {
       sig: createAccountSignature,

@@ -7,6 +7,7 @@ const initialState = {
   isConnectionLoading: false,
   allDevEndpoints: [...devEndpoints],
   allMainEndpoints: [...mainEndpoints],
+  priorityFees: 300,
 };
 
 export const ConnectionDataSlice = createSlice({
@@ -28,6 +29,9 @@ export const ConnectionDataSlice = createSlice({
     setAllMainEndpoints: (state, actions) => {
       state.allMainEndpoints = actions.payload;
     },
+    setPriorityFees: (state, actions) => {
+      state.priorityFees = actions.payload;
+    },
   },
 });
 
@@ -38,6 +42,7 @@ export const {
   setCurrentEndpoint,
   setAllDevEndpoints,
   setAllMainEndpoints,
+  setPriorityFees,
 } = ConnectionDataSlice.actions;
 
 export default ConnectionDataSlice.reducer;

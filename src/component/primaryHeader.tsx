@@ -4,12 +4,14 @@ import Image from "next/image";
 import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
 import { envs } from "@/constants";
+import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
 
 const borderColor: string = "#4D4D4D";
 
 const PrimaryHeader: FC = () => {
   const [price, setPrice] = useState();
   const [Volume, setVolume] = useState();
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
 
   useEffect(() => {
     const price = async () => {
@@ -110,7 +112,7 @@ const PrimaryHeader: FC = () => {
             priority
           />
           <p className="font-Orbitron text-xsmall text-textGreen ml-2">
-            {envs.devnet}
+            {isMainnet() ? envs.mainnet : envs.devnet}
           </p>
         </span>
 

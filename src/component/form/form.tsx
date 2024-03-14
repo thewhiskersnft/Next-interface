@@ -57,9 +57,8 @@ export default function Form() {
     mintAmount,
   } = useSelector((state: any) => state.formDataSlice);
   const { appLoading } = useSelector((state: any) => state.appDataSlice);
-  const { allDevEndpoints, allMainEndpoints, currentEndpoint } = useSelector(
-    (state: any) => state.connectionDataSlice
-  );
+  const { allDevEndpoints, allMainEndpoints, currentEndpoint, priorityFees } =
+    useSelector((state: any) => state.connectionDataSlice);
   // const { txHistory, alltxHistory } = useSelector(
   //   (state: any) => state.txDataSlice
   // );
@@ -146,6 +145,7 @@ export default function Form() {
           new PublicKey(formik.values.tokenAddress),
           connection
         );
+        console.log("Old data : ", oldData);
         if (oldData.isMutable) {
           formik.setFieldValue("name", oldData.tokenName);
           formik.setFieldValue("symbol", oldData.tokenSymbol);
@@ -159,6 +159,7 @@ export default function Form() {
             },
           };
           formik.setFieldValue("logo", oldData.tokenLogo);
+          console.log("Updated metadata : ", updatedPreviewData);
           dispatch(setPreviewData(updatedPreviewData));
           if (!isFetchOnly) {
             toggleShowUpdateMetadata();
@@ -192,6 +193,7 @@ export default function Form() {
     }
     try {
       const metaplexhandler = await metaplexBuilder(wallet, connection);
+      console.log("Image file data : ", metaplexFileData);
       const imgURI = await metaplexhandler.storage().upload(metaplexFileData);
       if (imgURI) {
         successToast({ message: `Image Uri Created` });
@@ -228,25 +230,26 @@ export default function Form() {
           uri,
           connection,
           wallet,
-          new PublicKey(formik.values.tokenAddress)
+          new PublicKey(formik.values.tokenAddress),
+          priorityFees
         );
-        oldMetaData(true);
         if (!txData) {
           setButtonClicked(false);
           errorToast({ message: "Please Try Again" });
           return;
         }
 
+        oldMetaData(true);
         setButtonClicked(false);
-        successToast({
-          keyPairs: {
-            signature: {
-              value: `${txData?.sig}`,
-              linkTo: `https://solscan.io/tx/${txData?.sig}?cluster=devnet`,
-            },
-          },
-          allowCopy: true,
-        });
+        // successToast({
+        //   keyPairs: {
+        //     signature: {
+        //       value: `${txData?.sig}`,
+        //       linkTo: `https://solscan.io/tx/${txData?.sig}?cluster=devnet`,
+        //     },
+        //   },
+        //   allowCopy: true,
+        // });
       } else {
         errorToast({ message: "Error In Uploading Logo" });
         setButtonClicked(false);
@@ -332,7 +335,8 @@ export default function Form() {
               formik.values.supply,
               connection,
               wallet,
-              currentEndpoint
+              currentEndpoint,
+              priorityFees
             );
 
             console.log("txhash : ", txhash);
@@ -341,31 +345,31 @@ export default function Form() {
               errorToast({ message: "Please Try Again" });
               return;
             }
-            let resp = await recursiveCheckTransitionStatus(
-              Date.now(),
-              txhash.sig,
-              connection,
-              wallet,
-              // txhash.mint
-            );
-            console.log(resp, ".............resp");
-            if (resp) {
-              successToast({
-                keyPairs: {
-                  mintAddress: {
-                    value: `${txhash?.mint}`,
-                    linkTo: `https://solscan.io/token/${txhash?.mint}?cluster=devnet`,
-                  },
-                  signature: {
-                    value: `${txhash?.sig}`,
-                    linkTo: `https://solscan.io/tx/${txhash?.sig}?cluster=devnet`,
-                  },
-                },
-                allowCopy: true,
-              });
-            } else {
-              errorToast({ message: `${resp}` });
-            }
+            // let resp = await recursiveCheckTransitionStatus(
+            //   Date.now(),
+            //   txhash.sig,
+            //   connection,
+            //   wallet,
+            //   // txhash.mint
+            // );
+            // console.log(resp, ".............resp");
+            // if (resp) {
+            //   successToast({
+            //     keyPairs: {
+            //       mintAddress: {
+            //         value: `${txhash?.mint}`,
+            //         linkTo: `https://solscan.io/token/${txhash?.mint}?cluster=devnet`,
+            //       },
+            //       signature: {
+            //         value: `${txhash?.sig}`,
+            //         linkTo: `https://solscan.io/tx/${txhash?.sig}?cluster=devnet`,
+            //       },
+            //     },
+            //     allowCopy: true,
+            //   });
+            // } else {
+            //   errorToast({ message: `${resp}` });
+            // }
 
             setButtonClicked(false);
           } else {
@@ -482,7 +486,7 @@ export default function Form() {
             <CreateOrEditToken formik={formik} />
           )}
           {tokenAction === TokenRoutes.manageToken && (
-            <ManageToken formik={formik} />
+            <ManageToken formik={formik} priorityFees={priorityFees} />
           )}
           {tokenAction === TokenRoutes.updateMetadata && (
             <div
@@ -526,10 +530,14 @@ export default function Form() {
             </div>
           )}
           {tokenAction === TokenRoutes.mintToken && (
-            <MintOrBurnToken formik={formik} />
+            <MintOrBurnToken formik={formik} priorityFees={priorityFees} />
           )}
           {tokenAction === TokenRoutes.burnToken && (
-            <MintOrBurnToken formik={formik} isBurn={true} />
+            <MintOrBurnToken
+              formik={formik}
+              isBurn={true}
+              priorityFees={priorityFees}
+            />
           )}
           {enableRightSidebar() && (
             <RightSidebar
