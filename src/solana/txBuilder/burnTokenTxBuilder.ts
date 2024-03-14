@@ -18,6 +18,7 @@ import {
 
 import { WalletContextState } from "@solana/wallet-adapter-react";
 import {
+  ComputeBudgetProgram,
   Connection,
   LAMPORTS_PER_SOL,
   PublicKey,
@@ -64,10 +65,15 @@ export const createBurnTokensTxBuilder = async (
       lamports: PLATFORM_FEE_SOL_TOKEN_CREATION * LAMPORTS_PER_SOL,
     });
 
+    const PRIORITY_FEE_IX = ComputeBudgetProgram.setComputeUnitPrice({
+      microLamports: 300,
+    });
+
     // Tx.add(burnTokenInstruction);
     const createTransaction = new Transaction().add(
       burnTokenInstruction,
-      sentPlatFormfeeInstruction
+      sentPlatFormfeeInstruction,
+      PRIORITY_FEE_IX
     );
 
     const createBurnTokensTransactionSignature = await wallet.sendTransaction(

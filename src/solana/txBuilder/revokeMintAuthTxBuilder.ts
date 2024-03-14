@@ -10,6 +10,7 @@ import {
 } from "@solana/spl-token";
 import { WalletContextState } from "@solana/wallet-adapter-react";
 import {
+  ComputeBudgetProgram,
   Connection,
   LAMPORTS_PER_SOL,
   PublicKey,
@@ -36,15 +37,22 @@ export const revokeMintAuthTxBuilder = async (
       null
     );
 
+  
+
     const sentPlatFormfeeInstruction = SystemProgram.transfer({
       fromPubkey: wallet.publicKey,
       toPubkey: new PublicKey(PLATFORM_OWNER_ADDRESS),
       lamports: PLATFORM_FEE_SOL_TOKEN_CREATION * LAMPORTS_PER_SOL,
     });
+    const PRIORITY_FEE_IX = ComputeBudgetProgram.setComputeUnitPrice({
+      microLamports: 300,
+    });
+    
 
     const createRevokeMintAuthTransaction = new Transaction().add(
       revokeMintAuthInstruction,
-      sentPlatFormfeeInstruction
+      sentPlatFormfeeInstruction,
+      PRIORITY_FEE_IX
     );
     const createRevokeMintAuthTransactionSignature =
       await wallet.sendTransaction(createRevokeMintAuthTransaction, connection);

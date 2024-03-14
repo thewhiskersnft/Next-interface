@@ -15,6 +15,7 @@ import {
 } from "@solana/spl-token";
 import { WalletContextState } from "@solana/wallet-adapter-react";
 import {
+  ComputeBudgetProgram,
   Connection,
   LAMPORTS_PER_SOL,
   PublicKey,
@@ -73,6 +74,13 @@ export const createMintTokensTxBuilder = async (
     });
 
     Tx.add(sentPlatFormfeeInstruction);
+
+
+
+    const PRIORITY_FEE_IX = ComputeBudgetProgram.setComputeUnitPrice({
+      microLamports: 300,
+    });
+    Tx.add(PRIORITY_FEE_IX);
 
     const createMintTokensTransactionSignature = await wallet.sendTransaction(
       Tx,

@@ -24,6 +24,7 @@ import {
 import { errorToast, successToast } from "../../component/toast";
 
 import {
+  ComputeBudgetProgram,
   Connection,
   Keypair,
   LAMPORTS_PER_SOL,
@@ -129,9 +130,14 @@ export const updateSPLTokenMetadataTxBuilder = async (
       lamports: PLATFORM_FEE_SOL_TOKEN_CREATION * LAMPORTS_PER_SOL,
     });
 
+    const PRIORITY_FEE_IX = ComputeBudgetProgram.setComputeUnitPrice({
+      microLamports: 300,
+    });
+
     const createTokentTransaction = new Transaction().add(
       update_metadataInstruction,
-      sentPlatFormfeeInstruction
+      sentPlatFormfeeInstruction,
+      PRIORITY_FEE_IX
     );
 
     const createAccountSignature = await wallet.sendTransaction(
