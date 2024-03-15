@@ -5,6 +5,9 @@ import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
 import { envs } from "@/constants";
 import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
+import CustomInput from "./customInput";
+import { useDispatch, useSelector } from "react-redux";
+import { setPriorityFees } from "@/redux/slice/connectionSlice";
 
 const borderColor: string = "#4D4D4D";
 
@@ -12,6 +15,13 @@ const PrimaryHeader: FC = () => {
   const [price, setPrice] = useState();
   const [Volume, setVolume] = useState();
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const { priorityFees } = useSelector(
+    (state: any) => state.connectionDataSlice
+  );
+
+  const dispatch = useDispatch();
+
+  // const convertedPriorityFee =
 
   useEffect(() => {
     const price = async () => {
@@ -44,6 +54,30 @@ const PrimaryHeader: FC = () => {
     };
     Volume();
   }, []);
+
+  const toggleSettingsModal = () => {
+    setShowSettingsModal(!showSettingsModal);
+  };
+
+  const handlePriorityFeeChange = (val: number) => {
+    // do calculations here if any for priority fees
+    dispatch(setPriorityFees(val));
+  };
+
+  const txPriorityData = [
+    {
+      label: "Fast",
+      value: 0.000001,
+    },
+    {
+      label: "Turbo",
+      value: 0.00001,
+    },
+    {
+      label: "Ultra",
+      value: 0.0001,
+    },
+  ];
 
   return (
     <div
@@ -142,19 +176,92 @@ const PrimaryHeader: FC = () => {
           </div>
         </div>
         <div
-          className="cursor-pointer px-4 flex items-center hover:bg-[]"
+          className="relative px-4 flex items-center hover:bg-[]"
           style={
             {
               // borderRightWidth: "2px",
               // borderColor: borderColor,
             }
           }
+          onClick={toggleSettingsModal}
         >
+          {showSettingsModal && (
+            <section
+              className="flex flex-col absolute bg-variant1 p-4 bottom-[28px] right-[15px] w-[max-content]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between">
+                <>
+                  <Image
+                    src={"/txPriority.svg"}
+                    alt="TxPriority Logo"
+                    width={20}
+                    height={20}
+                    style={{ marginRight: "5px" }}
+                    priority
+                  />
+                  <p className="color-white font-small font-Orbitron">
+                    Transaction Priority
+                  </p>
+                </>
+                <Image
+                  src={"/close.svg"}
+                  alt="Close Logo"
+                  width={9.68}
+                  height={9.68}
+                  style={{ marginLeft: "90px" }}
+                  priority
+                  onClick={toggleSettingsModal}
+                  className="cursor-pointer"
+                />
+              </div>
+              <div className="flex mt-4">
+                {txPriorityData.map((txPriority: any, index: number) => {
+                  const { label, value } = txPriority;
+                  const isSelected = false;
+                  return (
+                    <section
+                      className={`bg-black grow border-[2px] cursor-pointer ${
+                        isSelected
+                          ? "border-yellow1"
+                          : "border-[rgba(255,255,255,0.5)]"
+                      }`}
+                      key={index}
+                      onClick={() => {}}
+                    >
+                      <p
+                        className={`text-center px-6 py-2 font-Oxanium font-xsmall ${
+                          isSelected ? "text-yellow1" : "text-white"
+                        }`}
+                      >
+                        {label} <br /> {value}
+                      </p>
+                    </section>
+                  );
+                })}
+              </div>
+              <div>
+                <CustomInput
+                  label="Custom (Max 0.01 Sol)"
+                  id="transactionPriority"
+                  name="transactionPriority"
+                  value={priorityFees}
+                  onChange={(e) => handlePriorityFeeChange(e.target.value)}
+                  showSymbol={false}
+                  type={"number"}
+                  placeholder={"Enter Custom (SOL)"}
+                  showError={false}
+                  errorMessage={""}
+                />
+              </div>
+            </section>
+          )}
           <Image
-            src={"/settingsDisabled.svg"}
+            src={"/setting.svg"}
             alt="setting Logo"
             width={20}
             height={20}
+            className="cursor-pointer"
             // style={{ marginRight: "5px" }}
             priority
           />
