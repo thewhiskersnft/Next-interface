@@ -55,6 +55,14 @@ const PrimaryHeader: FC = () => {
     Volume();
   }, []);
 
+  const getLambports = (sol: number) => {
+    return sol * 10 ** 9;
+  };
+
+  const getSol = (lambports: number) => {
+    return lambports / 10 ** 9;
+  };
+
   const toggleSettingsModal = () => {
     setShowSettingsModal(!showSettingsModal);
   };
@@ -78,6 +86,8 @@ const PrimaryHeader: FC = () => {
       value: 0.0001,
     },
   ];
+
+  console.log(priorityFees);
 
   return (
     <div
@@ -218,7 +228,7 @@ const PrimaryHeader: FC = () => {
               <div className="flex mt-4">
                 {txPriorityData.map((txPriority: any, index: number) => {
                   const { label, value } = txPriority;
-                  const isSelected = false;
+                  const isSelected = getSol(priorityFees) == value;
                   return (
                     <section
                       className={`bg-black grow border-[2px] cursor-pointer ${
@@ -227,7 +237,9 @@ const PrimaryHeader: FC = () => {
                           : "border-[rgba(255,255,255,0.5)]"
                       }`}
                       key={index}
-                      onClick={() => {}}
+                      onClick={() => {
+                        handlePriorityFeeChange(getLambports(value));
+                      }}
                     >
                       <p
                         className={`text-center px-6 py-2 font-Oxanium font-xsmall ${
@@ -245,8 +257,10 @@ const PrimaryHeader: FC = () => {
                   label="Custom (Max 0.01 Sol)"
                   id="transactionPriority"
                   name="transactionPriority"
-                  value={priorityFees}
-                  onChange={(e) => handlePriorityFeeChange(e.target.value)}
+                  value={getSol(priorityFees)}
+                  onChange={(e) =>
+                    handlePriorityFeeChange(getLambports(e.target.value))
+                  }
                   showSymbol={false}
                   type={"number"}
                   placeholder={"Enter Custom (SOL)"}
