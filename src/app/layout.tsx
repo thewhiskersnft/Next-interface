@@ -42,7 +42,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <title>Moonly</title>
+      <title>{"Moonly | Fastest Trading dApp on Solana"}</title>
       <meta
         name="description"
         content="Moonly is a lightning-fast trading dApp with a built in CLI trading bot, Advanced Token Analytics, and Gem Finding tools being built for all the Power Users on Solana."
