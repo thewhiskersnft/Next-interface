@@ -135,15 +135,15 @@ export const FormDataSlice = createSlice({
       state.previewData = actions.payload;
     },
     setTokenAddress: (state, actions) => {
-      // console.log(actions);
+      // //console.log(actions);
       state.tokenAddress = actions.payload;
     },
     setMintAuthority: (state, actions) => {
-      // console.log(actions);
+      // //console.log(actions);
       state.mintAuthority = actions.payload;
     },
     setFreezeAuthority: (state, actions) => {
-      // console.log(actions);
+      // //console.log(actions);
       state.freezeAuthority = actions.payload;
     },
     setMutableMetadata: (state, actions) => {

@@ -1,36 +1,33 @@
 "use client";
 import Header from "@/component/header";
-import Loader from "@/component/loader";
 import PrimaryHeader from "@/component/primaryHeader";
 import Spline from "@splinetool/react-spline";
 import Image from "next/image";
 import { Suspense, useState } from "react";
 import Marquee from "react-fast-marquee";
+import { isMobile } from "react-device-detect";
+import Loader from "./loader";
 
-const FormFallback = () => <Loader visible={true} size={50} />;
+type ComingSoonProps = {
+  hideOnWeb?: boolean;
+};
 
-export default function ComingSoon() {
-  const [loading, setLoading] = useState(false);
+export default function ComingSoon({ hideOnWeb }: ComingSoonProps) {
   return (
-    <Suspense fallback={FormFallback as any}>
-      <div
-        className={`absolute h-full w-full flex justify-center items-center bg-[rgba(0,0,0,0.5)] z-50 ${
-          loading ? "visible" : "hidden"
-        }`}
-      >
-        <Loader visible={loading} size={50} />
-      </div>
+    <Suspense
+      fallback={
+        <div className="flex h-[100vh] w-[100vw] justify-center items-center absolute top-[0]">
+          <Loader visible={true} size={80} />
+        </div>
+      }
+    >
       <div
         className="width-100 flex flex-col h-[100vh]"
         style={{
           overflow: "scroll",
         }}
       >
-        <Header
-          handleClickProp={() => {
-            setLoading(true);
-          }}
-        />
+        <Header />
 
         <div
           className="bg-gradient-to-t from-black to-transparent absolute h-[90vh] w-[100vw] bottom-[30px] flex items-center justify-center"
@@ -92,16 +89,21 @@ export default function ComingSoon() {
             </span>
           </span>
         </div>
-        <section className="hidden lg:flex lg:flex-1">
-          <Spline
-            scene={
-              "https://prod.spline.design/dex6W6sXGBikSDfO/scene.splinecode"
-            }
-          />
-        </section>
-        <section className="flex flex-1 lg:hidden">
-          <Spline scene="https://prod.spline.design/tIdZB2tsRoGBg-y1/scene.splinecode" />
-        </section>
+        {isMobile ? (
+          <section className="flex flex-1">
+            <Spline scene="https://prod.spline.design/tIdZB2tsRoGBg-y1/scene.splinecode" />
+          </section>
+        ) : hideOnWeb ? (
+          <></>
+        ) : (
+          <section className="flex flex-1">
+            <Spline
+              scene={
+                "https://prod.spline.design/dex6W6sXGBikSDfO/scene.splinecode"
+              }
+            />
+          </section>
+        )}
         <div className="absolute bottom-[0] w-[100vw]">
           <Marquee>
             <Image

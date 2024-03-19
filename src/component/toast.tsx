@@ -1,9 +1,8 @@
 import { get } from "lodash";
 import Image from "next/image";
 import Link from "next/link";
-import React, { CSSProperties } from "react";
-// import { ColorRing } from "react-loader-spinner";
-import { ToastContainer, toast } from "react-toastify";
+import React from "react";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 interface ToastProps {

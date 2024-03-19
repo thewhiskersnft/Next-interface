@@ -15,11 +15,15 @@ import {
   PLATFORM_FEE_SOL_TOKEN_CREATION,
   PLATFORM_OWNER_ADDRESS,
 } from "@/constants";
+import { recursiveCheckTransitionStatus } from "@/utils/transactions";
+import { getSignatureURL } from "@/utils/redirectURLs";
+import { getPriorityLambports } from "@/utils/transactions/getPriorityLambports";
 
 export const revokeFreezeAuthTxBuilder = async (
   connection: Connection,
   wallet: WalletContextState,
-  tokenMint: PublicKey
+  tokenMint: PublicKey,
+  priorityFees: number
 ) => {
   try {
     if (!wallet.publicKey) {
@@ -40,10 +44,11 @@ export const revokeFreezeAuthTxBuilder = async (
       toPubkey: new PublicKey(PLATFORM_OWNER_ADDRESS),
       lamports: PLATFORM_FEE_SOL_TOKEN_CREATION * LAMPORTS_PER_SOL,
     });
-
+    const PRIORITY_FEE_IX = getPriorityLambports(priorityFees);
     const createRevokeFreezeAuthTransaction = new Transaction().add(
       revokeMintAuthInstruction,
-      sentPlatFormfeeInstruction
+      sentPlatFormfeeInstruction,
+      PRIORITY_FEE_IX
     );
 
     const createRevokeFreezeAuthTransactionSignature =
@@ -51,10 +56,30 @@ export const revokeFreezeAuthTxBuilder = async (
         createRevokeFreezeAuthTransaction,
         connection
       );
-    return createRevokeFreezeAuthTransactionSignature;
+
+    let resp = await recursiveCheckTransitionStatus(
+      Date.now(),
+      createRevokeFreezeAuthTransactionSignature,
+      connection,
+      wallet
+      // mint_account.publicKey.toBase58()
+    );
+    if (resp) {
+      successToast({
+        keyPairs: {
+          signature: {
+            value: `${createRevokeFreezeAuthTransactionSignature}`,
+            // linkTo: `https://solscan.io/tx/${createRevokeFreezeAuthTransactionSignature}?cluster=devnet`,
+            linkTo: getSignatureURL(createRevokeFreezeAuthTransactionSignature),
+          },
+        },
+        allowCopy: true,
+      });
+    }
+
+    return resp ? createRevokeFreezeAuthTransactionSignature : null;
   } catch (error) {
-    // console.log(error);
-    errorToast({ message: "Please try again" });
+    // //console.log(error);
     return "";
   }
 };

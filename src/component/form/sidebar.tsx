@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
 // import Expand from "../asset/expand.svg";
-import { TokenRoutes, sidebarData } from "../constants";
-import { SidebarItem } from "../interfaces";
+import { TokenRoutes, sidebarData } from "../../constants";
+import { SidebarItem } from "../../interfaces";
 // import { useNavigate } from "react-router-dom";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { get } from "lodash";
 import Image from "next/image";
-import { errorToast } from "./toast";
+import { errorToast } from "../toast";
 
 type SidebarProps = {};
 
@@ -17,6 +17,7 @@ const Sidebar = ({}: SidebarProps) => {
 
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathName = usePathname();
 
   useEffect(() => {
     const tokenAction = searchParams.get("action");
@@ -36,6 +37,10 @@ const Sidebar = ({}: SidebarProps) => {
       setClicked("Token Management");
       setChildClicked("Burn Tokens");
     }
+    if (pathName === `/airdrop`) {
+      setClicked("Airdrop Checker");
+    }
+    //console.log(pathName);
   }, []);
 
   const handleChildClick = (val: string, navigateTo: string | undefined) => {
@@ -43,14 +48,14 @@ const Sidebar = ({}: SidebarProps) => {
     } else {
       setChildClicked(val);
     }
-    // console.log(navigateTo);
+    // //console.log(navigateTo);
     if (navigateTo) {
-      // console.log(navigateTo);
+      // //console.log(navigateTo);
       router.push(navigateTo);
     }
   };
 
-  const handleClick = (val: string) => {
+  const handleClick = (val: string, navigateTo: string | undefined) => {
     if (clicked === val) {
       const menuEl = document.getElementById(`${val}`);
       if (menuEl) {
@@ -63,6 +68,7 @@ const Sidebar = ({}: SidebarProps) => {
       }
     } else {
       setClicked(val);
+      if (navigateTo) router.push(navigateTo);
     }
   };
 
@@ -74,8 +80,15 @@ const Sidebar = ({}: SidebarProps) => {
       {sidebarData.map((side: SidebarItem, index: number) => {
         const isExpandable: boolean =
           (side.children && side.children.length > 0) || false;
-        const { label, description, icon, activeIcon, children, disabled } =
-          side;
+        const {
+          label,
+          description,
+          icon,
+          activeIcon,
+          children,
+          disabled,
+          navigateTo,
+        } = side;
         return (
           <div key={index}>
             <div
@@ -85,7 +98,7 @@ const Sidebar = ({}: SidebarProps) => {
                   errorToast({ message: "Coming Soon!" });
                   return;
                 }
-                handleClick(label);
+                handleClick(label, navigateTo);
               }}
             >
               <div className="flex flex-row justify-center items-center mr-5 min-w-[48px]">

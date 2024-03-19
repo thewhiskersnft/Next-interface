@@ -26,3 +26,35 @@ export interface SidebarItem {
   navigateTo?: string;
   disabled?: boolean;
 }
+
+/** a string of readless charateries (like: base64 string)  */
+export type HexAddress = string;
+
+export type DateInfo = string | number | Date;
+
+export type MayFunction<T, Params extends any[] = []> =
+  | T
+  | ((...params: Params) => T);
+export type MayPromise<T> = T | Promise<T>;
+export type MayArray<T> = T | T[];
+export type DeMayArray<T extends MayArray<any>> = T extends any[]
+  ? T[number]
+  : T;
+
+export interface TxHistoryInfo {
+  txid: HexAddress;
+  relativeTxids?: HexAddress[];
+  title?: string;
+  // FORCE CODE
+  forceConfirmedTitle?: string;
+  // FORCE CODE
+  forceErrorTitle?: string;
+  block?: number;
+  description?: string;
+  adapterName?: string;
+  isMulti?: boolean;
+  /** only for multi-mode (isMulti should be true) */
+  subtransactionDescription?: string;
+  status: "success" | "droped" | "pending" | "fail";
+  time: DateInfo;
+}

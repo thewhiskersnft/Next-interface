@@ -9,6 +9,13 @@ export const TokenRoutes: Record<string, string> = {
   burnToken: "burn-token",
 };
 
+export const LiquidityRoutes: Record<string, string> = {
+  createOpenBookMarketId: "create-openbook-marketid",
+  createRadyiumLiquidityPool: "create-raydium-liquidity-pool",
+  fundLiquidityPool: "fund-liquidity-pool",
+  renounceLiquidityPool: "renounce-liquidity-pool",
+};
+
 export const sidebarData: SidebarItem[] = [
   {
     label: "Token Management",
@@ -61,21 +68,25 @@ export const sidebarData: SidebarItem[] = [
       {
         label: "Create Openbook Market ID",
         description: "Create Openbook Market ID To Set Up Liquidity Pool",
+        navigateTo: `/liquidity?action=${LiquidityRoutes.createOpenBookMarketId}`,
         disabled: true,
       },
       {
         label: "Create Raydium Liquidity Pool (LP)",
         description: "Create a Raydium LP",
+        navigateTo: `/liquidity?action=${LiquidityRoutes.createRadyiumLiquidityPool}`,
         disabled: true,
       },
       {
         label: "Fund Liquidity Pool",
         description: "Fund An Existing Liquidity Pool",
+        navigateTo: `/liquidity?action=${LiquidityRoutes.fundLiquidityPool}`,
         disabled: true,
       },
       {
         label: "Renounce LP (Burn LP)",
         description: "Renounce Your LP Ownership Tokens",
+        navigateTo: `/liquidity?action=${LiquidityRoutes.renounceLiquidityPool}`,
         disabled: true,
       },
     ],
@@ -128,6 +139,7 @@ export const sidebarData: SidebarItem[] = [
     description: "Bulk Scan Your Wallets To Determine Airdrop Eligibility",
     icon: "/airdrop.svg",
     activeIcon: "/airdropActive.svg",
+    navigateTo: `/airdrop`,
     disabled: true,
   },
 ];
@@ -139,7 +151,7 @@ export const keyPairs: Record<string, string> = {
 
 export const PLATFORM_OWNER_ADDRESS =
   "AZLF3pWCpjh93yJo74hzKJWmiQrfv1hVAZ7wq4DA5x1d";
-export const PLATFORM_FEE_SOL_TOKEN_CREATION = 0.01;
+export const PLATFORM_FEE_SOL_TOKEN_CREATION = 0;
 
 export const envs: Record<string, string> = {
   devnet: "Devnet",
