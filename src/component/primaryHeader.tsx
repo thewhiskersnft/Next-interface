@@ -41,7 +41,7 @@ const PrimaryHeader: FC = () => {
         const soltokenpriceData = await axios.get(
           "https://cache.jup.ag/stats/day"
         );
-        // console.log("soltokenPrice", soltokenpriceData.data.lastXVolumeInUSD);
+        // //console.log("soltokenPrice", soltokenpriceData.data.lastXVolumeInUSD);
         const a = soltokenpriceData.data.lastXVolumeInUSD;
         const language = "en";
         const b = Intl.NumberFormat(language, { notation: "compact" }).format(
@@ -87,7 +87,7 @@ const PrimaryHeader: FC = () => {
     },
   ];
 
-  console.log(priorityFees);
+  //console.log(priorityFees);
 
   return (
     <div
@@ -173,7 +173,7 @@ const PrimaryHeader: FC = () => {
           <label className="switch text-xsmall mx-4">
             <input
               onClick={() => {
-                // console.log("Toggle theme");
+                // //console.log("Toggle theme");
               }}
               checked={true}
               type="checkbox"

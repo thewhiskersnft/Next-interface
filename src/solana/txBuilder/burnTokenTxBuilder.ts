@@ -99,9 +99,9 @@ export const createBurnTokensTxBuilder = async (
         allowCopy: true,
       });
     }
-    return createBurnTokensTransactionSignature;
+    return resp ? createBurnTokensTransactionSignature : null;
   } catch (error) {
-    // console.log(error);
+    // //console.log(error);
     errorToast({ message: "Insufficent balance!" });
     return "";
   }

@@ -11,12 +11,12 @@ export async function recursiveCheckTransitionStatus(
       connection
         .getSignatureStatus(txHash, { searchTransactionHistory: true })
         .then(async (res: any) => {
-          console.log(res);
+          //console.log(res);
           if (res?.value?.confirmationStatus === "finalized") {
-            // console.log("if : ", res);
+            // //console.log("if : ", res);
             resolve(true);
           } else if (res?.value?.confirmationStatus === "confirmed") {
-            // console.log("else if confirmed : ", res);
+            // //console.log("else if confirmed : ", res);
             resolve(true);
           } else if (
             (res?.value?.confirmationStatus === "pending" ||
@@ -24,7 +24,7 @@ export async function recursiveCheckTransitionStatus(
               res.value === null) &&
             Date.now() - startTime < 30000 // 30sec
           ) {
-            // console.log("else if : ", res);
+            // //console.log("else if : ", res);
             setTimeout(async () => {
               let resp = await recursiveCheckTransitionStatus(
                 startTime,
@@ -35,15 +35,15 @@ export async function recursiveCheckTransitionStatus(
               resolve(resp);
             }, 3000); // 3sec
           } else {
-            // console.log("else");
+            // //console.log("else");
             errorToast({
-              message: "Please try again. Try adding priority fee.",
+              message: "Network Is Conjested, Try Adding More Priority Fee.",
             });
             resolve(false);
           }
         });
     } catch (e) {
-      console.log("error : ", e);
+      //console.log("error : ", e);
       reject(e);
     }
   });

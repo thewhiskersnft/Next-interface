@@ -71,7 +71,7 @@ export const updateSPLTokenMetadataTxBuilder = async (
     };
 
     const [metadataPDA] = getMetadataPda(mintAddress);
-    // console.log("metadataPDA", metadataPDA.toBase58());
+    // //console.log("metadataPDA", metadataPDA.toBase58());
 
     const endpoint = clusterApiUrl(network as any);
     const umi = createUmi(endpoint);
@@ -124,7 +124,7 @@ export const updateSPLTokenMetadataTxBuilder = async (
         return newKey;
       }
     );
-    // console.log("Successfully Added Update Metadata Instructions");
+    // //console.log("Successfully Added Update Metadata Instructions");
 
     const sentPlatFormfeeInstruction = SystemProgram.transfer({
       fromPubkey: wallet.publicKey,
@@ -152,14 +152,8 @@ export const updateSPLTokenMetadataTxBuilder = async (
     if (resp) {
       successToast({
         keyPairs: {
-          mintAddress: {
-            value: `${mintAddress.toBase58()}`,
-            // linkTo: `https://solscan.io/token/${mintAddress.toBase58()}?cluster=devnet`,
-            linkTo: getMintURL(mintAddress.toBase58()),
-          },
           signature: {
             value: `${createAccountSignature}`,
-            // linkTo: `https://solscan.io/tx/${createAccountSignature}?cluster=devnet`,
             linkTo: getSignatureURL(createAccountSignature),
           },
         },
@@ -167,12 +161,14 @@ export const updateSPLTokenMetadataTxBuilder = async (
       });
     }
 
-    return {
-      sig: createAccountSignature,
-      mint: mintAddress.toBase58(),
-    };
+    return resp
+      ? {
+          sig: createAccountSignature,
+          mint: mintAddress.toBase58(),
+        }
+      : null;
   } catch (error) {
     errorToast({ message: "Please Try Again!" });
-    // console.log(error);
+    // //console.log(error);
   }
 };

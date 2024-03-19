@@ -23,11 +23,11 @@ export function addHistoryItem(
   alltxHistory: any,
   wallet: any
 ): Promise<any> {
-  console.log("Inside here.........");
+  //console.log("Inside here.........");
   // const wallet = useWallet();
   const owner = wallet?.publicKey;
   const addedTxHistoryOfOwner = txHistory.slice(0, 18).concat(item);
-  console.log("addedTxHistoryOfOwner : :: : ", addedTxHistoryOfOwner);
+  //console.log("addedTxHistoryOfOwner : :: : ", addedTxHistoryOfOwner);
   updateAlltxHistory({
     // alltxHistory,
     addedTxHistoryOfOwner,

@@ -46,16 +46,6 @@ const ManageToken = ({
         // correctly revoked
         formik.setFieldValue("mintAuthority", false);
         dispatch(setMintAuthority(false));
-        // successToast({ message: ` Successfully Revoked ${txhash} `})
-        // successToast({
-        //   keyPairs: {
-        //     signature: {
-        //       value: `${txhash}`,
-        //       linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
-        //     },
-        //   },
-        //   allowCopy: true,
-        // });
       } else {
         errorToast({ message: "Please try again" });
       }
@@ -75,34 +65,19 @@ const ManageToken = ({
         new PublicKey(formik?.values?.tokenAddress),
         priorityFees
       );
-      // console.log(txhash);
       if (txhash) {
         // correctly revoked
         formik.setFieldValue("freezeAuthority", false);
         dispatch(setFreezeAuthority(false));
-        // successToast({ message: `SuccessfullyRevoked ${txhash} ` });
-        // successToast({
-        //   keyPairs: {
-        //     signature: {
-        //       value: `${txhash}`,
-        //       linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
-        //     },
-        //   },
-        //   allowCopy: true,
-        // });
       } else {
         errorToast({ message: "Please try again" });
       }
       setFreezeLoading(false);
     } catch (error) {
-      // console.log(error);
+      // //console.log(error);
       errorToast({ message: "Please try again!" });
       setFreezeLoading(false);
     }
-  };
-
-  const toggleShowManageTokenData = () => {
-    setShowManageTokenData(!showManageTokenData);
   };
 
   const dispatch = useDispatch();
@@ -138,7 +113,7 @@ const ManageToken = ({
               label="Load"
               loading={tokenLoading}
               onClick={async () => {
-                // // console.log("Load clicked");
+                // // //console.log("Load clicked");
                 setTokenLoading(true);
                 if (!formik?.values?.tokenAddress) {
                   errorToast({ message: "Please enter token address!" });
@@ -151,7 +126,7 @@ const ManageToken = ({
                     new PublicKey(formik?.values?.tokenAddress)
                   );
 
-                  // console.log("MA : ", mintAccount);
+                  // //console.log("MA : ", mintAccount);
                   if (mintAccount) {
                     formik.setFieldValue(
                       "mintAuthority",

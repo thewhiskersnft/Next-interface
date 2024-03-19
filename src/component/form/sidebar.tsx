@@ -40,7 +40,7 @@ const Sidebar = ({}: SidebarProps) => {
     if (pathName === `/airdrop`) {
       setClicked("Airdrop Checker");
     }
-    console.log(pathName);
+    //console.log(pathName);
   }, []);
 
   const handleChildClick = (val: string, navigateTo: string | undefined) => {
@@ -48,9 +48,9 @@ const Sidebar = ({}: SidebarProps) => {
     } else {
       setChildClicked(val);
     }
-    // console.log(navigateTo);
+    // //console.log(navigateTo);
     if (navigateTo) {
-      // console.log(navigateTo);
+      // //console.log(navigateTo);
       router.push(navigateTo);
     }
   };

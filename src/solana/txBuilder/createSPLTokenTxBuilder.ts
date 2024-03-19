@@ -75,16 +75,16 @@ export const createSPLTokenTxBuilder = async (
     };
 
     const mint_rent = await getMinimumBalanceForRentExemptMint(connection);
-    // console.log("mint_rent", mint_rent);
+    // //console.log("mint_rent", mint_rent);
 
     const mint_account = Keypair.generate();
-    // console.log("mint_account", mint_account.publicKey.toBase58());
+    // //console.log("mint_account", mint_account.publicKey.toBase58());
 
     const [metadataPDA] = getMetadataPda(mint_account.publicKey);
-    // console.log("metadataPDA", metadataPDA.toBase58());
+    // //console.log("metadataPDA", metadataPDA.toBase58());
 
     const owner = wallet.publicKey!;
-    // console.log("owner", owner.toBase58());
+    // //console.log("owner", owner.toBase58());
 
     const umi = createUmi(endpoint);
 
@@ -197,7 +197,7 @@ export const createSPLTokenTxBuilder = async (
 
     const startTime = Date.now();
     // while()
-    console.log(" Now : ", startTime);
+    //console.log(" Now : ", startTime);
     // 2afRSao7JckbxdV4p1Ak3jcD7uKsW4C7kY2tRukyXLtncdiTW4jpiaZDSR4nKYveok1WYzXgyc337PY3bAmJkzoK', mint: '5Pm6NTDoRYHjyy36XyJy3bY8ezpPHnzfLvug1zrHuhKK
     // let resp = await recursiveCheckTransitionStatus(
     //   startTime,
@@ -209,7 +209,7 @@ export const createSPLTokenTxBuilder = async (
     //   mint_account,
     //   0
     // );
-    // console.log("Resp : ", resp);
+    // //console.log("Resp : ", resp);
     let resp = await recursiveCheckTransitionStatus(
       Date.now(),
       createAccountSignature,
@@ -235,11 +235,13 @@ export const createSPLTokenTxBuilder = async (
     } else {
       // error message already displayed in recursiveCheckTransitionStatus
     }
-    return {
-      sig: createAccountSignature,
-      mint: mint_account.publicKey.toBase58(),
-    };
+    return resp
+      ? {
+          sig: createAccountSignature,
+          mint: mint_account.publicKey.toBase58(),
+        }
+      : null;
   } catch (error) {
-    // console.log(error);
+    // //console.log(error);
   }
 };

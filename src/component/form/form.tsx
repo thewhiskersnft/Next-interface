@@ -28,6 +28,7 @@ import { NFTStorage, File, Blob } from "nft.storage";
 // import { addHistoryItem } from "@/application/transaction/txHistory";
 // import { setAlltxHistory } from "@/redux/slice/txDataSlice";
 import { recursiveCheckTransitionStatus } from "@/utils/transactions";
+import { AppENVConfig } from "@/global/config/config";
 
 export default function Form() {
   const {
@@ -83,7 +84,7 @@ export default function Form() {
   }, []);
 
   const checkAndUpdateRPC = async () => {
-    console.log("........................ main ", allMainEndpoints);
+    //console.log("........................ main ", allMainEndpoints);
     let data = {
       strategy: "speed",
       success: true,
@@ -94,7 +95,7 @@ export default function Form() {
       data as any
     );
     dispatch(setCurrentEndpoint(selectedEndpointUrl));
-    console.log("Selected endpoint : ", selectedEndpointUrl);
+    //console.log("Selected endpoint : ", selectedEndpointUrl);
   };
 
   const formik = useFormik({
@@ -146,7 +147,7 @@ export default function Form() {
           new PublicKey(formik.values.tokenAddress),
           connection
         );
-        console.log("Old data : ", oldData);
+        //console.log("Old data : ", oldData);
         if (oldData.isMutable) {
           formik.setFieldValue("name", oldData.tokenName);
           formik.setFieldValue("symbol", oldData.tokenSymbol);
@@ -160,7 +161,7 @@ export default function Form() {
             },
           };
           formik.setFieldValue("logo", oldData.tokenLogo);
-          console.log("Updated metadata : ", updatedPreviewData);
+          //console.log("Updated metadata : ", updatedPreviewData);
           dispatch(setPreviewData(updatedPreviewData));
           if (!isFetchOnly) {
             toggleShowUpdateMetadata();
@@ -193,74 +194,36 @@ export default function Form() {
       return;
     }
     try {
-      // const metaplexhandler = await metaplexBuilder(wallet, connection);
-      // console.log("Image file data : ", metaplexFileData);
-      // const imgURI = await metaplexhandler.storage().upload(metaplexFileData);
-      if (true) {
-        successToast({ message: `Image Uri Created` });
-        // let tokenMetadata = {
-        //   name: formik.values.name,
-        //   symbol: formik.values.symbol,
-        //   description: formik.values.description,
-        //   image: imgURI,
-        // } as any;
-        // if (formik.values?.website) {
-        //   tokenMetadata["website"] = formik.values.website;
-        // }
-        // if (formik.values?.telegram) {
-        //   tokenMetadata["telegram"] = formik.values.telegram;
-        // }
-        // if (formik.values?.discord) {
-        //   tokenMetadata["discord"] = formik.values.discord;
-        // }
-        // if (formik.values?.twitter) {
-        //   tokenMetadata["twitter"] = formik.values.twitter;
-        // }
-        // const { uri } = await metaplexhandler
-        //   .nfts()
-        //   .uploadMetadata(tokenMetadata);
-        // if (!uri) {
-        //   setButtonClicked(false);
-        //   errorToast({ message: "Error In Creating Uri" });
-        //   return;
-        // }const uri = await createURI();
-        const uri = await createURI();
-        let uriEmbedded = uri.embed();
-        let finalURI =
-          uriEmbedded.image.origin + "/" + uri.url.replace("://", "/");
-        console.log("Final uri : ", finalURI);
-        successToast({ message: `MetaData Uploaded` });
-        const txData = await updateSPLTokenMetadataTxBuilder(
-          formik.values.name,
-          formik.values.symbol,
-          // uri,
-          finalURI,
-          connection,
-          wallet,
-          new PublicKey(formik.values.tokenAddress),
-          priorityFees
-        );
-        if (!txData) {
-          setButtonClicked(false);
-          errorToast({ message: "Please Try Again" });
-          return;
-        }
-
-        oldMetaData(true);
+      const uri = await createURI();
+      let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
+      //console.log("Final uri : ", finalURI);
+      successToast({ message: `MetaData Uploaded` });
+      const txData = await updateSPLTokenMetadataTxBuilder(
+        formik.values.name,
+        formik.values.symbol,
+        finalURI,
+        connection,
+        wallet,
+        new PublicKey(formik.values.tokenAddress),
+        priorityFees
+      );
+      if (!txData) {
         setButtonClicked(false);
-        // successToast({
-        //   keyPairs: {
-        //     signature: {
-        //       value: `${txData?.sig}`,
-        //       linkTo: `https://solscan.io/tx/${txData?.sig}?cluster=devnet`,
-        //     },
-        //   },
-        //   allowCopy: true,
-        // });
+        errorToast({ message: "Please Try Again" });
+        return;
       } else {
-        errorToast({ message: "Error In Uploading Logo" });
-        setButtonClicked(false);
+        let updatedPreviewData = {
+          "Token Details": {
+            "Token Name": formik.values.name,
+            Description: formik.values.description,
+            Symbol: formik.values.symbol,
+          },
+        };
+        formik.setFieldValue("logo", getImageURL());
+        //console.log("Updated metadata : ", updatedPreviewData);
+        dispatch(setPreviewData(updatedPreviewData));
       }
+      setButtonClicked(false);
     } catch (e) {
       errorToast({ message: "Try Again!" });
       setButtonClicked(false);
@@ -271,7 +234,7 @@ export default function Form() {
     let resp = {} as any;
     if (selectedForm === keyPairs.createV1) {
       resp = v1TokenValidation(values);
-      //console.log(metaplexFileData)
+      ////console.log(metaplexFileData)
       if (!metaplexFileData?.fileName) {
         resp["logo"] = "Please select logo";
         errorToast({ message: "Please upload logo!" });
@@ -289,110 +252,35 @@ export default function Form() {
     let balance = 0;
     if (wallet.publicKey != null) {
       balance = await connection.getBalance(wallet.publicKey as any);
-      //    console.log(balance);
     }
     if (balance > 5000000) {
       try {
-        const isSPL = true;
-        if (isSPL) {
-          // const metaplexhandler = await metaplexBuilder(wallet, connection);
-          // console.log("gvhgvghvhg", metaplexFileData);
+        const uri = await createURI();
+        let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
+        // //console.log("Final uri : ", finalURI);
+        successToast({ message: `MetaData Uploaded` });
+        const txhash = await createSPLTokenTxBuilder(
+          formik.values.name,
+          formik.values.symbol,
+          formik.values.decimal,
+          finalURI,
+          formik.values.supply,
+          connection,
+          wallet,
+          currentEndpoint,
+          priorityFees
+        );
 
-          // const imgURI = await metaplexhandler
-          //   .storage()
-          //   .upload(metaplexFileData);
-          // console.log("Image uri : ", imgURI);
-          // if (imgURI) {
-          //   successToast({ message: `Image Uri Created` });
-          //   let tokenMetadata = {
-          //     name: formik.values.name,
-          //     symbol: formik.values.symbol,
-          //     description: formik.values.description,
-          //     image: imgURI,
-          //   } as any;
-          //   if (formik.values?.website) {
-          //     tokenMetadata["website"] = formik.values.website;
-          //   }
-          //   if (formik.values?.telegram) {
-          //     tokenMetadata["telegram"] = formik.values.telegram;
-          //   }
-          //   if (formik.values?.discord) {
-          //     tokenMetadata["discord"] = formik.values.discord;
-          //   }
-          //   if (formik.values?.twitter) {
-          //     tokenMetadata["twitter"] = formik.values.twitter;
-          //   }
-          //   console.log(tokenMetadata);
-
-          // const { uri } = await metaplexhandler
-          //   .nfts()
-          //   .uploadMetadata(tokenMetadata);
-          // console.log("URI : ", uri);
-          // if (!uri) {
-          //   setButtonClicked(false);
-          //   errorToast({ message: "Error In Creating Uri" });
-          //   return;
-          // }
-          const uri = await createURI();
-          let uriEmbedded = uri.embed();
-          let finalURI =
-            uriEmbedded.image.origin + "/" + uri.url.replace("://", "/");
-          console.log("Final uri : ", finalURI);
-          successToast({ message: `MetaData Uploaded` });
-          const txhash = await createSPLTokenTxBuilder(
-            formik.values.name,
-            formik.values.symbol,
-            formik.values.decimal,
-            // uri.url,
-            finalURI,
-            formik.values.supply,
-            connection,
-            wallet,
-            currentEndpoint,
-            priorityFees
-          );
-
-          console.log("txhash : ", txhash);
-          if (!txhash) {
-            setButtonClicked(false);
-            errorToast({ message: "Please Try Again" });
-            return;
-          }
-          // let resp = await recursiveCheckTransitionStatus(
-          //   Date.now(),
-          //   txhash.sig,
-          //   connection,
-          //   wallet,
-          //   // txhash.mint
-          // );
-          // console.log(resp, ".............resp");
-          // if (resp) {
-          //   successToast({
-          //     keyPairs: {
-          //       mintAddress: {
-          //         value: `${txhash?.mint}`,
-          //         linkTo: `https://solscan.io/token/${txhash?.mint}?cluster=devnet`,
-          //       },
-          //       signature: {
-          //         value: `${txhash?.sig}`,
-          //         linkTo: `https://solscan.io/tx/${txhash?.sig}?cluster=devnet`,
-          //       },
-          //     },
-          //     allowCopy: true,
-          //   });
-          // } else {
-          //   errorToast({ message: `${resp}` });
-          // }
-
+        // //console.log("txhash : ", txhash);
+        if (!txhash) {
           setButtonClicked(false);
-          // } else {
-          //   setButtonClicked(false);
-          //   errorToast({ message: "Error In Creating Token Please Retry" });
-          // }
-        } else {
+          errorToast({ message: "Please Try Again" });
+          return;
         }
+
+        setButtonClicked(false);
       } catch (error) {
-        console.log(error);
+        // //console.log(error);
         errorToast({ message: "Try Again!" });
         setButtonClicked(false);
       }
@@ -412,22 +300,22 @@ export default function Form() {
   };
 
   const createURI = async () => {
-    const NFT_STORAGE_TOKEN =
-      process.env.NFT_STORAGE_TOKEN ||
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDQ0OTM5YzdhNkRGOTJCNzBDNzhFZjRCNDc5YUQwNzE3ODhDQzU4YjEiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTcxMDUyMjAwODkyNCwibmFtZSI6ImNhdHMifQ.BXE5pak8iO0ZGMySRl9zL2DP7YYCOspJNAfM4CuOHBU";
-    console.log(NFT_STORAGE_TOKEN, "token");
+    const NFT_STORAGE_TOKEN = AppENVConfig.nft_storage_api_key;
+    //console.log(NFT_STORAGE_TOKEN, "token");
 
     const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
     const imageFile = new File([fileData], "nft.png", { type: "image/png" });
     const imageMetadata = await client.store({
+      // goto store in node_module and comment error for blob or image file expected thrown
       image: imageFile,
       name: formik.values.name,
       symbol: formik.values.symbol,
       description: formik.values.description,
     });
-    console.log(imageMetadata, imageMetadata.embed());
-    const imageURL = await getExampleImage(imageMetadata?.embed()?.image?.href);
-    console.log("Img url blob : ", imageURL);
+    //console.log(imageMetadata, imageMetadata.embed());
+    // const imageURL = await getExampleImage(imageMetadata?.embed()?.image?.href);
+    const imageURL = imageMetadata?.embed()?.image?.href;
+    //console.log("Img url blob : ", imageURL);
     let tokenMetadata = {
       name: formik.values.name,
       symbol: formik.values.symbol,
@@ -447,8 +335,8 @@ export default function Form() {
       tokenMetadata["twitter"] = formik.values.twitter;
     }
     const metadata = await client.store(tokenMetadata);
-    console.log("Metadat : ", metadata);
-    console.log("Metadat emb : ", metadata.embed());
+    //console.log("Metadat : ", metadata);
+    //console.log("Metadat emb : ", metadata.embed());
     return metadata;
   };
 

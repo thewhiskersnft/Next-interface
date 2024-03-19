@@ -5,7 +5,7 @@
 //         connection,
 //         new PublicKey(formik.values.tokenAddress)
 //       );
-//       // console.log("mintAccount", mintAccount);
+//       // //console.log("mintAccount", mintAccount);
 //       if (!mintAccount) {
 //         errorToast({ message: "Please Check the address" });
 //       } else {

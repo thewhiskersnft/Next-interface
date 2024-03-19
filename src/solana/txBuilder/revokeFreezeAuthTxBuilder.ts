@@ -77,9 +77,9 @@ export const revokeFreezeAuthTxBuilder = async (
       });
     }
 
-    return createRevokeFreezeAuthTransactionSignature;
+    return resp ? createRevokeFreezeAuthTransactionSignature : null;
   } catch (error) {
-    // console.log(error);
+    // //console.log(error);
     return "";
   }
 };

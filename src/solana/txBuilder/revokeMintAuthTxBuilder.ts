@@ -73,9 +73,9 @@ export const revokeMintAuthTxBuilder = async (
       });
     }
 
-    return createRevokeMintAuthTransactionSignature;
+    return resp ? createRevokeMintAuthTransactionSignature : null;
   } catch (error) {
-    // console.log(error);
+    // //console.log(error);
     return "";
   }
 };
