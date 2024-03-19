@@ -185,3 +185,20 @@ input:checked + .slider:before {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+.loader {
+  border: 7px solid rgba(255, 255, 255, 0.4);
+  border-top: 7px solid #ffc83a;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

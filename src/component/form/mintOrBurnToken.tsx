@@ -1,19 +1,25 @@
 "use client";
 import React, { useState } from "react";
-import CustomInput from "./customInput";
-import CustomButton from "./customButton";
+import CustomInput from "../customInput";
+import CustomButton from "../customButton";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 
-import { createMintTokensTxBuilder } from "../solana/txBuilder/mintTokenTxBuilder";
+import { createMintTokensTxBuilder } from "../../solana/txBuilder/mintTokenTxBuilder";
 import { validateAddress } from "@/solana/txBuilder/checkAddress";
-import { errorToast, successToast } from "./toast";
+import { errorToast, successToast } from "../toast";
 import { createBurnTokensTxBuilder } from "@/solana/txBuilder/burnTokenTxBuilder";
+import { getSignatureURL } from "@/utils/redirectURLs";
 
-type MintOrBurnTokenProps = { isBurn?: boolean; formik?: any };
+type MintOrBurnTokenProps = {
+  isBurn?: boolean;
+  formik?: any;
+  priorityFees: number;
+};
 const MintOrBurnToken = ({
   formik = { errors: {}, values: {}, touched: {} },
   isBurn,
+  priorityFees,
 }: MintOrBurnTokenProps) => {
   const [showOnLoadClick, setShowOnloadClick] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -29,7 +35,7 @@ const MintOrBurnToken = ({
         connection,
         new PublicKey(formik.values.tokenAddress)
       );
-      // console.log("mintAccount", mintAccount);
+      // //console.log("mintAccount", mintAccount);
       if (!mintAccount) {
         errorToast({ message: "Please Check the address" });
       } else {
@@ -58,25 +64,9 @@ const MintOrBurnToken = ({
         connection,
         wallet,
         new PublicKey(formik.values.tokenAddress),
-        formik.values.mintAmount
+        formik.values.mintAmount,
+        priorityFees
       );
-      if (txhash) {
-        // correctly revoked
-        successToast({
-          keyPairs: {
-            signature: {
-              value: `${txhash}`,
-              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
-            },
-          },
-          allowCopy: true,
-        });
-      }
-      else{
-        errorToast({ message: "Please try again" });
-      }
-      
-      // console.log(txhash);
       setBurnOrMintLoading(false);
     } catch (e) {
       errorToast({ message: "Please try again" });
@@ -96,24 +86,25 @@ const MintOrBurnToken = ({
         connection,
         wallet,
         new PublicKey(formik.values.tokenAddress),
-        formik.values.mintAmount
+        formik.values.mintAmount,
+        priorityFees
       );
       if (txhash) {
         // correctly revoked
-        successToast({
-          keyPairs: {
-            signature: {
-              value: `${txhash}`,
-              linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
-            },
-          },
-          allowCopy: true,
-        });
-      }
-      else{
+        // successToast({
+        //   keyPairs: {
+        //     signature: {
+        //       value: `${txhash}`,
+        //       // linkTo: `https://solscan.io/tx/${txhash}?cluster=devnet`,
+        //       linkTo: getSignatureURL(txhash),
+        //     },
+        //   },
+        //   allowCopy: true,
+        // });
+      } else {
         errorToast({ message: "Please try again" });
       }
-      // console.log(txhash);
+      // //console.log(txhash);
       setBurnOrMintLoading(false);
     } catch (e) {
       errorToast({ message: "Please try again" });
@@ -194,7 +185,7 @@ const MintOrBurnToken = ({
                   } else {
                     mintToken();
                   }
-                  // // console.log("Mint token clicked!");
+                  // // //console.log("Mint token clicked!");
                 }}
               />
             </div>

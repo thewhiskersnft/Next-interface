@@ -7,7 +7,7 @@ import { Suspense } from "react";
 import { isMobile } from "react-device-detect";
 import Loader from "@/component/loader";
 
-export default function Token() {
+export default function Liquidity() {
   return (
     <Suspense
       fallback={

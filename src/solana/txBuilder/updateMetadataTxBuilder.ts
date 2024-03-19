@@ -40,6 +40,9 @@ import {
   PLATFORM_OWNER_ADDRESS,
 } from "@/constants";
 import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
+import { recursiveCheckTransitionStatus } from "@/utils/transactions";
+import { getMintURL, getSignatureURL } from "@/utils/redirectURLs";
+import { getPriorityLambports } from "@/utils/transactions/getPriorityLambports";
 
 let network = isMainnet() ? "mainnet-beta" : "devnet";
 
@@ -49,7 +52,8 @@ export const updateSPLTokenMetadataTxBuilder = async (
   uri: string,
   connection: Connection,
   wallet: WalletContextState,
-  mintAddress: PublicKey
+  mintAddress: PublicKey,
+  priorityFees: number
 ) => {
   try {
     if (!wallet.publicKey) {
@@ -67,7 +71,7 @@ export const updateSPLTokenMetadataTxBuilder = async (
     };
 
     const [metadataPDA] = getMetadataPda(mintAddress);
-    // console.log("metadataPDA", metadataPDA.toBase58());
+    // //console.log("metadataPDA", metadataPDA.toBase58());
 
     const endpoint = clusterApiUrl(network as any);
     const umi = createUmi(endpoint);
@@ -120,17 +124,18 @@ export const updateSPLTokenMetadataTxBuilder = async (
         return newKey;
       }
     );
-    // console.log("Successfully Added Update Metadata Instructions");
+    // //console.log("Successfully Added Update Metadata Instructions");
 
     const sentPlatFormfeeInstruction = SystemProgram.transfer({
       fromPubkey: wallet.publicKey,
       toPubkey: new PublicKey(PLATFORM_OWNER_ADDRESS),
       lamports: PLATFORM_FEE_SOL_TOKEN_CREATION * LAMPORTS_PER_SOL,
     });
-
+    const PRIORITY_FEE_IX = getPriorityLambports(priorityFees);
     const createTokentTransaction = new Transaction().add(
       update_metadataInstruction,
-      sentPlatFormfeeInstruction
+      sentPlatFormfeeInstruction,
+      PRIORITY_FEE_IX
     );
 
     const createAccountSignature = await wallet.sendTransaction(
@@ -138,12 +143,32 @@ export const updateSPLTokenMetadataTxBuilder = async (
       connection
     );
 
-    return {
-      sig: createAccountSignature,
-      mint: mintAddress.toBase58(),
-    };
+    let resp = await recursiveCheckTransitionStatus(
+      Date.now(),
+      createAccountSignature,
+      connection,
+      wallet
+    );
+    if (resp) {
+      successToast({
+        keyPairs: {
+          signature: {
+            value: `${createAccountSignature}`,
+            linkTo: getSignatureURL(createAccountSignature),
+          },
+        },
+        allowCopy: true,
+      });
+    }
+
+    return resp
+      ? {
+          sig: createAccountSignature,
+          mint: mintAddress.toBase58(),
+        }
+      : null;
   } catch (error) {
     errorToast({ message: "Please Try Again!" });
-    // console.log(error);
+    // //console.log(error);
   }
 };

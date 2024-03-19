@@ -14,4 +14,7 @@ export const AppENVConfig = {
   secondary_devnet_rpc_url: process.env.NEXT_PUBLIC_DEVNET_SECONDARY_RPC_URL
     ? process.env.NEXT_PUBLIC_DEVNET_SECONDARY_RPC_URL
     : "",
+  nft_storage_api_key: process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN
+    ? process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN
+    : "",
 };

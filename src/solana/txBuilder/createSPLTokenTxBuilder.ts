@@ -21,6 +21,7 @@ import {
 } from "@metaplex-foundation/umi-web3js-adapters";
 
 import {
+  ComputeBudgetProgram,
   Connection,
   Keypair,
   LAMPORTS_PER_SOL,
@@ -37,6 +38,10 @@ import {
   PLATFORM_OWNER_ADDRESS,
 } from "@/constants";
 import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
+import { errorToast, successToast } from "@/component/toast";
+import { recursiveCheckTransitionStatus } from "@/utils/transactions";
+import { getMintURL, getSignatureURL } from "@/utils/redirectURLs";
+import { getPriorityLambports } from "@/utils/transactions/getPriorityLambports";
 let network = isMainnet() ? "mainnet-beta" : "devnet";
 
 export const createSPLTokenTxBuilder = async (
@@ -47,7 +52,8 @@ export const createSPLTokenTxBuilder = async (
   tokenSupply: number,
   connection: Connection,
   wallet: WalletContextState,
-  endpoint:string
+  endpoint: string,
+  priorityFees: number
 ) => {
   try {
     if (!wallet.publicKey) {
@@ -69,18 +75,16 @@ export const createSPLTokenTxBuilder = async (
     };
 
     const mint_rent = await getMinimumBalanceForRentExemptMint(connection);
-    // console.log("mint_rent", mint_rent);
+    // //console.log("mint_rent", mint_rent);
 
     const mint_account = Keypair.generate();
-    // console.log("mint_account", mint_account.publicKey.toBase58());
+    // //console.log("mint_account", mint_account.publicKey.toBase58());
 
     const [metadataPDA] = getMetadataPda(mint_account.publicKey);
-    // console.log("metadataPDA", metadataPDA.toBase58());
+    // //console.log("metadataPDA", metadataPDA.toBase58());
 
     const owner = wallet.publicKey!;
-    // console.log("owner", owner.toBase58());
-
-    
+    // //console.log("owner", owner.toBase58());
 
     const umi = createUmi(endpoint);
 
@@ -174,14 +178,15 @@ export const createSPLTokenTxBuilder = async (
       toPubkey: new PublicKey(PLATFORM_OWNER_ADDRESS),
       lamports: PLATFORM_FEE_SOL_TOKEN_CREATION * LAMPORTS_PER_SOL,
     });
-
+    const PRIORITY_FEE_IX = getPriorityLambports(priorityFees);
     const createTokentTransaction = new Transaction().add(
       createMintAccountInstruction,
       InitMint,
       createATAInstruction,
       mintInstruction,
       metadataInstruction,
-      sentPlatFormfeeInstruction
+      sentPlatFormfeeInstruction,
+      PRIORITY_FEE_IX
     );
 
     const createAccountSignature = await wallet.sendTransaction(
@@ -189,11 +194,54 @@ export const createSPLTokenTxBuilder = async (
       connection,
       { signers: [mint_account] }
     );
-    return {
-      sig: createAccountSignature,
-      mint: mint_account.publicKey.toBase58(),
-    };
+
+    const startTime = Date.now();
+    // while()
+    //console.log(" Now : ", startTime);
+    // 2afRSao7JckbxdV4p1Ak3jcD7uKsW4C7kY2tRukyXLtncdiTW4jpiaZDSR4nKYveok1WYzXgyc337PY3bAmJkzoK', mint: '5Pm6NTDoRYHjyy36XyJy3bY8ezpPHnzfLvug1zrHuhKK
+    // let resp = await recursiveCheckTransitionStatus(
+    //   startTime,
+    //   // "2afRSao7JckbxdV4p1Ak3jcD7uKsW4C7kY2tRukyXLtncdiTW4jpiaZDSR4nKYveok1WYzXgyc337PY3bAmJkzoK",
+    //   createAccountSignature,
+    //   connection,
+    //   wallet,
+    //   createTokentTransaction,
+    //   mint_account,
+    //   0
+    // );
+    // //console.log("Resp : ", resp);
+    let resp = await recursiveCheckTransitionStatus(
+      Date.now(),
+      createAccountSignature,
+      connection,
+      wallet
+    );
+    if (resp) {
+      successToast({
+        keyPairs: {
+          mintAddress: {
+            value: `${mint_account.publicKey.toBase58()}`,
+            // linkTo: `https://solscan.io/token/${mint_account.publicKey.toBase58()}?cluster=devnet`,
+            linkTo: getMintURL(mint_account.publicKey.toBase58()),
+          },
+          signature: {
+            value: `${createAccountSignature}`,
+            // linkTo: `https://solscan.io/tx/${createAccountSignature}?cluster=devnet`,
+            linkTo: getSignatureURL(createAccountSignature),
+          },
+        },
+        allowCopy: true,
+      });
+    } else {
+      // error message already displayed in recursiveCheckTransitionStatus
+    }
+    return resp
+      ? {
+          sig: createAccountSignature,
+          mint: mint_account.publicKey.toBase58(),
+        }
+      : null;
   } catch (error) {
-    // console.log(error);
+    // //console.log(error);
   }
 };

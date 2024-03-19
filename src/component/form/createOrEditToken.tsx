@@ -11,14 +11,14 @@ import {
   setFileData,
   setMetaplexFileData,
   setTransferTax,
-} from "../redux/slice/formDataSlice";
-import { keyPairs } from "../constants";
-import CustomInput from "./customInput";
-import CustomImagePicker from "./customImagePicker";
-import CustomRadio from "./customRadio";
+} from "../../redux/slice/formDataSlice";
+import { keyPairs } from "../../constants";
+import CustomInput from "../customInput";
+import CustomImagePicker from "../customImagePicker";
+import CustomRadio from "../customRadio";
 import { toMetaplexFileFromBrowser } from "@metaplex-foundation/js";
-import CustomDropdown from "./customDropdown";
-import { errorToast } from "./toast";
+import CustomDropdown from "../customDropdown";
+import { errorToast } from "../toast";
 
 type CreateOrEditTokenProps = { isEdit?: boolean; formik?: any };
 

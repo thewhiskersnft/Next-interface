@@ -7,7 +7,7 @@ import { Suspense } from "react";
 import { isMobile } from "react-device-detect";
 import Loader from "@/component/loader";
 
-export default function Token() {
+export default function Airdrop() {
   return (
     <Suspense
       fallback={
@@ -28,7 +28,8 @@ export default function Token() {
             <Header selectedLink="TOOLS" />
             <div className="width-100 flex flex-row h-full overflow-hidden bg-black">
               <Sidebar />
-              <Form />
+              {/* <Form /> */}
+              Airdrop
             </div>
             <PrimaryHeader />
           </div>

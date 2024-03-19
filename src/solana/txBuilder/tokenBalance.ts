@@ -17,7 +17,7 @@ async function getTokenBalanceWeb3(
     const amount = Number(info.amount);
     const mint = await getMint(connection, info.mint);
     const balance = amount / 10 ** mint.decimals;
-    // console.log("Balance (using Solana-Web3.js): ", balance);
+    // //console.log("Balance (using Solana-Web3.js): ", balance);
     return balance;
   } catch (e) {
     return;

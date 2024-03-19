@@ -1,6 +1,5 @@
 import Image from "next/image";
 import React, { CSSProperties, FC, ChangeEvent } from "react";
-// import Help from "../asset/help.svg";
 
 interface CustomRadioProps {
   label?: string;

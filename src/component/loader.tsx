@@ -1,29 +1,28 @@
 import React, { CSSProperties } from "react";
-import { ColorRing } from "react-loader-spinner";
-
 interface LoaderProps {
   visible: boolean;
   size: number;
-  wrapperStyle?: CSSProperties;
-  color?: string;
 }
 
-const Loader = ({ visible, size, wrapperStyle, color }: LoaderProps) => {
+const Loader = ({ visible, size }: LoaderProps) => {
+  let borderWidth = size * 0.15 > 7 ? 7 : size * 0.15;
   return (
     <>
-      <ColorRing
-        visible={visible}
-        height={`${size}`}
-        width={`${size}`}
-        ariaLabel="color-ring-loading"
-        wrapperStyle={{ ...(wrapperStyle as any) }}
-        wrapperClass="color-ring-wrapper"
-        colors={
-          color
-            ? [`${color}`, `${color}`, `${color}`, `${color}`, `${color}`]
-            : ["#FFC83A", "#FFC83A", "#FFC83A", "#FFC83A", "#FFC83A"]
-        }
-      />
+      {visible && (
+        <div
+          className={`loader ${size ? `w-[${size}px] h-[${size}px]` : ""}`}
+          style={
+            size
+              ? {
+                  height: `${size}px`,
+                  width: `${size}px`,
+                  border: `${borderWidth}px solid rgba(255, 255, 255, 0.4)`,
+                  borderTop: `${borderWidth}px solid #ffc83a`,
+                }
+              : {}
+          }
+        ></div>
+      )}
     </>
   );
 };
