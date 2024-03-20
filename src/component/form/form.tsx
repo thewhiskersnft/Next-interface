@@ -29,6 +29,7 @@ import { NFTStorage, File, Blob } from "nft.storage";
 // import { setAlltxHistory } from "@/redux/slice/txDataSlice";
 import { recursiveCheckTransitionStatus } from "@/utils/transactions";
 import { AppENVConfig } from "@/global/config/config";
+import { createToken22TxBuilder } from "@/solana/txBuilder/createToken22TxBuilder";
 
 export default function Form() {
   const {
@@ -257,8 +258,20 @@ export default function Form() {
       try {
         const uri = await createURI();
         let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
-        // //console.log("Final uri : ", finalURI);
+        // console.log("Final uri : ", finalURI);
         successToast({ message: `MetaData Uploaded` });
+        // const txhash = await createToken22TxBuilder(
+        //   formik.values.name,
+        //   formik.values.symbol,
+        //   formik.values.decimal,
+        //   finalURI,
+        //   formik.values.supply,
+        //   connection,
+        //   wallet,
+        //   currentEndpoint,
+        //   priorityFees
+        // );
+        // console.log(txhash);
         const txhash = await createSPLTokenTxBuilder(
           formik.values.name,
           formik.values.symbol,
@@ -280,7 +293,7 @@ export default function Form() {
 
         setButtonClicked(false);
       } catch (error) {
-        // //console.log(error);
+        console.log(error);
         errorToast({ message: "Try Again!" });
         setButtonClicked(false);
       }
