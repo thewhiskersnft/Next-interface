@@ -1,4 +1,4 @@
-import { SidebarItem } from "../interfaces";
+import { HeaderItem, SidebarItem } from "../interfaces";
 
 export const TokenRoutes: Record<string, string> = {
   createToken: "create-token",
@@ -141,6 +141,29 @@ export const sidebarData: SidebarItem[] = [
     activeIcon: "/airdropActive.svg",
     navigateTo: `/airdrop`,
     disabled: true,
+  },
+];
+
+export const headerData: HeaderItem[] = [
+  {
+    title: "MARKETS",
+    disabled: true,
+    navigateTo: "/markets",
+  },
+  {
+    title: "TRADE",
+    disabled: true,
+    navigateTo: "/trade",
+  },
+  {
+    title: "PORTFOLIO",
+    disabled: true,
+    navigateTo: "/portfolio",
+  },
+  {
+    title: "TOOLS",
+    disabled: false,
+    navigateTo: `/token?action=${TokenRoutes.createToken}`,
   },
 ];
 

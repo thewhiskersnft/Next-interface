@@ -6,11 +6,12 @@ import CustomInput from "./customInput";
 import Image from "next/image";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { TokenRoutes } from "@/constants";
+import { TokenRoutes, headerData } from "@/constants";
 import { errorToast } from "./toast";
 import Loader from "./loader";
 import { setAppLoading } from "../redux/slice/appDataSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { HeaderItem } from "@/interfaces";
 
 const borderColor: string = "#4D4D4D";
 
@@ -40,13 +41,12 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
     };
   }, []);
 
-  const handleClick = (tag: string) => {
+  const handleClick = (item: HeaderItem) => {
     if (tokenAction) {
     } else {
-      if (tag === "TOOLS") {
-        // handleClickProp ? handleClickProp() : null;
+      if (!item.disabled) {
         dispatch(setAppLoading(true));
-        router.push(`/token?action=${TokenRoutes.createToken}`);
+        router.push(item.navigateTo);
       } else {
         errorToast({ message: "Coming Soon!" });
       }
@@ -56,7 +56,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
   return (
     <div>
       <div
-        className="w-full bg-black items-center h-[46px] hidden lg:flex py-2" // desktop view header
+        className='w-full bg-black items-center h-[46px] hidden lg:flex py-2' // desktop view header
         style={{ borderBottomWidth: "0.2px", borderColor: borderColor }}
       >
         <div
@@ -67,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           <Loader visible={appLoading} size={50} />
         </div>
         <div
-          className="cursor-pointer px-4 flex items-center h-full"
+          className='cursor-pointer px-4 flex items-center h-full'
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -83,14 +83,14 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
         >
           <Image
             src={"/logo.svg"}
-            alt="logo Logo"
+            alt='logo Logo'
             width={20}
             height={20}
             priority
           />
         </div>
         <div
-          className="cursor-pointer px-4 flex items-center h-full"
+          className='cursor-pointer px-4 flex items-center h-full'
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -98,77 +98,39 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
         >
           <Image
             src={"/menuDisabled.svg"}
-            alt="menu Logo"
+            alt='menu Logo'
             width={16}
             height={16}
             priority
           />
         </div>
+        {headerData.map((item, index) => {
+          return (
+            <div
+              className='px-4 flex items-center h-full'
+              style={{
+                borderRightWidth: "2px",
+                borderColor: borderColor,
+              }}
+              key={index}
+            >
+              <div
+                className={`text-center ${
+                  item.disabled
+                    ? "text-disabledLink"
+                    : selectedLink === item.title
+                    ? "text-yellow1"
+                    : "text-white hover:text-yellow1"
+                } text-small font-Orbitron w-100 cursor-pointer`}
+                onClick={() => handleClick(item)}
+              >
+                {item.title}
+              </div>
+            </div>
+          );
+        })}
         <div
-          className="px-4 flex items-center h-full"
-          style={{
-            borderRightWidth: "2px",
-            borderColor: borderColor,
-          }}
-        >
-          <div
-            className={`text-center ${
-              selectedLink === "MARKET" ? "text-yellow1" : "text-disabledLink"
-            } text-small font-Orbitron w-100 cursor-pointer`}
-          >
-            MARKETS
-          </div>
-        </div>
-        <div
-          className="px-4 flex items-center h-full"
-          style={{
-            borderRightWidth: "2px",
-            borderColor: borderColor,
-          }}
-        >
-          <div
-            className={`text-center ${
-              selectedLink === "TRADE" ? "text-yellow1" : "text-disabledLink"
-            } text-small font-Orbitron w-100 cursor-pointer`}
-          >
-            TRADE
-          </div>
-        </div>
-        <div
-          className="px-4 flex items-center h-full"
-          style={{
-            borderRightWidth: "2px",
-            borderColor: borderColor,
-          }}
-        >
-          <div
-            className={`text-center ${
-              selectedLink === "PORTFOLIO"
-                ? "text-yellow1"
-                : "text-disabledLink"
-            } text-small font-Orbitron w-100 cursor-pointer`}
-          >
-            PORTFOLIO
-          </div>
-        </div>
-        <div
-          className="px-4 flex items-center h-full"
-          style={{
-            borderRightWidth: "2px",
-            borderColor: borderColor,
-          }}
-        >
-          <div
-            className={`text-center ${
-              selectedLink === "TOOLS" ? "text-yellow1" : "text-white"
-            } text-small font-Orbitron w-100 cursor-pointer hover:text-yellow1`}
-            onClick={() => handleClick("TOOLS")}
-          >
-            TOOLS
-          </div>
-        </div>
-        <div
-          className="px-4"
+          className='px-4'
           style={{
             borderColor: borderColor,
             display: "flex",
@@ -179,7 +141,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
         >
           <Image
             src={"/search.svg"}
-            alt="search Logo"
+            alt='search Logo'
             width={20}
             height={20}
             style={{ marginRight: "10px" }}
@@ -198,7 +160,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           />
         </div>
         <div
-          className="px-4 flex items-center justify-center"
+          className='px-4 flex items-center justify-center'
           style={{
             borderLeftWidth: "2px",
             borderColor: borderColor,
@@ -209,7 +171,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           ) : (
             <Image
               src={"/walletImg.svg"}
-              alt="wallet Logo"
+              alt='wallet Logo'
               width={20}
               height={20}
               priority
@@ -238,11 +200,11 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
         </div>
       </div>
       <div
-        className="w-full bg-black py-2 flex items-center h-[46px] block lg:hidden" // mobile view header
+        className='w-full bg-black py-2 flex items-center h-[46px] block lg:hidden' // mobile view header
         style={{ borderBottomWidth: "0.2px", borderColor: borderColor }}
       >
         <div
-          className="cursor-pointer px-4 flex items-center h-full"
+          className='cursor-pointer px-4 flex items-center h-full'
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -258,14 +220,14 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
         >
           <Image
             src={"/logo.svg"}
-            alt="logo Logo"
+            alt='logo Logo'
             width={20}
             height={20}
             priority
           />
         </div>
         <div
-          className="px-4"
+          className='px-4'
           style={{
             borderColor: borderColor,
             display: "flex",
@@ -276,7 +238,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
         >
           <Image
             src={"/search.svg"}
-            alt="search Logo"
+            alt='search Logo'
             width={20}
             height={20}
             style={{ marginRight: "10px" }}
@@ -295,7 +257,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           />
         </div>
         <div
-          className="px-4 h-full flex items-center justify-center"
+          className='px-4 h-full flex items-center justify-center'
           style={{
             borderLeftWidth: "2px",
             borderColor: borderColor,
@@ -306,7 +268,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           ) : (
             <Image
               src={"/walletImg.svg"}
-              alt="wallet Logo"
+              alt='wallet Logo'
               width={20}
               height={20}
               priority
@@ -317,7 +279,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           ></div>
         </div>
         <div
-          className="cursor-pointer px-4 flex items-center h-full"
+          className='cursor-pointer px-4 flex items-center h-full'
           style={{
             borderLeftWidth: "2px",
             borderColor: borderColor,
@@ -325,7 +287,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
         >
           <Image
             src={"/menuDisabled.svg"}
-            alt="menu Logo"
+            alt='menu Logo'
             width={20}
             height={20}
             priority
