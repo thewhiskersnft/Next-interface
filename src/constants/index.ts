@@ -140,7 +140,7 @@ export const sidebarData: SidebarItem[] = [
     icon: "/airdrop.svg",
     activeIcon: "/airdropActive.svg",
     navigateTo: `/airdrop`,
-    disabled: true,
+    disabled: false,
   },
 ];
 

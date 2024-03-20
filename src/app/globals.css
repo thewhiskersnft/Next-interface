@@ -202,3 +202,18 @@ input:checked + .slider:before {
     transform: rotate(360deg);
   }
 }
+
+.airdrop-card-border {
+  border: 1px solid;
+  border-image-source: radial-gradient(
+      50% 50.23% at 100% 100.22%,
+      #ffc83a 0%,
+      rgba(0, 0, 0, 0) 100%
+    ),
+    radial-gradient(50% 50.23% at 0% 100.22%, #ffc83a 0%, rgba(0, 0, 0, 0) 100%)
+      /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */,
+    radial-gradient(50% 50.23% at 0% 0.22%, #ffc83a 0%, rgba(0, 0, 0, 0) 100%)
+      /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */,
+    radial-gradient(50% 50.23% at 100% 0.22%, #ffc83a 0%, rgba(0, 0, 0, 0) 100%)
+      /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+}
