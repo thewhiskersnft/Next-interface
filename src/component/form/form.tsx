@@ -135,6 +135,8 @@ export default function Form() {
       } else if (tokenAction === TokenRoutes.createToken) {
         if (selectedForm === keyPairs.createV1) {
           createTokenHandler(values);
+        } else if (selectedForm === keyPairs.createV2) {
+          createV2TokenHandler();
         }
       }
     },
@@ -291,6 +293,57 @@ export default function Form() {
           return;
         }
 
+        setButtonClicked(false);
+      } catch (error) {
+        console.log(error);
+        errorToast({ message: "Try Again!" });
+        setButtonClicked(false);
+      }
+    } else {
+      errorToast({ message: "Insufficent Balance" });
+      setButtonClicked(false);
+    }
+  };
+  const createV2TokenHandler = async () => {
+    if (!wallet.connected) {
+      errorToast({ message: "Please Connect The Wallet" });
+      setButtonClicked(false);
+      return;
+    }
+    let balance = 0;
+    if (wallet.publicKey != null) {
+      balance = await connection.getBalance(wallet.publicKey as any);
+    }
+    if (balance > 5000000) {
+      try {
+        const uri = await createURI();
+        let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
+        successToast({ message: `MetaData Uploaded` });
+        const txhash = await createToken22TxBuilder(
+          formik.values.name,
+          formik.values.symbol,
+          formik.values.decimal,
+          formik.values.fee,
+          formik.values.maxFee,
+          formik.values.withdrawAuthority,
+          formik.values.configAuthority,
+          formik.values.rate,
+          formik.values.defaultAccountStateOption,
+          formik.values.delegate,
+          formik.values.nonTransferable,
+          finalURI,
+          formik.values.supply,
+          connection,
+          wallet,
+          currentEndpoint,
+          priorityFees
+        );
+        console.log(txhash);
+        if (!txhash) {
+          setButtonClicked(false);
+          errorToast({ message: "Please Try Again" });
+          return;
+        }
         setButtonClicked(false);
       } catch (error) {
         console.log(error);
