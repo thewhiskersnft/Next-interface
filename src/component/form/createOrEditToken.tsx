@@ -90,9 +90,9 @@ const CreateOrEditToken = ({
                 : "hover:border-yellow1 hover:bg-variant1"
             }`}
             onClick={() => {
-              errorToast({ message: "Coming Soon!" });
-              // dispatch(setToggled(false));
-              // dispatch(setSelectedForm(keyPairs.createV2));
+              // errorToast({ message: "Coming Soon!" });
+              dispatch(setToggled(false));
+              dispatch(setSelectedForm(keyPairs.createV2));
             }}
             style={{ border: "1px solid #4D4D4D" }}
           >
