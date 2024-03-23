@@ -33,11 +33,10 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
 
   useEffect(() => {
     setShowButton(true);
-    return () => {
-      if (appLoading) {
-        dispatch(setAppLoading(false));
-      }
-    };
+    if (appLoading) {
+      dispatch(setAppLoading(false));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleClick = (tag: string) => {
@@ -56,7 +55,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
   return (
     <div>
       <div
-        className="w-full bg-black items-center h-[46px] hidden lg:flex py-2" // desktop view header
+        className='w-full bg-black items-center h-[46px] hidden lg:flex py-2' // desktop view header
         style={{ borderBottomWidth: "0.2px", borderColor: borderColor }}
       >
         <div
@@ -67,7 +66,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           <Loader visible={appLoading} size={50} />
         </div>
         <div
-          className="cursor-pointer px-4 flex items-center h-full"
+          className='cursor-pointer px-4 flex items-center h-full'
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -83,14 +82,14 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
         >
           <Image
             src={"/logo.svg"}
-            alt="logo Logo"
+            alt='logo Logo'
             width={20}
             height={20}
             priority
           />
         </div>
         <div
-          className="cursor-pointer px-4 flex items-center h-full"
+          className='cursor-pointer px-4 flex items-center h-full'
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -98,14 +97,14 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
         >
           <Image
             src={"/menuDisabled.svg"}
-            alt="menu Logo"
+            alt='menu Logo'
             width={16}
             height={16}
             priority
           />
         </div>
         <div
-          className="px-4 flex items-center h-full"
+          className='px-4 flex items-center h-full'
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -120,7 +119,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           </div>
         </div>
         <div
-          className="px-4 flex items-center h-full"
+          className='px-4 flex items-center h-full'
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -135,7 +134,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           </div>
         </div>
         <div
-          className="px-4 flex items-center h-full"
+          className='px-4 flex items-center h-full'
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -152,7 +151,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           </div>
         </div>
         <div
-          className="px-4 flex items-center h-full"
+          className='px-4 flex items-center h-full'
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -168,7 +167,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           </div>
         </div>
         <div
-          className="px-4"
+          className='px-4'
           style={{
             borderColor: borderColor,
             display: "flex",
@@ -179,7 +178,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
         >
           <Image
             src={"/search.svg"}
-            alt="search Logo"
+            alt='search Logo'
             width={20}
             height={20}
             style={{ marginRight: "10px" }}
@@ -198,7 +197,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           />
         </div>
         <div
-          className="px-4 flex items-center justify-center"
+          className='px-4 flex items-center justify-center'
           style={{
             borderLeftWidth: "2px",
             borderColor: borderColor,
@@ -209,7 +208,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           ) : (
             <Image
               src={"/walletImg.svg"}
-              alt="wallet Logo"
+              alt='wallet Logo'
               width={20}
               height={20}
               priority
@@ -238,11 +237,11 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
         </div>
       </div>
       <div
-        className="w-full bg-black py-2 flex items-center h-[46px] block lg:hidden" // mobile view header
+        className='w-full bg-black py-2 flex items-center h-[46px] block lg:hidden' // mobile view header
         style={{ borderBottomWidth: "0.2px", borderColor: borderColor }}
       >
         <div
-          className="cursor-pointer px-4 flex items-center h-full"
+          className='cursor-pointer px-4 flex items-center h-full'
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -258,14 +257,14 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
         >
           <Image
             src={"/logo.svg"}
-            alt="logo Logo"
+            alt='logo Logo'
             width={20}
             height={20}
             priority
           />
         </div>
         <div
-          className="px-4"
+          className='px-4'
           style={{
             borderColor: borderColor,
             display: "flex",
@@ -276,7 +275,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
         >
           <Image
             src={"/search.svg"}
-            alt="search Logo"
+            alt='search Logo'
             width={20}
             height={20}
             style={{ marginRight: "10px" }}
@@ -295,7 +294,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           />
         </div>
         <div
-          className="px-4 h-full flex items-center justify-center"
+          className='px-4 h-full flex items-center justify-center'
           style={{
             borderLeftWidth: "2px",
             borderColor: borderColor,
@@ -306,7 +305,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           ) : (
             <Image
               src={"/walletImg.svg"}
-              alt="wallet Logo"
+              alt='wallet Logo'
               width={20}
               height={20}
               priority
@@ -317,7 +316,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           ></div>
         </div>
         <div
-          className="cursor-pointer px-4 flex items-center h-full"
+          className='cursor-pointer px-4 flex items-center h-full'
           style={{
             borderLeftWidth: "2px",
             borderColor: borderColor,
@@ -325,7 +324,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
         >
           <Image
             src={"/menuDisabled.svg"}
-            alt="menu Logo"
+            alt='menu Logo'
             width={20}
             height={20}
             priority
