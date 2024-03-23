@@ -7,7 +7,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { metaplexBuilder } from "@/metaplex";
 import { MetaplexFile } from "@metaplex-foundation/js";
 import { createSPLTokenTxBuilder } from "@/solana/txBuilder/createSPLTokenTxBuilder";
-import CustomButton from "../customButton";
+import CustomButton from "./customButton";
 
 interface SidebarProps {
   data: PreviewData;

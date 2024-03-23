@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { TokenRoutes } from "@/constants";
 import { errorToast } from "./toast";
 import Loader from "./loader";
-import { setAppLoading } from "../redux/slice/appDataSlice";
+import { setAppLoading } from "../../redux/slice/appDataSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const borderColor: string = "#4D4D4D";
@@ -39,6 +39,8 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
       }
     };
   }, []);
+
+  console.log("App loading : ", appLoading);
 
   const handleClick = (tag: string) => {
     if (tokenAction) {

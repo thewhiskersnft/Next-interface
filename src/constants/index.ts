@@ -69,7 +69,7 @@ export const sidebarData: SidebarItem[] = [
         label: "Create Openbook Market ID",
         description: "Create Openbook Market ID To Set Up Liquidity Pool",
         navigateTo: `/liquidity?action=${LiquidityRoutes.createOpenBookMarketId}`,
-        disabled: true,
+        disabled: false,
       },
       {
         label: "Create Raydium Liquidity Pool (LP)",

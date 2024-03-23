@@ -1,11 +1,11 @@
-import ComingSoon from "@/component/comingSoon";
+import ComingSoon from "@/component/common/comingSoon";
 import Form from "@/component/form/form";
-import Header from "@/component/header";
-import PrimaryHeader from "@/component/primaryHeader";
-import Sidebar from "@/component/form/sidebar";
+import Header from "@/component/common/header";
+import PrimaryHeader from "@/component/common/primaryHeader";
+import Sidebar from "@/component/common/sidebar";
 import { Suspense } from "react";
 import { isMobile } from "react-device-detect";
-import Loader from "@/component/loader";
+import Loader from "@/component/common/loader";
 
 export default function Token() {
   return (

@@ -1,4 +1,4 @@
-import { errorToast, successToast } from "@/component/toast";
+import { errorToast, successToast } from "@/component/common/toast";
 import {
   AuthorityType,
   TOKEN_PROGRAM_ID,
