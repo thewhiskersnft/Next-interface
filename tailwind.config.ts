@@ -25,10 +25,11 @@ const config: Config = {
       black: "900",
     },
     fontSize: {
-      small: "14px",
-      normal: "16px",
       large: "18px",
+      normal: "16px",
+      small: "14px",
       xsmall: "12px",
+      xxsmall: "10px",
     },
     screens: {
       sm: "640px",
@@ -49,7 +50,7 @@ const config: Config = {
     extend: {
       colors: {
         variant1: "#4D4D4D",
-        background: "#222",
+        background: "#222222",
         yellow1: "#FFC83A",
         darkGrey: "#555555",
         lightGrey: "#4D4D4D",
@@ -59,6 +60,7 @@ const config: Config = {
         successGreen: "#09A854",
         textGreen: "#09A854",
         loaderBG: "rgba(0,0,0,0.5)",
+        modalBG: "#0D0D0D",
       },
       keyframes: {
         wiggle: {
@@ -79,8 +81,14 @@ const config: Config = {
         open: "open 0.2s ease-in-out 1",
         close: "close 0.2s ease-in-out 1",
       },
+      dropShadow: {
+        whitexl: [
+          "0 5px 5px rgba(255, 255, 255, 0.25)",
+          "0 15px 17px rgba(255, 255, 255, 0.15)",
+        ],
+      },
     },
   },
-  plugins: [],
+  plugins: [require("daisyui")],
 };
 export default config;

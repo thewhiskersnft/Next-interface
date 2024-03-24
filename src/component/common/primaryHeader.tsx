@@ -159,7 +159,7 @@ const PrimaryHeader: FC = () => {
         >
           {showPriorityFeeModal && (
             <section
-              className="flex flex-col absolute bg-variant1 p-4 bottom-[28px] right-[15px] w-[max-content]"
+              className="flex flex-col absolute bg-background p-4 bottom-[28px] right-[15px] w-[max-content]"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between">
