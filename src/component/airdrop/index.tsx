@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
-import CustomButton from "../customButton";
+import CustomButton from "../common/customButton";
 import Image from "next/image";
-import CustomInput from "../customInput";
+import CustomInput from "../common/customInput";
 
 export default function AirdropChecker() {
   const PasteIcon = (
