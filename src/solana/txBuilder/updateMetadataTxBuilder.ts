@@ -21,7 +21,7 @@ import {
   fromWeb3JsPublicKey,
   toWeb3JsPublicKey,
 } from "@metaplex-foundation/umi-web3js-adapters";
-import { errorToast, successToast } from "../../component/toast";
+import { errorToast, successToast } from "../../component/common/toast";
 
 import {
   Connection,

@@ -3,6 +3,7 @@ import React, { CSSProperties, FC, ChangeEvent } from "react";
 
 interface CustomRadioProps {
   label?: string;
+  description?: string;
   value: boolean;
   onChange: () => void;
   showSymbol?: boolean;
@@ -11,6 +12,7 @@ interface CustomRadioProps {
 
 const CustomRadio: FC<CustomRadioProps> = ({
   label,
+  description,
   value,
   onChange,
   showSymbol,
@@ -23,7 +25,14 @@ const CustomRadio: FC<CustomRadioProps> = ({
         style={{ ...containerStyles }}
       >
         <>
-          {label || ""}
+          <span>
+            {label || ""}
+            {description ? (
+              <p className="text-disabledLink text-[8px] font-Orbitron">
+                {description}
+              </p>
+            ) : null}
+          </span>
           {showSymbol && (
             <span>
               {/* <Image

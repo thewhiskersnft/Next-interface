@@ -1,10 +1,11 @@
-import ComingSoon from "@/component/comingSoon";
-import Header from "@/component/header";
-import AirdropChecker from "@/component/airdrop";
-import PrimaryHeader from "@/component/primaryHeader";
-import Sidebar from "@/component/form/sidebar";
+import ComingSoon from "@/component/common/comingSoon";
+import Form from "@/component/form/form";
+import Header from "@/component/common/header";
+import PrimaryHeader from "@/component/common/primaryHeader";
+import Sidebar from "@/component/common/sidebar";
 import { Suspense } from "react";
-import Loader from "@/component/loader";
+import Loader from "@/component/common/loader";
+import AirdropChecker from "@/component/airdrop";
 
 export default function Airdrop() {
   return (

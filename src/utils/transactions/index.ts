@@ -1,4 +1,4 @@
-import { errorToast, successToast } from "@/component/toast";
+import { errorToast, successToast } from "@/component/common/toast";
 
 export async function recursiveCheckTransitionStatus(
   startTime: any,

@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useState, Suspense } from "react";
-import CustomInput from "../customInput";
-import RightSidebar from "./rightSidebar";
+import CustomInput from "../common/customInput";
+import RightSidebar from "../common/rightSidebar";
 import { TokenRoutes, keyPairs } from "../../constants";
 import { PreviewData } from "../../interfaces";
 import { useSelector, useDispatch } from "react-redux";
 import { setPreviewData, setFileData } from "../../redux/slice/formDataSlice";
 import { useSearchParams } from "next/navigation";
-import CustomButton from "../customButton";
+import CustomButton from "../common/customButton";
 import CreateOrEditToken from "./createOrEditToken";
 import { useFormik, Formik } from "formik";
 import { metaplexBuilder } from "@/metaplex";
@@ -15,13 +15,13 @@ import { createSPLTokenTxBuilder } from "@/solana/txBuilder/createSPLTokenTxBuil
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { v1TokenValidation } from "../../utils/formikValidators";
 import { cloneDeep } from "lodash";
-import { errorToast, successToast } from "../toast";
+import { errorToast, successToast } from "../common/toast";
 import MintOrBurnToken from "./mintOrBurnToken";
 import { PublicKey } from "@solana/web3.js";
 import ManageToken from "./manageToken";
 import { updateSPLTokenMetadataTxBuilder } from "@/solana/txBuilder/updateMetadataTxBuilder";
 import { getTokenMetadata } from "@/metaplex/getTokenMetadata";
-import Loader from "../loader";
+import Loader from "../common/loader";
 import caculateEndpointUrlByRpcConfig from "@/application/connection/calculateEndpointUrlByRpcConfig";
 import { setCurrentEndpoint } from "@/redux/slice/connectionSlice";
 import { NFTStorage, File, Blob } from "nft.storage";
@@ -29,6 +29,7 @@ import { NFTStorage, File, Blob } from "nft.storage";
 // import { setAlltxHistory } from "@/redux/slice/txDataSlice";
 import { recursiveCheckTransitionStatus } from "@/utils/transactions";
 import { AppENVConfig } from "@/global/config/config";
+import { createToken22TxBuilder } from "@/solana/txBuilder/createToken22TxBuilder";
 
 export default function Form() {
   const {
@@ -134,6 +135,8 @@ export default function Form() {
       } else if (tokenAction === TokenRoutes.createToken) {
         if (selectedForm === keyPairs.createV1) {
           createTokenHandler(values);
+        } else if (selectedForm === keyPairs.createV2) {
+          createV2TokenHandler();
         }
       }
     },
@@ -257,8 +260,20 @@ export default function Form() {
       try {
         const uri = await createURI();
         let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
-        // //console.log("Final uri : ", finalURI);
+        // console.log("Final uri : ", finalURI);
         successToast({ message: `MetaData Uploaded` });
+        // const txhash = await createToken22TxBuilder(
+        //   formik.values.name,
+        //   formik.values.symbol,
+        //   formik.values.decimal,
+        //   finalURI,
+        //   formik.values.supply,
+        //   connection,
+        //   wallet,
+        //   currentEndpoint,
+        //   priorityFees
+        // );
+        // console.log(txhash);
         const txhash = await createSPLTokenTxBuilder(
           formik.values.name,
           formik.values.symbol,
@@ -280,7 +295,58 @@ export default function Form() {
 
         setButtonClicked(false);
       } catch (error) {
-        // //console.log(error);
+        console.log(error);
+        errorToast({ message: "Try Again!" });
+        setButtonClicked(false);
+      }
+    } else {
+      errorToast({ message: "Insufficent Balance" });
+      setButtonClicked(false);
+    }
+  };
+  const createV2TokenHandler = async () => {
+    if (!wallet.connected) {
+      errorToast({ message: "Please Connect The Wallet" });
+      setButtonClicked(false);
+      return;
+    }
+    let balance = 0;
+    if (wallet.publicKey != null) {
+      balance = await connection.getBalance(wallet.publicKey as any);
+    }
+    if (balance > 5000000) {
+      try {
+        const uri = await createURI();
+        let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
+        successToast({ message: `MetaData Uploaded` });
+        const txhash = await createToken22TxBuilder(
+          formik.values.name,
+          formik.values.symbol,
+          formik.values.decimal,
+          formik.values.fee,
+          formik.values.maxFee,
+          formik.values.withdrawAuthority,
+          formik.values.configAuthority,
+          formik.values.rate,
+          formik.values.defaultAccountStateOption,
+          formik.values.delegate,
+          formik.values.nonTransferable,
+          finalURI,
+          formik.values.supply,
+          connection,
+          wallet,
+          currentEndpoint,
+          priorityFees
+        );
+        console.log(txhash);
+        if (!txhash) {
+          setButtonClicked(false);
+          errorToast({ message: "Please Try Again" });
+          return;
+        }
+        setButtonClicked(false);
+      } catch (error) {
+        console.log(error);
         errorToast({ message: "Try Again!" });
         setButtonClicked(false);
       }
@@ -516,6 +582,12 @@ export default function Form() {
                   : "Preview"
               }
               loading={buttonClicked}
+              infoData={[
+                "No smart contract programming necessary.",
+                "Secure 100% ownership of the generated tokens.",
+                "Customize token name, symbol, and initial supply.",
+                "Sign and create with your own wallet.",
+              ]}
             />
           )}
         </div>

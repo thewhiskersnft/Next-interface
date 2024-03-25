@@ -7,7 +7,7 @@ import { SidebarItem } from "../../interfaces";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { get } from "lodash";
 import Image from "next/image";
-import { errorToast } from "../toast";
+import { errorToast } from "./toast";
 
 type SidebarProps = {};
 

@@ -38,7 +38,7 @@ import {
   PLATFORM_OWNER_ADDRESS,
 } from "@/constants";
 import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
-import { errorToast, successToast } from "@/component/toast";
+import { errorToast, successToast } from "@/component/common/toast";
 import { recursiveCheckTransitionStatus } from "@/utils/transactions";
 import { getMintURL, getSignatureURL } from "@/utils/redirectURLs";
 import { getPriorityLambports } from "@/utils/transactions/getPriorityLambports";

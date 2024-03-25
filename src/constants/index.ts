@@ -16,6 +16,11 @@ export const LiquidityRoutes: Record<string, string> = {
   renounceLiquidityPool: "renounce-liquidity-pool",
 };
 
+export const CreatorRoutes: Record<string, string> = {
+  snapshotHolders: "snapshot-holders",
+  sendAirdrops: "send-airdrops",
+};
+
 export const sidebarData: SidebarItem[] = [
   {
     label: "Token Management",
@@ -69,7 +74,7 @@ export const sidebarData: SidebarItem[] = [
         label: "Create Openbook Market ID",
         description: "Create Openbook Market ID To Set Up Liquidity Pool",
         navigateTo: `/liquidity?action=${LiquidityRoutes.createOpenBookMarketId}`,
-        disabled: true,
+        disabled: false,
       },
       {
         label: "Create Raydium Liquidity Pool (LP)",
@@ -100,7 +105,8 @@ export const sidebarData: SidebarItem[] = [
       {
         label: "Snapshot Holders",
         description: "Snapshot Holder List For NFTs & SPL Tokens",
-        disabled: true,
+        navigateTo: `/creator?action=${CreatorRoutes.snapshotHolders}`,
+        disabled: false,
       },
       {
         label: "Send Airdrops",

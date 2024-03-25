@@ -13,12 +13,12 @@ import {
   setTransferTax,
 } from "../../redux/slice/formDataSlice";
 import { keyPairs } from "../../constants";
-import CustomInput from "../customInput";
-import CustomImagePicker from "../customImagePicker";
-import CustomRadio from "../customRadio";
+import CustomInput from "../common/customInput";
+import CustomImagePicker from "../common/customImagePicker";
+import CustomRadio from "../common/customRadio";
 import { toMetaplexFileFromBrowser } from "@metaplex-foundation/js";
-import CustomDropdown from "../customDropdown";
-import { errorToast } from "../toast";
+import CustomDropdown from "../common/customDropdown";
+import { errorToast } from "../common/toast";
 
 type CreateOrEditTokenProps = { isEdit?: boolean; formik?: any };
 
@@ -90,9 +90,9 @@ const CreateOrEditToken = ({
                 : "hover:border-yellow1 hover:bg-variant1"
             }`}
             onClick={() => {
-              errorToast({ message: "Coming Soon!" });
-              // dispatch(setToggled(false));
-              // dispatch(setSelectedForm(keyPairs.createV2));
+              // errorToast({ message: "Coming Soon!" });
+              dispatch(setToggled(false));
+              dispatch(setSelectedForm(keyPairs.createV2));
             }}
             style={{ border: "1px solid #4D4D4D" }}
           >

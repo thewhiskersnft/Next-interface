@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { TokenRoutes, headerData } from "@/constants";
 import { errorToast } from "./toast";
 import Loader from "./loader";
-import { setAppLoading } from "../redux/slice/appDataSlice";
+import { setAppLoading } from "../../redux/slice/appDataSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { HeaderItem } from "@/interfaces";
 
@@ -34,11 +34,10 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
 
   useEffect(() => {
     setShowButton(true);
-    return () => {
-      if (appLoading) {
-        dispatch(setAppLoading(false));
-      }
-    };
+    if (appLoading) {
+      dispatch(setAppLoading(false));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleClick = (item: HeaderItem) => {

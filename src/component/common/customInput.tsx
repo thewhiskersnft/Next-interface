@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React, { CSSProperties } from "react";
+import { successToast } from "./toast";
 
 interface CustomInputProps {
   label?: string;
@@ -16,6 +17,8 @@ interface CustomInputProps {
   showError?: boolean;
   errorMessage?: string;
   showCurrency?: boolean;
+  showCopy?: boolean;
+  showSearch?: boolean;
 }
 
 const CustomInput = ({
@@ -33,7 +36,15 @@ const CustomInput = ({
   showError,
   errorMessage,
   showCurrency,
+  showCopy,
+  showSearch,
 }: CustomInputProps) => {
+  const handleCopy = () => {
+    navigator.clipboard.writeText(`${value}`);
+    successToast({ message: "Coppied!" });
+  };
+  const handleSearch = () => {};
+
   return (
     <>
       <div
@@ -76,6 +87,28 @@ const CustomInput = ({
             placeholder={placeholder || ""}
             onChange={onChange}
           />
+          {showSearch && (
+            <Image
+              src={"/search.svg"}
+              alt="Search Logo"
+              width={19}
+              height={19}
+              className="mx-1 cursor-pointer"
+              priority
+              onClick={handleSearch}
+            />
+          )}
+          {showCopy && (
+            <Image
+              src={"/copy.svg"}
+              alt="Copy Logo"
+              width={19}
+              height={19}
+              className="mx-1 cursor-pointer"
+              priority
+              onClick={handleCopy}
+            />
+          )}
         </span>
         {showError && (
           <div className="bg-[#D93535] text-[10px] font-Oxanium px-[16px]">
