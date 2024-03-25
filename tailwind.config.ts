@@ -61,6 +61,7 @@ const config: Config = {
         textGreen: "#09A854",
         loaderBG: "rgba(0,0,0,0.5)",
         modalBG: "#0D0D0D",
+        darkText: "#7D7D7D",
       },
       keyframes: {
         wiggle: {

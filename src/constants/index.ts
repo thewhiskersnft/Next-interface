@@ -16,6 +16,11 @@ export const LiquidityRoutes: Record<string, string> = {
   renounceLiquidityPool: "renounce-liquidity-pool",
 };
 
+export const CreatorRoutes: Record<string, string> = {
+  snapshotHolders: "snapshot-holders",
+  sendAirdrops: "send-airdrops",
+};
+
 export const sidebarData: SidebarItem[] = [
   {
     label: "Token Management",
@@ -100,7 +105,8 @@ export const sidebarData: SidebarItem[] = [
       {
         label: "Snapshot Holders",
         description: "Snapshot Holder List For NFTs & SPL Tokens",
-        disabled: true,
+        navigateTo: `/creator?action=${CreatorRoutes.snapshotHolders}`,
+        disabled: false,
       },
       {
         label: "Send Airdrops",
