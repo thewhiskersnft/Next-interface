@@ -37,37 +37,33 @@ const LiquidityForm = () => {
   return (
     <>
       {renderForm ? (
-        <div className="flex flex-row flex-1 h-full overflow-auto scroll-smooth">
+        <div className="flex flex-row flex-1 h-full overflow-auto scroll-smooth px-4">
           {liquidityAction === LiquidityRoutes.createOpenBookMarketId && (
             <CreateOpenBookMarketId />
           )}
-          {/* {enableRightSidebar() && (
+          {enableRightSidebar() && (
             <RightSidebar
-              data={previewData}
-              logo={getImageURL()}
+              hidePreview={true}
+              data={{}}
+              logo={""}
               showInfo={true}
-              createBtnText={
-                liquidityAction === LiquidityRoutes.updateMetadata
-                  ? "Update Metadata"
-                  : selectedForm === keyPairs.createV1
-                  ? "Create v1 SPL Token"
-                  : "Create v2 SPL Token"
-              }
+              createBtnText={""}
               mediaLinks={{
-                website: formik.values.website,
-                twitter: formik.values.twitter,
-                telegram: formik.values.telegram,
-                discord: formik.values.discord,
+                website: "",
+                twitter: "",
+                telegram: "",
+                discord: "",
               }}
-              formik={formik}
-              label={
-                liquidityAction === LiquidityRoutes.updateMetadata
-                  ? "Preview (Old Metadata)"
-                  : "Preview"
-              }
-              loading={buttonClicked}
+              formik={null}
+              label={""}
+              loading={false}
+              infoData={[
+                "Mint Authority: This is the authority (anaccount) that has the permission to mintnew tokens of a specific type. If a tokenaccount has a mint authority set, thataccount can create more tokens at anytime, increasing the supply.",
+                "Freeze Authority: This is the authority that has the capability to freeze and unfreeze token accounts. When a token account is frozen, it can no longer send or receivetokens. This is useful for enforcingcompliance or addressing securityconcerns.",
+                "Mutable Metadata: SPL tokens can haveassociated metadata that describes thetoken, like its name, symbol, and otherdetails. If the metadata is mutable, itmeans that the information can bechanged after the token is created.Disabling the mutability makes themetadata permanent and unchangeable.",
+              ]}
             />
-          )} */}
+          )}
         </div>
       ) : (
         <div className="flex flex-1 items-center justify-center">

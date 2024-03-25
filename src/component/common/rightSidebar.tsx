@@ -11,7 +11,9 @@ import CustomButton from "./customButton";
 
 interface SidebarProps {
   data: PreviewData;
+  infoData?: Array<string>;
   showInfo: boolean;
+  hidePreview?: boolean;
   logo: string;
   createBtnText: string;
   mediaLinks: {
@@ -28,12 +30,14 @@ interface SidebarProps {
 const RightSidebar: FC<SidebarProps> = ({
   data,
   showInfo,
+  hidePreview,
   logo,
   createBtnText,
   mediaLinks,
   formik,
   label,
   loading,
+  infoData,
 }) => {
   const dataHeadings = Object.keys(data);
 
@@ -123,172 +127,174 @@ const RightSidebar: FC<SidebarProps> = ({
 
   return (
     <div className="mr-4 my-12 h-max w-[383px]">
-      <div
-        className="border-2"
-        style={{ borderColor: "rgba(255, 255, 255, 0.2)" }}
-      >
+      {!hidePreview && (
         <div
-          className="border-b-2 py-2 text-white cursor-pointer font-Orbitron text-small text-left px-4"
-          style={{
-            borderColor: "rgba(255, 255, 255, 0.2)",
-            backgroundColor: "#222222",
-          }}
+          className="border-2"
+          style={{ borderColor: "rgba(255, 255, 255, 0.2)" }}
         >
-          {label || "Preview"}
-        </div>
-        <div className="p-4 bg-black">
-          <div className="border-yellow1 border-2 flex items-center justify-center h-[343px] w-[343px]">
-            {formik.values.logo || logo ? (
-              <img
-                src={formik.values.logo || logo} // default image is cat1 for now
-                alt="logo"
-                width={`${254}px`}
-                style={{
-                  height: `${254}px`,
-                  objectFit: "cover",
-                  borderRadius: "200px",
-                }}
-              />
-            ) : (
-              <Image
-                src={"/cat1.svg"}
-                alt="Cat Logo"
-                width={254}
-                height={254}
-                priority
-              />
-            )}
-          </div>
-          <span className="w-[full] flex justify-between items-center my-[20px] px-[90px]">
-            <a
-              className="website"
-              target="_blank"
-              rel="noopener noreferrer"
-              href={mediaLinks.website}
-              onClick={(e) => {
-                if (!mediaLinks.website) e.preventDefault();
-              }}
-            >
-              <Image
-                src={
-                  mediaLinks.website ? "/website.svg" : "/websiteDisabled.svg"
-                }
-                alt="websity Logo"
-                width={23}
-                height={23}
-                priority
-              />
-            </a>
-            <a
-              className="twitter"
-              href={mediaLinks.twitter}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => {
-                if (!mediaLinks.twitter) e.preventDefault();
-              }}
-            >
-              <Image
-                src={
-                  mediaLinks.twitter ? "/twitter.svg" : "/twitterDisabled.svg"
-                }
-                alt="twitter Logo"
-                width={20}
-                height={20}
-                priority
-              />
-            </a>
-            <a
-              className="telegram"
-              href={mediaLinks.telegram}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => {
-                if (!mediaLinks.telegram) e.preventDefault();
-              }}
-            >
-              <Image
-                src={
-                  mediaLinks.telegram
-                    ? "/telegram.svg"
-                    : "/telegramDisabled.svg"
-                }
-                alt="telegram Logo"
-                width={20}
-                height={20}
-                priority
-              />
-            </a>
-            <a
-              className="discord"
-              href={mediaLinks.discord}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => {
-                if (!mediaLinks.discord) e.preventDefault();
-              }}
-            >
-              <Image
-                src={
-                  mediaLinks.discord ? "/discord.svg" : "/discordDisabled.svg"
-                }
-                alt="discord Logo"
-                width={20}
-                height={20}
-                priority
-              />
-            </a>
-          </span>
-          {dataHeadings.map((heading: string, headingIndex: number) => {
-            const keys = Object.keys(data[heading]);
-            const headingData = data[heading];
-            return (
-              <React.Fragment key={headingIndex}>
-                <span className="text-white flex mt-6">
-                  <p className="w-1/2 text-left text-small text-yellow1 font-Orbitron my-[10px]">
-                    {heading}
-                  </p>
-                </span>
-                {keys.map((k, keyIndex) => {
-                  const val = headingData[k];
-                  return (
-                    <span
-                      className="text-white flex mt-2"
-                      key={"hd-" + keyIndex}
-                    >
-                      <span className="w-1/3 flex justify-between">
-                        <p className="text-left text-xsmall font-Oxanium">
-                          {k}
-                        </p>
-                        <p className="text-left text-xsmall font-Oxanium">
-                          {` : `}
-                        </p>
-                      </span>
-                      <p className="w-2/3 text-left text-xsmall font-Oxanium pl-[7px]">
-                        {`${val}`}
-                      </p>
-                    </span>
-                  );
-                })}
-              </React.Fragment>
-            );
-          })}
-          <CustomButton
-            onClick={formik?.handleSubmit}
-            label={createBtnText || "Create"}
-            disabled={false}
-            loading={loading}
-            containerStyles={{
-              marginTop: "10px",
+          <div
+            className="border-b-2 py-2 text-white cursor-pointer font-Orbitron text-small text-left px-4"
+            style={{
+              borderColor: "rgba(255, 255, 255, 0.2)",
               backgroundColor: "#222222",
             }}
-            labelStyles={{ fontFamily: "Oxanium" }}
-          />
+          >
+            {label || "Preview"}
+          </div>
+          <div className="p-4 bg-black">
+            <div className="border-yellow1 border-2 flex items-center justify-center h-[343px] w-[343px]">
+              {formik.values.logo || logo ? (
+                <img
+                  src={formik.values.logo || logo} // default image is cat1 for now
+                  alt="logo"
+                  width={`${254}px`}
+                  style={{
+                    height: `${254}px`,
+                    objectFit: "cover",
+                    borderRadius: "200px",
+                  }}
+                />
+              ) : (
+                <Image
+                  src={"/cat1.svg"}
+                  alt="Cat Logo"
+                  width={254}
+                  height={254}
+                  priority
+                />
+              )}
+            </div>
+            <span className="w-[full] flex justify-between items-center my-[20px] px-[90px]">
+              <a
+                className="website"
+                target="_blank"
+                rel="noopener noreferrer"
+                href={mediaLinks.website}
+                onClick={(e) => {
+                  if (!mediaLinks.website) e.preventDefault();
+                }}
+              >
+                <Image
+                  src={
+                    mediaLinks.website ? "/website.svg" : "/websiteDisabled.svg"
+                  }
+                  alt="websity Logo"
+                  width={23}
+                  height={23}
+                  priority
+                />
+              </a>
+              <a
+                className="twitter"
+                href={mediaLinks.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => {
+                  if (!mediaLinks.twitter) e.preventDefault();
+                }}
+              >
+                <Image
+                  src={
+                    mediaLinks.twitter ? "/twitter.svg" : "/twitterDisabled.svg"
+                  }
+                  alt="twitter Logo"
+                  width={20}
+                  height={20}
+                  priority
+                />
+              </a>
+              <a
+                className="telegram"
+                href={mediaLinks.telegram}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => {
+                  if (!mediaLinks.telegram) e.preventDefault();
+                }}
+              >
+                <Image
+                  src={
+                    mediaLinks.telegram
+                      ? "/telegram.svg"
+                      : "/telegramDisabled.svg"
+                  }
+                  alt="telegram Logo"
+                  width={20}
+                  height={20}
+                  priority
+                />
+              </a>
+              <a
+                className="discord"
+                href={mediaLinks.discord}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => {
+                  if (!mediaLinks.discord) e.preventDefault();
+                }}
+              >
+                <Image
+                  src={
+                    mediaLinks.discord ? "/discord.svg" : "/discordDisabled.svg"
+                  }
+                  alt="discord Logo"
+                  width={20}
+                  height={20}
+                  priority
+                />
+              </a>
+            </span>
+            {dataHeadings.map((heading: string, headingIndex: number) => {
+              const keys = Object.keys(data[heading]);
+              const headingData = data[heading];
+              return (
+                <React.Fragment key={headingIndex}>
+                  <span className="text-white flex mt-6">
+                    <p className="w-1/2 text-left text-small text-yellow1 font-Orbitron my-[10px]">
+                      {heading}
+                    </p>
+                  </span>
+                  {keys.map((k, keyIndex) => {
+                    const val = headingData[k];
+                    return (
+                      <span
+                        className="text-white flex mt-2"
+                        key={"hd-" + keyIndex}
+                      >
+                        <span className="w-1/3 flex justify-between">
+                          <p className="text-left text-xsmall font-Oxanium">
+                            {k}
+                          </p>
+                          <p className="text-left text-xsmall font-Oxanium">
+                            {` : `}
+                          </p>
+                        </span>
+                        <p className="w-2/3 text-left text-xsmall font-Oxanium pl-[7px]">
+                          {`${val}`}
+                        </p>
+                      </span>
+                    );
+                  })}
+                </React.Fragment>
+              );
+            })}
+            <CustomButton
+              onClick={formik?.handleSubmit}
+              label={createBtnText || "Create"}
+              disabled={false}
+              loading={loading}
+              containerStyles={{
+                marginTop: "10px",
+                backgroundColor: "#222222",
+              }}
+              labelStyles={{ fontFamily: "Oxanium" }}
+            />
+          </div>
         </div>
-      </div>
+      )}
       {showInfo && (
         <div
-          className="border-2 mt-4"
+          className={`border-2 ${hidePreview ? "" : "mt-4"}`}
           style={{ borderColor: "rgba(255, 255, 255, 0.2)" }}
         >
           <div
@@ -301,66 +307,29 @@ const RightSidebar: FC<SidebarProps> = ({
             Information
           </div>
           <div className="p-4 bg-black">
-            <span className="text-white flex mt-2">
-              <span className="w-[25px] mt-[3px]">
-                <Image
-                  src={"/bullet.svg"}
-                  alt="bullet Logo"
-                  width={10}
-                  height={10}
-                  style={{ marginRight: "8px" }}
-                  priority
-                />
-              </span>
-              <p className="w-full text-left font-Oxanium text-xsmall">
-                No smart contract programming necessary.
-              </p>
-            </span>
-            <span className="text-white flex mt-2">
-              <span className="w-[25px] mt-[3px]">
-                <Image
-                  src={"/bullet.svg"}
-                  alt="bullet Logo"
-                  width={10}
-                  height={10}
-                  style={{ marginRight: "8px" }}
-                  priority
-                />
-              </span>
-              <p className="w-full text-left font-Oxanium text-xsmall">
-                Secure 100% ownership of generated token.
-              </p>
-            </span>
-            <span className="text-white flex mt-2">
-              <span className="w-[25px] mt-[3px]">
-                <Image
-                  src={"/bullet.svg"}
-                  alt="bullet Logo"
-                  width={10}
-                  height={10}
-                  style={{ marginRight: "8px" }}
-                  priority
-                />
-              </span>
-              <p className="w-full text-left font-Oxanium text-xsmall">
-                Customize token name, symbol and initial supply.
-              </p>
-            </span>
-            <span className="text-white flex mt-2">
-              <span className="w-[25px] mt-[3px]">
-                <Image
-                  src={"/bullet.svg"}
-                  alt="bullet Logo"
-                  width={10}
-                  height={10}
-                  style={{ marginRight: "8px" }}
-                  priority
-                />
-              </span>
-              <p className="w-full text-left font-Oxanium text-xsmall">
-                Sign and create with your own wallet.
-              </p>
-            </span>
+            {infoData && infoData.length ? (
+              infoData.map((info: string, index: number) => {
+                return (
+                  <span className="text-white flex mt-2" key={index}>
+                    <span className="w-[25px] mt-[3px]">
+                      <Image
+                        src={"/bullet.svg"}
+                        alt="bullet Logo"
+                        width={10}
+                        height={10}
+                        style={{ marginRight: "8px" }}
+                        priority
+                      />
+                    </span>
+                    <p className="w-full text-left font-Oxanium text-xsmall">
+                      {info}
+                    </p>
+                  </span>
+                );
+              })
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       )}

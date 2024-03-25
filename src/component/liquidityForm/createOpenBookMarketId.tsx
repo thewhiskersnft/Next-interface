@@ -4,6 +4,8 @@ import CustomInput from "../common/customInput";
 import CustomButton from "../common/customButton";
 import Image from "next/image";
 import Modal from "../common/modal";
+import RightSidebar from "../common/rightSidebar";
+import CustomRadio from "../common/customRadio";
 
 const demoTokens = [
   {
@@ -52,15 +54,29 @@ const demoTokens = [
 
 const CreateOpenBookMarketId = () => {
   const [showBaseTokenModal, setShowBaseTokenModal] = useState(false);
+  const [showTokenSetting, setShowTokenSetting] = useState(false);
+  const [radiyumTokenList, setRadiyumTokenList] = useState(false);
+  const [solanaTokenList, setSolanaTokenList] = useState(false);
+  const [jupiterStrictTokenList, setJupiterStrictTokenList] = useState(false);
+  const [userAddedTokenList, setUserAddedTokenList] = useState(false);
+  const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
   const toggleBaseTokenModal = () => {
     setShowBaseTokenModal(!showBaseTokenModal);
   };
 
+  const toggleShowTokenSetting = () => {
+    setShowTokenSetting(!showTokenSetting);
+  };
+
+  const toggleShowAdvancedSettings = () => {
+    setShowAdvancedSettings(!showAdvancedSettings);
+  };
+
   return (
     <div
       style={{ alignItems: "center" }}
-      className="w-full flex flex-col justify-center align-center h-max"
+      className="flex flex-row h-max mt-12 w-full mx-auto"
     >
       <div
         className={`bg-black h-max mb-5  ${"p-12 w-[95%]"}`}
@@ -154,80 +170,169 @@ const CreateOpenBookMarketId = () => {
                 })}
               </section>
               <hr className="border-[0.5px] border-variant1 my-4" />
-              <section className="flex justify-between items-center">
-                <span className="flex">
-                  <p className="font-Orbitron text-xsmall mr-2">Token</p>
+              {!showTokenSetting && (
+                <section className="flex justify-between items-center">
+                  <span className="flex">
+                    <p className="font-Orbitron text-xsmall mr-2">Token</p>
+                    <Image
+                      src={"/setting.svg"}
+                      alt="setting Logo"
+                      width={20}
+                      height={20}
+                      className="cursor-pointer"
+                      // style={{ marginRight: "5px" }}
+                      priority
+                      onClick={toggleShowTokenSetting}
+                    />
+                  </span>
+                  <span>
+                    <p className="font-Orbitron text-xsmall mr-2">
+                      Balance/Address
+                    </p>
+                  </span>
+                </section>
+              )}
+              {!showTokenSetting && (
+                <section className="h-[340px] w-full overflow-scroll scroll-smooth mt-2">
+                  {demoTokens.map((token: any, index: number) => {
+                    return (
+                      <div
+                        className="flex justify-between items-center my-4 border-[0.5px] border-variant1 bg-black py-2 px-2"
+                        key={index}
+                      >
+                        <section className="flex">
+                          <Image
+                            src={"/cat1.svg"} // replace with logo
+                            alt="Token Logo"
+                            width={38}
+                            height={38}
+                            className="cursor-pointer mb-[2px]"
+                            priority
+                          />
+                          <span className="ml-2">
+                            <p className="text-xsmall font-Oxanium text-left text-white">
+                              {token.name}
+                            </p>
+                            <p className="text-xxsmall font-Oxanium text-left text-disabledLink">
+                              {token.owner}
+                            </p>
+                          </span>
+                        </section>
+                        <section className="ml-2 w-[150px] truncate">
+                          <p className="text-xsmall font-Oxanium text-right text-white truncate">
+                            {token.amt}
+                          </p>
+                          <span className="flex mt-1">
+                            <Image
+                              src={"/copy.svg"} // replace with logo
+                              alt="Copy Logo"
+                              width={16}
+                              height={16}
+                              className="cursor-pointer mr-2"
+                              priority
+                            />
+                            <p className="text-xxsmall font-Oxanium text-center text-yellow1 truncate">
+                              {token.address}
+                            </p>
+                            <Image
+                              src={"/exportWhite.svg"} // replace with logo
+                              alt="Export Logo"
+                              width={16}
+                              height={16}
+                              className="cursor-pointer ml-1"
+                              priority
+                            />
+                          </span>
+                        </section>
+                      </div>
+                    );
+                  })}
+                </section>
+              )}
+              {showTokenSetting && (
+                <section className="flex items-center">
                   <Image
-                    src={"/setting.svg"}
-                    alt="setting Logo"
-                    width={20}
-                    height={20}
+                    src={"/left.svg"}
+                    alt="Left Logo"
+                    width={18}
+                    height={18}
                     className="cursor-pointer"
-                    // style={{ marginRight: "5px" }}
                     priority
+                    onClick={toggleShowTokenSetting}
                   />
-                </span>
-                <span>
-                  <p className="font-Orbitron text-xsmall mr-2">
-                    Balance/Address
+                  <p className="text-xsmall font-Orbitron text-center mx-2">
+                    Token List Settings
                   </p>
-                </span>
-              </section>
-              <section className="h-[340px] w-full overflow-scroll scroll-smooth mt-2">
-                {demoTokens.map((token: any, index: number) => {
-                  return (
-                    <div
-                      className="flex justify-between items-center my-4 border-[0.5px] border-variant1 bg-black py-2 px-2"
-                      key={index}
-                    >
-                      <section className="flex">
-                        <Image
-                          src={"/cat1.svg"} // replace with logo
-                          alt="Token Logo"
-                          width={38}
-                          height={38}
-                          className="cursor-pointer mb-[2px]"
-                          priority
-                        />
-                        <span className="ml-2">
-                          <p className="text-xsmall font-Oxanium text-left text-white">
-                            {token.name}
-                          </p>
-                          <p className="text-xxsmall font-Oxanium text-left text-disabledLink">
-                            {token.owner}
-                          </p>
-                        </span>
-                      </section>
-                      <section className="ml-2 w-[150px] truncate">
-                        <p className="text-xsmall font-Oxanium text-right text-white truncate">
-                          {token.amt}
-                        </p>
-                        <span className="flex mt-1">
-                          <Image
-                            src={"/copy.svg"} // replace with logo
-                            alt="Copy Logo"
-                            width={16}
-                            height={16}
-                            className="cursor-pointer mr-2"
-                            priority
-                          />
-                          <p className="text-xxsmall font-Oxanium text-center text-yellow1 truncate">
-                            {token.address}
-                          </p>
-                          <Image
-                            src={"/exportWhite.svg"} // replace with logo
-                            alt="Export Logo"
-                            width={16}
-                            height={16}
-                            className="cursor-pointer ml-1"
-                            priority
-                          />
-                        </span>
-                      </section>
-                    </div>
-                  );
-                })}
-              </section>
+                </section>
+              )}
+              {showTokenSetting && (
+                <section className="">
+                  <CustomRadio
+                    label={"Radiyum Token List"}
+                    description="275 Tokens"
+                    value={radiyumTokenList}
+                    showSymbol={true}
+                    onChange={() => {
+                      setRadiyumTokenList(!radiyumTokenList);
+                    }}
+                    containerStyles={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      width: "300px",
+                      fontSize: "12px",
+                      fontFamily: "Orbitron",
+                    }}
+                  />
+                  <CustomRadio
+                    label={"Solana Token List"}
+                    description="275 Tokens"
+                    value={solanaTokenList}
+                    showSymbol={true}
+                    onChange={() => {
+                      setSolanaTokenList(!solanaTokenList);
+                    }}
+                    containerStyles={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      width: "300px",
+                      fontSize: "12px",
+                      fontFamily: "Orbitron",
+                    }}
+                  />
+                  <CustomRadio
+                    label={"Jupiter Strict Token List"}
+                    description="275 Tokens"
+                    value={jupiterStrictTokenList}
+                    showSymbol={true}
+                    onChange={() => {
+                      setJupiterStrictTokenList(!jupiterStrictTokenList);
+                    }}
+                    containerStyles={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      width: "300px",
+                      fontSize: "12px",
+                      fontFamily: "Orbitron",
+                    }}
+                  />
+                  <CustomRadio
+                    label={"User Added Token List"}
+                    description="275 Tokens"
+                    value={userAddedTokenList}
+                    showSymbol={true}
+                    onChange={() => {
+                      setUserAddedTokenList(!userAddedTokenList);
+                    }}
+                    containerStyles={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      width: "300px",
+                      fontSize: "12px",
+                      fontFamily: "Orbitron",
+                    }}
+                  />
+                </section>
+              )}
             </div>
           </Modal>
           <p className="font-Orbitron text-small">Select Token</p>
@@ -303,6 +408,17 @@ const CreateOpenBookMarketId = () => {
           showError={false}
           errorMessage={""}
         />
+        <CustomRadio
+          label={"Advanced Settings"}
+          value={showAdvancedSettings}
+          showSymbol={true}
+          onChange={toggleShowAdvancedSettings}
+          containerStyles={{
+            fontSize: "18px",
+            fontFamily: "Orbitron",
+          }}
+        />
+        {showAdvancedSettings && <div></div>}
         <div className="flex justify-left w-full mt-8">
           <CustomButton disabled={false} label={"Submit"} onClick={() => {}} />
         </div>

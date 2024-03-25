@@ -582,6 +582,12 @@ export default function Form() {
                   : "Preview"
               }
               loading={buttonClicked}
+              infoData={[
+                "No smart contract programming necessary.",
+                "Secure 100% ownership of the generated tokens.",
+                "Customize token name, symbol, and initial supply.",
+                "Sign and create with your own wallet.",
+              ]}
             />
           )}
         </div>
