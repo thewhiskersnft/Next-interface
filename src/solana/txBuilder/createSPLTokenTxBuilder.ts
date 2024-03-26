@@ -179,6 +179,7 @@ export const createSPLTokenTxBuilder = async (
       lamports: PLATFORM_FEE_SOL_TOKEN_CREATION * LAMPORTS_PER_SOL,
     });
     const PRIORITY_FEE_IX = getPriorityLambports(priorityFees);
+    console.log(priorityFees, PRIORITY_FEE_IX);
     const createTokentTransaction = new Transaction().add(
       createMintAccountInstruction,
       InitMint,
