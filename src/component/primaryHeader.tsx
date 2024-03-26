@@ -159,7 +159,7 @@ const PrimaryHeader: FC = () => {
         >
           {showPriorityFeeModal && (
             <section
-              className="flex flex-col absolute bg-variant1 p-4 bottom-[28px] right-[15px] w-[max-content]"
+              className="flex flex-col absolute bg-background p-4 bottom-[28px] right-[15px] w-[max-content] border-[1px] border-variant1 z-50"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between">
@@ -228,6 +228,10 @@ const PrimaryHeader: FC = () => {
                   placeholder={"Enter Custom (SOL)"}
                   showError={false}
                   errorMessage={""}
+                  inputStyles={{
+                    border: "1px solid #4D4D4D",
+                    backgroundColor: "#4D4D4D",
+                  }}
                 />
               </div>
             </section>

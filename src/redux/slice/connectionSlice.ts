@@ -7,7 +7,7 @@ const initialState = {
   isConnectionLoading: false,
   allDevEndpoints: [...devEndpoints],
   allMainEndpoints: [...mainEndpoints],
-  priorityFees: 1000,
+  priorityFees: 100000,
 };
 
 export const ConnectionDataSlice = createSlice({

@@ -72,14 +72,14 @@ export default function ComingSoon({ hideOnWeb }: ComingSoonProps) {
               </a>
               <a
                 className="discord ml-4"
-                href={"https://discord.gg/HKZWP3dU3m"}
+                href={"https://discord.gg/9SR8mvhq8z"}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ pointerEvents: "auto" }}
-                onClick={(e) => e.preventDefault()}
+                // onClick={(e) => e.preventDefault()}
               >
                 <Image
-                  src={"/discordDisabled.svg"}
+                  src={"/discord.svg"}
                   alt="discord Logo"
                   width={20}
                   height={20}
