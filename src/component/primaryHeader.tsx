@@ -15,6 +15,7 @@ const PrimaryHeader: FC = () => {
   const [price, setPrice] = useState();
   const [Volume, setVolume] = useState();
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showPriorityFeeModal, setShowPriorityFeeModal] = useState(false);
   const { priorityFees } = useSelector(
     (state: any) => state.connectionDataSlice
   );
@@ -66,6 +67,9 @@ const PrimaryHeader: FC = () => {
   const toggleSettingsModal = () => {
     setShowSettingsModal(!showSettingsModal);
   };
+  const togglePriorityFeeModal = () => {
+    setShowPriorityFeeModal(!showPriorityFeeModal);
+  };
 
   const handlePriorityFeeChange = (val: number) => {
     // do calculations here if any for priority fees
@@ -88,6 +92,12 @@ const PrimaryHeader: FC = () => {
   ];
 
   //console.log(priorityFees);
+
+  const selectedPriorityFeeTx = txPriorityData.filter(
+    (tx: any, index: number) => {
+      return tx.value === getSol(priorityFees);
+    }
+  )[0];
 
   return (
     <div
@@ -139,7 +149,117 @@ const PrimaryHeader: FC = () => {
       </div>
       <div className="flex">
         <span
-          className="flex items-center px-6 cursor-pointer"
+          className="flex items-center px-6 cursor-pointer relative"
+          style={{
+            borderLeftWidth: "2px",
+            // borderRightWidth: "2px",
+            borderColor: borderColor,
+          }}
+          onClick={togglePriorityFeeModal}
+        >
+          {showPriorityFeeModal && (
+            <section
+              className="flex flex-col absolute bg-background p-4 bottom-[28px] right-[15px] w-[max-content] border-[1px] border-variant1 z-50"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between">
+                <>
+                  <Image
+                    src={"/txPriority.svg"}
+                    alt="TxPriority Logo"
+                    width={20}
+                    height={20}
+                    style={{ marginRight: "5px" }}
+                    priority
+                  />
+                  <p className="color-white font-small font-Orbitron">
+                    Transaction Priority
+                  </p>
+                </>
+                <Image
+                  src={"/close.svg"}
+                  alt="Close Logo"
+                  width={9.68}
+                  height={9.68}
+                  style={{ marginLeft: "90px" }}
+                  priority
+                  onClick={togglePriorityFeeModal}
+                  className="cursor-pointer"
+                />
+              </div>
+              <div className="flex mt-4">
+                {txPriorityData.map((txPriority: any, index: number) => {
+                  const { label, value } = txPriority;
+                  const isSelected = getSol(priorityFees) == value;
+                  return (
+                    <section
+                      className={`bg-black grow border-[2px] cursor-pointer ${
+                        isSelected
+                          ? "border-yellow1"
+                          : "border-[rgba(255,255,255,0.5)]"
+                      }`}
+                      key={index}
+                      onClick={() => {
+                        handlePriorityFeeChange(getLambports(value));
+                      }}
+                    >
+                      <p
+                        className={`text-center px-6 py-2 font-Oxanium font-xsmall ${
+                          isSelected ? "text-yellow1" : "text-white"
+                        }`}
+                      >
+                        {label} <br /> {value}
+                      </p>
+                    </section>
+                  );
+                })}
+              </div>
+              <div>
+                <CustomInput
+                  label="Custom (Max 0.01 Sol)"
+                  id="transactionPriority"
+                  name="transactionPriority"
+                  value={getSol(priorityFees)}
+                  onChange={(e) =>
+                    handlePriorityFeeChange(getLambports(e.target.value))
+                  }
+                  showSymbol={false}
+                  type={"number"}
+                  placeholder={"Enter Custom (SOL)"}
+                  showError={false}
+                  errorMessage={""}
+                  inputStyles={{
+                    border: "1px solid #4D4D4D",
+                    backgroundColor: "#4D4D4D",
+                  }}
+                />
+              </div>
+            </section>
+          )}
+          <Image
+            src={"/priorityFee.svg"}
+            alt="online Logo"
+            width={18}
+            height={18}
+            // style={{ marginRight: "5px" }}
+            priority
+          />
+          <p className="font-Orbitron text-xsmall text-yellow1 ml-4">
+            {selectedPriorityFeeTx ? selectedPriorityFeeTx["label"] : "Custom"}
+          </p>
+          <Image
+            src={"/arrowUp.svg"}
+            alt="Up Logo"
+            width={8}
+            height={4}
+            priority
+            className={`cursor-pointer ml-3 ${
+              showPriorityFeeModal ? "rotate-180" : ""
+            }`}
+          />
+        </span>
+        <span
+          className="flex items-center px-6"
           style={{
             borderLeftWidth: "2px",
             borderRightWidth: "2px",
@@ -195,81 +315,6 @@ const PrimaryHeader: FC = () => {
           }
           onClick={toggleSettingsModal}
         >
-          {showSettingsModal && (
-            <section
-              className="flex flex-col absolute bg-variant1 p-4 bottom-[28px] right-[15px] w-[max-content]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex justify-between">
-                <>
-                  <Image
-                    src={"/txPriority.svg"}
-                    alt="TxPriority Logo"
-                    width={20}
-                    height={20}
-                    style={{ marginRight: "5px" }}
-                    priority
-                  />
-                  <p className="color-white font-small font-Orbitron">
-                    Transaction Priority
-                  </p>
-                </>
-                <Image
-                  src={"/close.svg"}
-                  alt="Close Logo"
-                  width={9.68}
-                  height={9.68}
-                  style={{ marginLeft: "90px" }}
-                  priority
-                  onClick={toggleSettingsModal}
-                  className="cursor-pointer"
-                />
-              </div>
-              <div className="flex mt-4">
-                {txPriorityData.map((txPriority: any, index: number) => {
-                  const { label, value } = txPriority;
-                  const isSelected = getSol(priorityFees) == value;
-                  return (
-                    <section
-                      className={`bg-black grow border-[2px] cursor-pointer ${
-                        isSelected
-                          ? "border-yellow1"
-                          : "border-[rgba(255,255,255,0.5)]"
-                      }`}
-                      key={index}
-                      onClick={() => {
-                        handlePriorityFeeChange(getLambports(value));
-                      }}
-                    >
-                      <p
-                        className={`text-center px-6 py-2 font-Oxanium font-xsmall ${
-                          isSelected ? "text-yellow1" : "text-white"
-                        }`}
-                      >
-                        {label} <br /> {value}
-                      </p>
-                    </section>
-                  );
-                })}
-              </div>
-              <div>
-                <CustomInput
-                  label="Custom (Max 0.01 Sol)"
-                  id="transactionPriority"
-                  name="transactionPriority"
-                  value={getSol(priorityFees)}
-                  onChange={(e) =>
-                    handlePriorityFeeChange(getLambports(e.target.value))
-                  }
-                  showSymbol={false}
-                  type={"number"}
-                  placeholder={"Enter Custom (SOL)"}
-                  showError={false}
-                  errorMessage={""}
-                />
-              </div>
-            </section>
-          )}
           <Image
             src={"/setting.svg"}
             alt="setting Logo"
