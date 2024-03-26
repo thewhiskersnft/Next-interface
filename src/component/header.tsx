@@ -33,11 +33,9 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
 
   useEffect(() => {
     setShowButton(true);
-    return () => {
-      if (appLoading) {
-        dispatch(setAppLoading(false));
-      }
-    };
+    if (appLoading) {
+      dispatch(setAppLoading(false));
+    }
   }, []);
 
   const handleClick = (tag: string) => {
