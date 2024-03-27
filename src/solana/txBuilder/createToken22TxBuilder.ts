@@ -57,17 +57,33 @@ import {
 } from "@solana/spl-token-metadata";
 let network = isMainnet() ? "mainnet-beta" : "devnet";
 
+type TransferTaxProps = {
+  fee: string;
+  maxFee: string;
+  withdrawAuthority: string;
+  configAuthority: string;
+};
+
+type IntrestBearingProps = {
+  rate: string;
+};
+
+type DefaultAccountStateProps = {
+  defaultState: string;
+};
+
+type PermanentDelegateProps = {
+  delegate: string;
+};
+
 export const createToken22TxBuilder = async (
   name: string,
   symbol: string,
   decimal: number,
-  fee: string,
-  maxFee: string,
-  withdrawAuthority: string,
-  configAuthority: string,
-  rate: string,
-  defaultAccountStateOption: string,
-  delegate: string,
+  transferTax: TransferTaxProps | null,
+  intrestBearing: IntrestBearingProps | null,
+  defaultAccountState: DefaultAccountStateProps | null,
+  permanentDelegate: PermanentDelegateProps | null,
   nonTransferable: boolean,
   uri: string,
   tokenSupply: number,
