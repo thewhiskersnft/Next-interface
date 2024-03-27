@@ -58,6 +58,10 @@ export default function Form() {
     freezeAuthority,
     mutableMetadata,
     mintAmount,
+    transferTax,
+    interestBearing,
+    defaultAccountState,
+    permanentDelegate,
   } = useSelector((state: any) => state.formDataSlice);
   const { appLoading } = useSelector((state: any) => state.appDataSlice);
   const { allDevEndpoints, allMainEndpoints, currentEndpoint, priorityFees } =
@@ -243,6 +247,7 @@ export default function Form() {
         errorToast({ message: "Please upload logo!" });
       }
     }
+    // add v2 token validations
     return resp;
   };
   const createTokenHandler = async (values: any) => {
@@ -319,18 +324,36 @@ export default function Form() {
         const uri = await createURI();
         let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
         successToast({ message: `MetaData Uploaded` });
+
+        const transferTaxVal = transferTax
+          ? {
+              fee: formik.values.fee,
+              maxFee: formik.values.maxFee,
+              withdrawAuthority: formik.values.withdrawAuthority,
+              configAuthority: formik.values.configAuthority,
+            }
+          : null;
+        const intrestBearingVal = interestBearing
+          ? { rate: formik.values.rate }
+          : null;
+        const defaultAccountStateVal = defaultAccountState
+          ? {
+              defaultState: formik.values.defaultAccountStateOption,
+            }
+          : null;
+        const permanentDelegateVal = permanentDelegate
+          ? { delegate: formik.values.delegate }
+          : null;
+
         const txhash = await createToken22TxBuilder(
           formik.values.name,
           formik.values.symbol,
           formik.values.decimal,
-          formik.values.fee,
-          formik.values.maxFee,
-          formik.values.withdrawAuthority,
-          formik.values.configAuthority,
-          formik.values.rate,
-          formik.values.defaultAccountStateOption,
-          formik.values.delegate,
-          formik.values.nonTransferable,
+          transferTaxVal,
+          intrestBearingVal,
+          defaultAccountStateVal,
+          permanentDelegateVal,
+          nonTransferable,
           finalURI,
           formik.values.supply,
           connection,
