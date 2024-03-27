@@ -49,9 +49,9 @@ const CustomButton: FC<CustomButtonProps> = ({
             <Loader visible={true} size={19} />
           ) : icon ? (
             <div
-              className={`flex ${
+              className={`flex flex-1 ${
                 iconPosition === "left" ? "flex-row" : "flex-row-reverse"
-              } items-center justify-center"`}
+              } items-center justify-center`}
             >
               {icon}
               {label}

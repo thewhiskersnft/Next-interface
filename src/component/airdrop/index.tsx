@@ -1,30 +1,16 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CustomButton from "../common/customButton";
 import Image from "next/image";
 import CustomInput from "../common/customInput";
+import AirdropCard from "./airdropCard";
+import EligibleWalletModal from "./eligibleWalletModal";
+import { useRouter } from "next/navigation";
+import AirdropAddresses from "./airdropAddresses";
 
 export default function AirdropChecker() {
-  const PasteIcon = (
-    <Image
-      src={"/paste.svg"}
-      alt='paste'
-      width={18}
-      height={18}
-      priority
-      style={{ marginRight: "5px" }}
-    />
-  );
-  const ClearAllIcon = (
-    <Image
-      src={"/clearAll.svg"}
-      alt='paste'
-      width={18}
-      height={18}
-      priority
-      style={{ marginRight: "5px" }}
-    />
-  );
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
 
   const SortIcon = (
     <Image
@@ -37,89 +23,49 @@ export default function AirdropChecker() {
     />
   );
 
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") router.replace("/");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onViewEligibleModal = () => {
+    setOpen(true);
+  };
+
   return (
     <div className='flex flex-col flex-1 h-full overflow-auto scroll-smooth p-4'>
       {/* Airdrop address form */}
       <div className='flex flex-col border-[0.2px] border-variant1 p-6 lg:p-8 xl:p-10 mb-4'>
         <p className='text-white text-large font-Orbitron'>Airdrop Checker</p>
-        <div className='mt-4'>
-          <div className='flex justify-between mb-1'>
-            <div className='flex flex-col'>
-              <p className='text-white text-small font-Orbitron mb-2'>
-                Enter Addresses
-              </p>
-              <p className='text-disabledLink text-xsmall font-Oxanium font-normal tracking-normal'>
-                Enter one address per line
-              </p>
-            </div>
-            <div className='flex flex-col'>
-              <p className='text-yellow1 text-xsmall text-right font-Orbitron mb-2'>
-                Fees
-              </p>
-              <p className='text-disabledLink text-xsmall text-right font-Oxanium font-normal mb-2'>
-                Upto 5 Addresses:{" "}
-                <span className='text-yellow1 text-xsmall'>Free</span>
-              </p>
-              <p className='text-disabledLink text-xsmall text-right font-Oxanium font-normal'>
-                More than 5 Addresses:{" "}
-                <span className='text-yellow1 text-xsmall'>0.01 Sol</span>
-              </p>
-            </div>
-          </div>
-          <div className='flex flex-col mb-4'>
-            <div>
-              <textarea
-                className={
-                  "flex min-h-[120px] w-full bg-darkGrey px-3 py-2 text-xsmall shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                }
-                placeholder='askdjhfakjsdfherfhjweoirbvqoekljvnfs.dfkuvhna;ourevjnaw.'
-              />
-            </div>
-            <div className='flex justify-between mt-4'>
-              <div>
-                <CustomButton
-                  onClick={() => {}}
-                  label={"Paste"}
-                  disabled={false}
-                  loading={false}
-                  containerStyles={{
-                    backgroundColor: "#222222",
-                  }}
-                  labelStyles={{ fontFamily: "Oxanium", fontSize: "14px" }}
-                  icon={PasteIcon}
-                />
-              </div>
-              <div>
-                <CustomButton
-                  onClick={() => {}}
-                  label={"Clear"}
-                  disabled={false}
-                  loading={false}
-                  containerStyles={{
-                    backgroundColor: "#222222",
-                  }}
-                  labelStyles={{ fontFamily: "Oxanium", fontSize: "14px" }}
-                  icon={ClearAllIcon}
-                />
-              </div>
-            </div>
-          </div>
-          <CustomButton
-            onClick={() => {}}
-            label={"Check"}
-            disabled={false}
-            loading={false}
-            containerStyles={{
-              backgroundColor: "#FFC83A",
-            }}
-            labelStyles={{
-              fontFamily: "Orbitron",
-              color: "black",
-              fontWeight: "500",
-              textAlign: "center",
-            }}
-          />
-        </div>
+        <AirdropAddresses
+          fees={[
+            {
+              label: "Upto 5 Addresses",
+              amount: "Free",
+              token: "",
+            },
+            {
+              label: "More than 5 Addresses:",
+              amount: "0.01",
+              token: "SOL",
+            },
+          ]}
+        />
+        <CustomButton
+          onClick={() => {}}
+          label={"Check"}
+          disabled={false}
+          loading={false}
+          containerStyles={{
+            backgroundColor: "#FFC83A",
+          }}
+          labelStyles={{
+            fontFamily: "Orbitron",
+            color: "black",
+            fontWeight: "500",
+            textAlign: "center",
+          }}
+        />
       </div>
 
       {/* Cards Sections */}
@@ -155,53 +101,19 @@ export default function AirdropChecker() {
             </div>
           </div>
         </div>
-        <div className='grid grid-cols-3 gap-8 mt-6'>
+        <div className='grid grid-cols-2 xl:grid-cols-3 gap-6 mt-6'>
           {[1, 2, 3, 4].map((item, index) => {
             return (
-              <div
-                className='flex flex-col airdrop-card-border px-5 py-8'
+              <AirdropCard
+                item={item}
                 key={index}
-              >
-                <div className='flex-1 flex justify-center'>
-                  <Image
-                    src={"/jupiter.svg"}
-                    alt='paste'
-                    width={104}
-                    height={89}
-                  />
-                </div>
-                <div className='flex flex-row justify-between mt-4 border-b-[0.2px] border-b-variant1 py-2'>
-                  <p className='text-disabledLink text-xsmall text-right font-Oxanium font-normal'>
-                    Tokens
-                  </p>
-                  <p className='text-white text-xsmall text-right font-light'>
-                    1000000000.00
-                  </p>
-                </div>
-                <div className='flex flex-row justify-between mt-4 border-b-[0.2px] border-b-variant1 py-2'>
-                  <p className='text-disabledLink text-xsmall text-right font-Oxanium font-normal'>
-                    FDMC
-                  </p>
-                  <p className='text-white text-xsmall text-right font-light'>
-                    $ 64,092,048
-                  </p>
-                </div>
-                <div className='flex flex-row justify-center items-center mt-4'>
-                  <Image
-                    src={"/visibility.svg"}
-                    alt='paste'
-                    width={20}
-                    height={20}
-                  />
-                  <p className='text-yellow1 text-xsmall text-right font-Orbitron ml-2 font-Oxanium'>
-                    View 76 Eligible Wallets
-                  </p>
-                </div>
-              </div>
+                onViewEligibleModal={onViewEligibleModal}
+              />
             );
           })}
         </div>
       </div>
+      <EligibleWalletModal open={open} onClose={() => setOpen(false)} />
     </div>
   );
 }

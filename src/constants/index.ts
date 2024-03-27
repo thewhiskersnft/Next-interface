@@ -111,7 +111,8 @@ export const sidebarData: SidebarItem[] = [
       {
         label: "Send Airdrops",
         description: "Send Bulk Airdrops To Solana Wallets",
-        disabled: true,
+        navigateTo: `/creator?action=${CreatorRoutes.sendAirdrops}`,
+        disabled: false,
       },
       {
         label: "Create Airdrop Claim Contracts",

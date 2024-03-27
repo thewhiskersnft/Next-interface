@@ -7,6 +7,8 @@ import RightSidebar from "../common/rightSidebar";
 import { useSelector } from "react-redux";
 import Loader from "../common/loader";
 import SnapshotHolder from "./snapshotHolders";
+import AirdropHolder from "./airdropHolder";
+import { useFormik } from "formik";
 
 const CreatorForm = () => {
   const wallet = useWallet();
@@ -17,6 +19,40 @@ const CreatorForm = () => {
   const { appLoading } = useSelector((state: any) => state.appDataSlice);
 
   const [renderForm, setRenderForm] = useState(false);
+  const {
+    name,
+    previewData,
+    discord,
+    telegram,
+    twitter,
+    fileData,
+    website,
+    decimal,
+    supply,
+    description,
+    symbol,
+  } = useSelector((state: any) => state.formDataSlice);
+
+  const formik = useFormik({
+    initialValues: {
+      name: name,
+      symbol: symbol,
+      description: description,
+      supply: supply,
+      decimal: decimal,
+      website: website,
+      twitter: twitter,
+      telegram: telegram,
+      discord: discord,
+      logo: "",
+      token: "",
+    },
+    validateOnChange: false,
+    validateOnBlur: false,
+    onSubmit: async (values) => {
+      console.log("On Submit ----> ", values);
+    },
+  });
 
   useEffect(() => {
     setRenderForm(true);
@@ -26,33 +62,49 @@ const CreatorForm = () => {
   console.log("LA : ", creatorAction);
 
   const enableRightSidebar = () => {
-    if ([CreatorRoutes.snapshotHolders].includes(creatorAction || "")) {
+    if (
+      [CreatorRoutes.snapshotHolders, CreatorRoutes.sendAirdrops].includes(
+        creatorAction || ""
+      )
+    ) {
       return true;
     }
     return false;
   };
 
+  const getImageURL = () => {
+    if (fileData && fileData.name) return URL.createObjectURL(fileData);
+    return "";
+  };
+
   return (
     <>
       {renderForm ? (
-        <div className="flex flex-row flex-1 h-full overflow-auto scroll-smooth px-4">
+        <div className='flex flex-row flex-1 h-full overflow-auto scroll-smooth px-4'>
           {creatorAction === CreatorRoutes.snapshotHolders && (
             <SnapshotHolder />
           )}
+          {creatorAction === CreatorRoutes.sendAirdrops && (
+            <AirdropHolder
+              onTokenSubmit={formik.handleSubmit}
+              isTokenLoading={formik.isSubmitting}
+              tokenValue={formik.values.token}
+            />
+          )}
           {enableRightSidebar() && (
             <RightSidebar
-              hidePreview={true}
-              data={{}}
-              logo={""}
+              hidePreview={CreatorRoutes.sendAirdrops !== creatorAction}
+              data={previewData}
+              logo={getImageURL()}
               showInfo={true}
-              createBtnText={""}
+              createBtnText={"Create"}
               mediaLinks={{
-                website: "",
-                twitter: "",
-                telegram: "",
-                discord: "",
+                website: formik.values.website,
+                twitter: formik.values.twitter,
+                telegram: formik.values.telegram,
+                discord: formik.values.discord,
               }}
-              formik={null}
+              formik={formik}
               label={""}
               loading={false}
               infoData={[
@@ -64,7 +116,7 @@ const CreatorForm = () => {
           )}
         </div>
       ) : (
-        <div className="flex flex-1 items-center justify-center">
+        <div className='flex flex-1 items-center justify-center'>
           {appLoading ? <></> : <Loader visible={true} size={30} />}
         </div>
       )}
