@@ -203,10 +203,17 @@ input:checked + .slider:before {
   }
 }
 
-.airdrop-card-border {
+.custom-card-border {
   /* border: 1px solid #ffc83a; */
   border: 1px solid transparent; /* Transparent border to reserve space for border gradients */
   background-image: linear-gradient(
+      to right,
+      #ffc83a 0%,
+      transparent 25%,
+      transparent 75%,
+      #ffc83a 100%
+    ),
+    linear-gradient(
       to right,
       #ffc83a 0%,
       transparent 25%,
@@ -253,8 +260,9 @@ input:checked + .slider:before {
         transparent 75%,
         #ffc83a 100%
       ); /* Right vertical border */
-  background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%, 1px 100%, 1px 100%; /* Gradient size */
-  background-position: top left, bottom left, top left, top right, top left,
-    top right; /* Position gradients */
+  background-size: 100% 1px, 100% 1px, 100% 1px, 1px 100%, 1px 100%, 1px 100%,
+    1px 100%; /* Gradient size */
+  background-position: top left, bottom left, bottom left, top left, top right,
+    top left, top right; /* Position gradients */
   background-repeat: no-repeat; /* Prevent gradients from repeating */
 }

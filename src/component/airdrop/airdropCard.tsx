@@ -7,7 +7,7 @@ import EligibleWalletModal from "./eligibleWalletModal";
 function AirdropCard({ item, onViewEligibleModal }: any) {
   const [openModal, setOpenModal] = useState(false);
   return (
-    <div className='flex flex-col airdrop-card-border hover:border-yellow1 px-5 py-8'>
+    <div className='flex flex-col custom-card-border hover:border-yellow1 px-5 py-8'>
       <div className='flex-1 flex justify-center'>
         <Image src={"/jupiter.svg"} alt='paste' width={104} height={89} />
       </div>
