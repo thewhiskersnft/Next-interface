@@ -1,4 +1,4 @@
-import { SidebarItem } from "../interfaces";
+import { HeaderItem, SidebarItem } from "../interfaces";
 
 export const TokenRoutes: Record<string, string> = {
   createToken: "create-token",
@@ -111,7 +111,8 @@ export const sidebarData: SidebarItem[] = [
       {
         label: "Send Airdrops",
         description: "Send Bulk Airdrops To Solana Wallets",
-        disabled: true,
+        navigateTo: `/creator?action=${CreatorRoutes.sendAirdrops}`,
+        disabled: false,
       },
       {
         label: "Create Airdrop Claim Contracts",
@@ -146,7 +147,30 @@ export const sidebarData: SidebarItem[] = [
     icon: "/airdrop.svg",
     activeIcon: "/airdropActive.svg",
     navigateTo: `/airdrop`,
+    disabled: false,
+  },
+];
+
+export const headerData: HeaderItem[] = [
+  {
+    title: "MARKETS",
     disabled: true,
+    navigateTo: "/markets",
+  },
+  {
+    title: "TRADE",
+    disabled: true,
+    navigateTo: "/trade",
+  },
+  {
+    title: "PORTFOLIO",
+    disabled: true,
+    navigateTo: "/portfolio",
+  },
+  {
+    title: "TOOLS",
+    disabled: false,
+    navigateTo: `/token?action=${TokenRoutes.createToken}`,
   },
 ];
 
