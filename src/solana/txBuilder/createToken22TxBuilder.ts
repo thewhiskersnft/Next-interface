@@ -13,6 +13,12 @@ import {
   getMintLen,
   TOKEN_2022_PROGRAM_ID,
   createInitializeMetadataPointerInstruction,
+  createInitializeTransferFeeConfigInstruction,
+  createInitializeInterestBearingMintInstruction,
+  AccountState,
+  createInitializeDefaultAccountStateInstruction,
+  createInitializePermanentDelegateInstruction,
+  createInitializeNonTransferableMintInstruction,
 } from "@solana/spl-token";
 import {
   CreateMetadataAccountV3InstructionAccounts,
@@ -111,27 +117,28 @@ export const createToken22TxBuilder = async (
       updateAuthority: wallet.publicKey,
     };
 
-    // Size of MetadataExtension 2 bytes for type, 2 bytes for length
-    const metadataExtension = TYPE_SIZE + LENGTH_SIZE;
-    // Size of metadata
-    const metadataLen = pack(ON_CHAIN_METADATA).length;
+    // Define the extensions to be used by the mint
+    const extensions = [ExtensionType.MetadataPointer];
 
-    // Size of Mint Account with extension
-    const mintLen = getMintLen([ExtensionType.MetadataPointer]);
+    if (transferTax) {
+      extensions.push(ExtensionType.TransferFeeConfig);
+    }
 
-    // Minimum lamports required for Mint Account
-    const lamports = await connection.getMinimumBalanceForRentExemption(
-      mintLen + metadataExtension + metadataLen
-    );
+    if (intrestBearing) {
+      extensions.push(ExtensionType.InterestBearingConfig);
+    }
 
-    // Instruction to invoke System Program to create new account
-    const createAccountInstruction = SystemProgram.createAccount({
-      fromPubkey: wallet.publicKey, // Account that will transfer lamports to created account
-      newAccountPubkey: token22_mint.publicKey, // Address of the account to create
-      space: mintLen, // Amount of bytes to allocate to the created account
-      lamports, // Amount of lamports transferred to created account
-      programId: TOKEN_2022_PROGRAM_ID, // Program assigned as owner of created account
-    });
+    if (defaultAccountState) {
+      extensions.push(ExtensionType.DefaultAccountState);
+    }
+
+    if (permanentDelegate) {
+      extensions.push(ExtensionType.PermanentDelegate);
+    }
+
+    if (nonTransferable) {
+      extensions.push(ExtensionType.NonTransferable);
+    }
 
     // Instruction to initialize the MetadataPointer Extension
     const initializeMetadataPointerInstruction =
@@ -147,7 +154,7 @@ export const createToken22TxBuilder = async (
       token22_mint.publicKey, // Mint Account Address
       decimal, // Decimals of Mint
       wallet.publicKey, // Designated Mint Authority
-      null, // Optional Freeze Authority
+      wallet.publicKey, // Optional Freeze Authority
       TOKEN_2022_PROGRAM_ID // Token Extension Program ID
     );
 
@@ -188,28 +195,120 @@ export const createToken22TxBuilder = async (
       TOKEN_2022_PROGRAM_ID
     );
 
-    // Instruction to update metadata, adding custom field
-    const updateFieldInstruction = createUpdateFieldInstruction({
-      programId: TOKEN_2022_PROGRAM_ID, // Token Extension Program as Metadata Program
-      metadata: token22_mint.publicKey, // Account address that holds the metadata
-      updateAuthority: wallet.publicKey, // Authority that can update the metadata
-      field: ON_CHAIN_METADATA.additionalMetadata[0][0], // key
-      value: ON_CHAIN_METADATA.additionalMetadata[0][1], // value
-    });
-
     const sentPlatFormfeeInstruction = SystemProgram.transfer({
       fromPubkey: wallet.publicKey,
       toPubkey: new PublicKey(PLATFORM_OWNER_ADDRESS),
       lamports: PLATFORM_FEE_SOL_TOKEN_CREATION * LAMPORTS_PER_SOL,
     });
     const PRIORITY_FEE_IX = getPriorityLambports(priorityFees);
-    const createTokentTransaction = new Transaction().add(
-      createAccountInstruction,
+
+    // Size of MetadataExtension 2 bytes for type, 2 bytes for length
+    const metadataExtension = TYPE_SIZE + LENGTH_SIZE;
+    // Size of metadata
+    const metadataLen = pack(ON_CHAIN_METADATA).length;
+
+    // Calculate the length of the mint
+    const mintLen = getMintLen(extensions);
+
+    const mintLamports = await connection.getMinimumBalanceForRentExemption(
+      mintLen + metadataExtension + metadataLen
+    );
+
+    const mintToken2022Transaction = new Transaction();
+
+    mintToken2022Transaction.add(
+      SystemProgram.createAccount({
+        fromPubkey: wallet.publicKey,
+        newAccountPubkey: token22_mint.publicKey,
+        space: mintLen,
+        lamports: mintLamports,
+        programId: TOKEN_2022_PROGRAM_ID,
+      })
+    );
+
+    if (intrestBearing) {
+      // Instruction to initialize the InterestBearingConfig Extension
+      const initializeInterestBearingMintInstruction =
+        createInitializeInterestBearingMintInstruction(
+          token22_mint.publicKey, // Mint Account address
+          wallet.publicKey, // Designated Rate Authority
+          parseInt(intrestBearing?.rate!) * 100, // Interest rate basis points
+          TOKEN_2022_PROGRAM_ID // Token Extension Program ID
+        );
+      mintToken2022Transaction.add(initializeInterestBearingMintInstruction);
+    }
+
+    if (transferTax) {
+      const configAuthority = new PublicKey(transferTax?.configAuthority!);
+      const withdrawAuthority = new PublicKey(transferTax?.withdrawAuthority!);
+      const feeBasisPoints = Number(transferTax?.fee!) * 100;
+      // maximum fee to collect on transfers
+      const maxFee =
+        BigInt(transferTax?.maxFee) !== BigInt(0)
+          ? BigInt(Number(transferTax?.maxFee) * 10 ** decimal)
+          : BigInt(tokenSupply * 10 ** decimal);
+
+      const initializeTransferFeeConfig =
+        createInitializeTransferFeeConfigInstruction(
+          token22_mint.publicKey, // token mint account
+          configAuthority, // authority that can update fees
+          withdrawAuthority, // authority that can withdraw fees
+          feeBasisPoints, // amount of transfer collected as fees
+          maxFee, // maximum fee to collect on transfers
+          TOKEN_2022_PROGRAM_ID // SPL token program id
+        );
+      mintToken2022Transaction.add(initializeTransferFeeConfig);
+    }
+
+    if (defaultAccountState) {
+      let defaultState = AccountState.Initialized;
+
+      switch (defaultAccountState.defaultState) {
+        case "Uninitialized":
+          defaultState = AccountState.Uninitialized;
+
+        case "Initialized":
+          defaultState = AccountState.Initialized;
+        case "Frozen":
+          defaultState = AccountState.Frozen;
+      }
+      // Set default account state as Frozen
+
+      // Instruction to initialize the DefaultAccountState Extension
+      const initializeDefaultAccountStateInstruction =
+        createInitializeDefaultAccountStateInstruction(
+          token22_mint.publicKey, // Mint Account address
+          defaultState, // Default AccountState
+          TOKEN_2022_PROGRAM_ID // Token Extension Program ID
+        );
+      mintToken2022Transaction.add(initializeDefaultAccountStateInstruction);
+    }
+
+    if (permanentDelegate) {
+      // Instruction to initialize the PermanentDelegate Extension
+      const initializePermanentDelegateInstruction =
+        createInitializePermanentDelegateInstruction(
+          token22_mint.publicKey, // Mint Account address
+          new PublicKey(permanentDelegate.delegate), // Designated Permanent Delegate
+          TOKEN_2022_PROGRAM_ID // Token Extension Program ID
+        );
+      mintToken2022Transaction.add(initializePermanentDelegateInstruction);
+    }
+
+    if (nonTransferable) {
+      // Instruction to initialize the NonTransferable Extension
+      const initializeNonTransferableMintInstruction =
+        createInitializeNonTransferableMintInstruction(
+          token22_mint.publicKey, // Mint Account address
+          TOKEN_2022_PROGRAM_ID // Token Extension Program ID
+        );
+      mintToken2022Transaction.add(initializeNonTransferableMintInstruction);
+    }
+
+    mintToken2022Transaction.add(
       initializeMetadataPointerInstruction,
-      // note: the above instructions are required before initializing the mint
       initializeMintInstruction,
       initializeMetadataInstruction,
-      updateFieldInstruction,
       createATAInstruction,
       mintTokensInstruction,
       sentPlatFormfeeInstruction,
@@ -217,9 +316,11 @@ export const createToken22TxBuilder = async (
     );
 
     const createAccountSignature = await wallet.sendTransaction(
-      createTokentTransaction,
+      mintToken2022Transaction,
       connection,
-      { signers: [token22_mint] }
+      {
+        signers: [token22_mint],
+      }
     );
     console.log(createAccountSignature);
     const startTime = Date.now();
