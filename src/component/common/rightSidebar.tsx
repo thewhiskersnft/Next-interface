@@ -14,6 +14,8 @@ interface SidebarProps {
   infoData?: Array<string>;
   showInfo: boolean;
   hidePreview?: boolean;
+  hideCreateBtn?: boolean;
+  hideLinks?: boolean;
   logo: string;
   createBtnText: string;
   mediaLinks: {
@@ -25,12 +27,15 @@ interface SidebarProps {
   formik?: any;
   label?: string;
   loading?: boolean;
+  logoStyles?: any;
+  logoContainerStyles?: any;
 }
 
 const RightSidebar: FC<SidebarProps> = ({
   data,
   showInfo,
   hidePreview,
+  hideLinks,
   logo,
   createBtnText,
   mediaLinks,
@@ -38,6 +43,9 @@ const RightSidebar: FC<SidebarProps> = ({
   label,
   loading,
   infoData,
+  logoStyles,
+  logoContainerStyles,
+  hideCreateBtn,
 }) => {
   const dataHeadings = Object.keys(data);
 
@@ -142,16 +150,20 @@ const RightSidebar: FC<SidebarProps> = ({
             {label || "Preview"}
           </div>
           <div className="p-4 bg-black">
-            <div className="border-yellow1 border-2 flex items-center justify-center h-[343px] w-[343px]">
-              {formik.values.logo || logo ? (
+            <div
+              className={`border-yellow1 border-2 flex items-center justify-center h-[343px] w-[343px]`}
+              style={{ ...logoContainerStyles }}
+            >
+              {formik?.values.logo || logo ? (
                 <img
-                  src={formik.values.logo || logo} // default image is cat1 for now
+                  src={formik?.values.logo || logo} // default image is cat1 for now
                   alt="logo"
                   width={`${254}px`}
                   style={{
                     height: `${254}px`,
                     objectFit: "cover",
                     borderRadius: "200px",
+                    ...logoStyles,
                   }}
                 />
               ) : (
@@ -160,90 +172,99 @@ const RightSidebar: FC<SidebarProps> = ({
                   alt="Cat Logo"
                   width={254}
                   height={254}
+                  style={{ ...logoStyles }}
                   priority
                 />
               )}
             </div>
-            <span className="w-[full] flex justify-between items-center my-[20px] px-[90px]">
-              <a
-                className="website"
-                target="_blank"
-                rel="noopener noreferrer"
-                href={mediaLinks.website}
-                onClick={(e) => {
-                  if (!mediaLinks.website) e.preventDefault();
-                }}
-              >
-                <Image
-                  src={
-                    mediaLinks.website ? "/website.svg" : "/websiteDisabled.svg"
-                  }
-                  alt="websity Logo"
-                  width={23}
-                  height={23}
-                  priority
-                />
-              </a>
-              <a
-                className="twitter"
-                href={mediaLinks.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => {
-                  if (!mediaLinks.twitter) e.preventDefault();
-                }}
-              >
-                <Image
-                  src={
-                    mediaLinks.twitter ? "/twitter.svg" : "/twitterDisabled.svg"
-                  }
-                  alt="twitter Logo"
-                  width={20}
-                  height={20}
-                  priority
-                />
-              </a>
-              <a
-                className="telegram"
-                href={mediaLinks.telegram}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => {
-                  if (!mediaLinks.telegram) e.preventDefault();
-                }}
-              >
-                <Image
-                  src={
-                    mediaLinks.telegram
-                      ? "/telegram.svg"
-                      : "/telegramDisabled.svg"
-                  }
-                  alt="telegram Logo"
-                  width={20}
-                  height={20}
-                  priority
-                />
-              </a>
-              <a
-                className="discord"
-                href={mediaLinks.discord}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => {
-                  if (!mediaLinks.discord) e.preventDefault();
-                }}
-              >
-                <Image
-                  src={
-                    mediaLinks.discord ? "/discord.svg" : "/discordDisabled.svg"
-                  }
-                  alt="discord Logo"
-                  width={20}
-                  height={20}
-                  priority
-                />
-              </a>
-            </span>
+            {!hideLinks && (
+              <span className="w-[full] flex justify-between items-center my-[20px] px-[90px]">
+                <a
+                  className="website"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={mediaLinks.website}
+                  onClick={(e) => {
+                    if (!mediaLinks.website) e.preventDefault();
+                  }}
+                >
+                  <Image
+                    src={
+                      mediaLinks.website
+                        ? "/website.svg"
+                        : "/websiteDisabled.svg"
+                    }
+                    alt="websity Logo"
+                    width={23}
+                    height={23}
+                    priority
+                  />
+                </a>
+                <a
+                  className="twitter"
+                  href={mediaLinks.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    if (!mediaLinks.twitter) e.preventDefault();
+                  }}
+                >
+                  <Image
+                    src={
+                      mediaLinks.twitter
+                        ? "/twitter.svg"
+                        : "/twitterDisabled.svg"
+                    }
+                    alt="twitter Logo"
+                    width={20}
+                    height={20}
+                    priority
+                  />
+                </a>
+                <a
+                  className="telegram"
+                  href={mediaLinks.telegram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    if (!mediaLinks.telegram) e.preventDefault();
+                  }}
+                >
+                  <Image
+                    src={
+                      mediaLinks.telegram
+                        ? "/telegram.svg"
+                        : "/telegramDisabled.svg"
+                    }
+                    alt="telegram Logo"
+                    width={20}
+                    height={20}
+                    priority
+                  />
+                </a>
+                <a
+                  className="discord"
+                  href={mediaLinks.discord}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    if (!mediaLinks.discord) e.preventDefault();
+                  }}
+                >
+                  <Image
+                    src={
+                      mediaLinks.discord
+                        ? "/discord.svg"
+                        : "/discordDisabled.svg"
+                    }
+                    alt="discord Logo"
+                    width={20}
+                    height={20}
+                    priority
+                  />
+                </a>
+              </span>
+            )}
             {dataHeadings.map((heading: string, headingIndex: number) => {
               const keys = Object.keys(data[heading]);
               const headingData = data[heading];
@@ -278,17 +299,19 @@ const RightSidebar: FC<SidebarProps> = ({
                 </React.Fragment>
               );
             })}
-            <CustomButton
-              onClick={formik?.handleSubmit}
-              label={createBtnText || "Create"}
-              disabled={false}
-              loading={loading}
-              containerStyles={{
-                marginTop: "10px",
-                backgroundColor: "#222222",
-              }}
-              labelStyles={{ fontFamily: "Oxanium" }}
-            />
+            {!hideCreateBtn && (
+              <CustomButton
+                onClick={formik?.handleSubmit}
+                label={createBtnText || "Create"}
+                disabled={false}
+                loading={loading}
+                containerStyles={{
+                  marginTop: "10px",
+                  backgroundColor: "#222222",
+                }}
+                labelStyles={{ fontFamily: "Oxanium" }}
+              />
+            )}
           </div>
         </div>
       )}

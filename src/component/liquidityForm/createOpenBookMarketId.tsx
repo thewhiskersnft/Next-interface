@@ -6,68 +6,25 @@ import Image from "next/image";
 import Modal from "../common/modal";
 import RightSidebar from "../common/rightSidebar";
 import CustomRadio from "../common/customRadio";
-
-const demoTokens = [
-  {
-    name: "WIZZ",
-    icon: "",
-    amt: 46544545.55,
-    address: "kjlenckljncjnjdnksldksncdsnc",
-    owner: "Whiskers",
-  },
-  {
-    name: "WIZZ",
-    icon: "",
-    amt: 46544545.55,
-    address: "kjlenckljncjnjdnksldksncdsnc",
-    owner: "Whiskers",
-  },
-  {
-    name: "WIZZ",
-    icon: "",
-    amt: 46544545.55,
-    address: "kjlenckljncjnjdnksldksncdsnc",
-    owner: "Whiskers",
-  },
-  {
-    name: "WIZZ",
-    icon: "",
-    amt: 46544545.55,
-    address: "kjlenckljncjnjdnksldksncdsnc",
-    owner: "Whiskers",
-  },
-  {
-    name: "WIZZ",
-    icon: "",
-    amt: 46544545.55,
-    address: "kjlenckljncjnjdnksldksncdsnc",
-    owner: "Whiskers",
-  },
-  {
-    name: "WIZZ",
-    icon: "",
-    amt: 46544545.55,
-    address: "kjlenckljncjnjdnksldksncdsnc",
-    owner: "Whiskers",
-  },
-];
+import TokenModal from "./TokenModal";
+import { demoTokens } from "@/constants";
 
 const CreateOpenBookMarketId = () => {
   const [showBaseTokenModal, setShowBaseTokenModal] = useState(false);
-  const [showTokenSetting, setShowTokenSetting] = useState(false);
-  const [radiyumTokenList, setRadiyumTokenList] = useState(false);
-  const [solanaTokenList, setSolanaTokenList] = useState(false);
-  const [jupiterStrictTokenList, setJupiterStrictTokenList] = useState(false);
-  const [userAddedTokenList, setUserAddedTokenList] = useState(false);
+  // const [showTokenSetting, setShowTokenSetting] = useState(false);
+  // const [radiyumTokenList, setRadiyumTokenList] = useState(false);
+  // const [solanaTokenList, setSolanaTokenList] = useState(false);
+  // const [jupiterStrictTokenList, setJupiterStrictTokenList] = useState(false);
+  // const [userAddedTokenList, setUserAddedTokenList] = useState(false);
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
   const toggleBaseTokenModal = () => {
     setShowBaseTokenModal(!showBaseTokenModal);
   };
 
-  const toggleShowTokenSetting = () => {
-    setShowTokenSetting(!showTokenSetting);
-  };
+  // const toggleShowTokenSetting = () => {
+  //   setShowTokenSetting(!showTokenSetting);
+  // };
 
   const toggleShowAdvancedSettings = () => {
     setShowAdvancedSettings(!showAdvancedSettings);
@@ -114,7 +71,7 @@ const CreateOpenBookMarketId = () => {
           />
         </section>
         <section className="mt-5">
-          <Modal open={showBaseTokenModal} onClose={toggleBaseTokenModal}>
+          {/* <Modal open={showBaseTokenModal} onClose={toggleBaseTokenModal}>
             <div className="w-[601px] h-[598px] bg-modalBG text-white px-4 py-4 drop-shadow-whitexl">
               <CustomInput
                 label="Select a Token"
@@ -334,7 +291,12 @@ const CreateOpenBookMarketId = () => {
                 </section>
               )}
             </div>
-          </Modal>
+          </Modal> */}
+          <TokenModal
+            isOpen={showBaseTokenModal}
+            onClose={toggleBaseTokenModal}
+            tokenList={demoTokens}
+          />
           <p className="font-Orbitron text-small">Select Token</p>
           <section className="flex mt-2">
             <div className="w-[190px] h-[77px] bg-background border-[1px] border-solid border-variant1 hover:border-white">

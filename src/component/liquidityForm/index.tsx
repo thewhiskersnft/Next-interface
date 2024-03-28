@@ -7,6 +7,7 @@ import RightSidebar from "../common/rightSidebar";
 import { useSelector } from "react-redux";
 import Loader from "../common/loader";
 import CreateOpenBookMarketId from "./createOpenBookMarketId";
+import CreateLiquidityPools from "./CreateLiquidityPools";
 
 const LiquidityForm = () => {
   const wallet = useWallet();
@@ -40,6 +41,9 @@ const LiquidityForm = () => {
         <div className="flex flex-row flex-1 h-full overflow-auto scroll-smooth px-4">
           {liquidityAction === LiquidityRoutes.createOpenBookMarketId && (
             <CreateOpenBookMarketId />
+          )}
+          {liquidityAction === LiquidityRoutes.createLiquidityPool && (
+            <CreateLiquidityPools />
           )}
           {enableRightSidebar() && (
             <RightSidebar

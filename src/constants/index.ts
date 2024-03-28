@@ -11,7 +11,7 @@ export const TokenRoutes: Record<string, string> = {
 
 export const LiquidityRoutes: Record<string, string> = {
   createOpenBookMarketId: "create-openbook-marketid",
-  createRadyiumLiquidityPool: "create-raydium-liquidity-pool",
+  createLiquidityPool: "create-liquidity-pool",
   fundLiquidityPool: "fund-liquidity-pool",
   renounceLiquidityPool: "renounce-liquidity-pool",
 };
@@ -77,10 +77,10 @@ export const sidebarData: SidebarItem[] = [
         disabled: false,
       },
       {
-        label: "Create Raydium Liquidity Pool (LP)",
-        description: "Create a Raydium LP",
-        navigateTo: `/liquidity?action=${LiquidityRoutes.createRadyiumLiquidityPool}`,
-        disabled: true,
+        label: "Create Liquidity Pool (LP)",
+        description: "Create a Liquidity Pool on Raydium or Fluxbeam",
+        navigateTo: `/liquidity?action=${LiquidityRoutes.createLiquidityPool}`,
+        disabled: false,
       },
       {
         label: "Fund Liquidity Pool",
@@ -187,3 +187,48 @@ export const envs: Record<string, string> = {
   devnet: "Devnet",
   mainnet: "Mainnet-Beta",
 };
+
+export const demoTokens = [
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+];
