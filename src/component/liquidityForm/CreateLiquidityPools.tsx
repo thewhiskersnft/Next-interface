@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import FluxbeamLP from "./FluxbeamLP";
+import RadiyumLP from "./RadiyumLP";
 
 const lpMethods = {
   radiyum: "radiyum",
@@ -31,14 +32,14 @@ const CreateLiquidityPools = ({}) => {
         </span>
       )}
       {!selectedMethod && (
-        <div className="border-[1px] border-lightGrey w-full py-8 px-12">
+        <div className="border-[1px] border-lightGrey w-full py-8 px-12 mt-4">
           <>
             <p className="w-full text-center font-Orbitron text-large">
               Choose LP Provider
             </p>
             <div className="my-4 mt-8">
               <div
-                className="flex justify-center items-center border-[1px] border-yellow1 py-4 cursor-pointer"
+                className="flex justify-center items-center custom-card-border hover:border-[1px] hover:border-yellow1 py-4 cursor-pointer"
                 onClick={() => {
                   setSelectedMethod(lpMethods.radiyum);
                 }}
@@ -61,7 +62,7 @@ const CreateLiquidityPools = ({}) => {
                 </section>
               </div>
               <div
-                className="flex justify-center items-center border-[1px] border-yellow1 py-4 cursor-pointer mt-16"
+                className="flex justify-center items-center custom-card-border hover:border-[1px] hover:border-yellow1 py-4 cursor-pointer mt-16"
                 onClick={() => {
                   setSelectedMethod(lpMethods.fluxbeam);
                 }}
@@ -88,6 +89,7 @@ const CreateLiquidityPools = ({}) => {
         </div>
       )}
       {selectedMethod === lpMethods.fluxbeam && <FluxbeamLP />}
+      {selectedMethod === lpMethods.radiyum && <RadiyumLP />}
     </div>
   );
 };
