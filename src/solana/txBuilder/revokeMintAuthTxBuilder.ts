@@ -1,4 +1,4 @@
-import { errorToast, successToast } from "@/component/toast";
+import { errorToast, successToast } from "@/component/common/toast";
 import {
   PLATFORM_FEE_SOL_TOKEN_CREATION,
   PLATFORM_OWNER_ADDRESS,

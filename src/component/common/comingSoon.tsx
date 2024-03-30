@@ -1,6 +1,6 @@
 "use client";
-import Header from "@/component/header";
-import PrimaryHeader from "@/component/primaryHeader";
+import Header from "@/component/common/header";
+import PrimaryHeader from "@/component/common/primaryHeader";
 import Spline from "@splinetool/react-spline";
 import Image from "next/image";
 import { Suspense, useState } from "react";

@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useState, Suspense } from "react";
-import CustomInput from "../customInput";
-import RightSidebar from "./rightSidebar";
+import CustomInput from "../common/customInput";
+import RightSidebar from "../common/rightSidebar";
 import { TokenRoutes, keyPairs } from "../../constants";
 import { PreviewData } from "../../interfaces";
 import { useSelector, useDispatch } from "react-redux";
 import { setPreviewData, setFileData } from "../../redux/slice/formDataSlice";
 import { useSearchParams } from "next/navigation";
-import CustomButton from "../customButton";
+import CustomButton from "../common/customButton";
 import CreateOrEditToken from "./createOrEditToken";
 import { useFormik, Formik } from "formik";
 import { metaplexBuilder } from "@/metaplex";
@@ -15,13 +15,13 @@ import { createSPLTokenTxBuilder } from "@/solana/txBuilder/createSPLTokenTxBuil
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { v1TokenValidation } from "../../utils/formikValidators";
 import { cloneDeep } from "lodash";
-import { errorToast, successToast } from "../toast";
+import { errorToast, successToast } from "../common/toast";
 import MintOrBurnToken from "./mintOrBurnToken";
 import { PublicKey } from "@solana/web3.js";
 import ManageToken from "./manageToken";
 import { updateSPLTokenMetadataTxBuilder } from "@/solana/txBuilder/updateMetadataTxBuilder";
 import { getTokenMetadata } from "@/metaplex/getTokenMetadata";
-import Loader from "../loader";
+import Loader from "../common/loader";
 import caculateEndpointUrlByRpcConfig from "@/application/connection/calculateEndpointUrlByRpcConfig";
 import { setCurrentEndpoint } from "@/redux/slice/connectionSlice";
 import { NFTStorage, File, Blob } from "nft.storage";
@@ -58,6 +58,10 @@ export default function Form() {
     freezeAuthority,
     mutableMetadata,
     mintAmount,
+    transferTax,
+    interestBearing,
+    defaultAccountState,
+    permanentDelegate,
   } = useSelector((state: any) => state.formDataSlice);
   const { appLoading } = useSelector((state: any) => state.appDataSlice);
   const { allDevEndpoints, allMainEndpoints, currentEndpoint, priorityFees } =
@@ -243,6 +247,7 @@ export default function Form() {
         errorToast({ message: "Please upload logo!" });
       }
     }
+    // add v2 token validations
     return resp;
   };
   const createTokenHandler = async (values: any) => {
@@ -319,18 +324,36 @@ export default function Form() {
         const uri = await createURI();
         let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
         successToast({ message: `MetaData Uploaded` });
+
+        const transferTaxVal = transferTax
+          ? {
+              fee: formik.values.fee,
+              maxFee: formik.values.maxFee,
+              withdrawAuthority: formik.values.withdrawAuthority,
+              configAuthority: formik.values.configAuthority,
+            }
+          : null;
+        const intrestBearingVal = interestBearing
+          ? { rate: formik.values.rate }
+          : null;
+        const defaultAccountStateVal = defaultAccountState
+          ? {
+              defaultState: formik.values.defaultAccountStateOption,
+            }
+          : null;
+        const permanentDelegateVal = permanentDelegate
+          ? { delegate: formik.values.delegate }
+          : null;
+
         const txhash = await createToken22TxBuilder(
           formik.values.name,
           formik.values.symbol,
           formik.values.decimal,
-          formik.values.fee,
-          formik.values.maxFee,
-          formik.values.withdrawAuthority,
-          formik.values.configAuthority,
-          formik.values.rate,
-          formik.values.defaultAccountStateOption,
-          formik.values.delegate,
-          formik.values.nonTransferable,
+          transferTaxVal,
+          intrestBearingVal,
+          defaultAccountStateVal,
+          permanentDelegateVal,
+          nonTransferable,
           finalURI,
           formik.values.supply,
           connection,
@@ -582,6 +605,12 @@ export default function Form() {
                   : "Preview"
               }
               loading={buttonClicked}
+              infoData={[
+                "No smart contract programming necessary.",
+                "Secure 100% ownership of the generated tokens.",
+                "Customize token name, symbol, and initial supply.",
+                "Sign and create with your own wallet.",
+              ]}
             />
           )}
         </div>

@@ -6,11 +6,12 @@ import CustomInput from "./customInput";
 import Image from "next/image";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { TokenRoutes } from "@/constants";
+import { TokenRoutes, headerData } from "@/constants";
 import { errorToast } from "./toast";
 import Loader from "./loader";
-import { setAppLoading } from "../redux/slice/appDataSlice";
+import { setAppLoading } from "../../redux/slice/appDataSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { HeaderItem } from "@/interfaces";
 
 const borderColor: string = "#4D4D4D";
 
@@ -36,15 +37,15 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
     if (appLoading) {
       dispatch(setAppLoading(false));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleClick = (tag: string) => {
+  const handleClick = (item: HeaderItem) => {
     if (tokenAction) {
     } else {
-      if (tag === "TOOLS") {
-        // handleClickProp ? handleClickProp() : null;
+      if (!item.disabled) {
         dispatch(setAppLoading(true));
-        router.push(`/token?action=${TokenRoutes.createToken}`);
+        router.push(item.navigateTo);
       } else {
         errorToast({ message: "Coming Soon!" });
       }
@@ -102,69 +103,31 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             priority
           />
         </div>
-        <div
-          className="px-4 flex items-center h-full"
-          style={{
-            borderRightWidth: "2px",
-            borderColor: borderColor,
-          }}
-        >
-          <div
-            className={`text-center ${
-              selectedLink === "MARKET" ? "text-yellow1" : "text-disabledLink"
-            } text-small font-Orbitron w-100 cursor-pointer`}
-          >
-            MARKETS
-          </div>
-        </div>
-        <div
-          className="px-4 flex items-center h-full"
-          style={{
-            borderRightWidth: "2px",
-            borderColor: borderColor,
-          }}
-        >
-          <div
-            className={`text-center ${
-              selectedLink === "TRADE" ? "text-yellow1" : "text-disabledLink"
-            } text-small font-Orbitron w-100 cursor-pointer`}
-          >
-            TRADE
-          </div>
-        </div>
-        <div
-          className="px-4 flex items-center h-full"
-          style={{
-            borderRightWidth: "2px",
-            borderColor: borderColor,
-          }}
-        >
-          <div
-            className={`text-center ${
-              selectedLink === "PORTFOLIO"
-                ? "text-yellow1"
-                : "text-disabledLink"
-            } text-small font-Orbitron w-100 cursor-pointer`}
-          >
-            PORTFOLIO
-          </div>
-        </div>
-        <div
-          className="px-4 flex items-center h-full"
-          style={{
-            borderRightWidth: "2px",
-            borderColor: borderColor,
-          }}
-        >
-          <div
-            className={`text-center ${
-              selectedLink === "TOOLS" ? "text-yellow1" : "text-white"
-            } text-small font-Orbitron w-100 cursor-pointer hover:text-yellow1`}
-            onClick={() => handleClick("TOOLS")}
-          >
-            TOOLS
-          </div>
-        </div>
+        {headerData.map((item, index) => {
+          return (
+            <div
+              className="px-4 flex items-center h-full"
+              style={{
+                borderRightWidth: "2px",
+                borderColor: borderColor,
+              }}
+              key={index}
+            >
+              <div
+                className={`text-center ${
+                  item.disabled
+                    ? "text-disabledLink"
+                    : selectedLink === item.title
+                    ? "text-yellow1"
+                    : "text-white hover:text-yellow1"
+                } text-small font-Orbitron w-100 cursor-pointer`}
+                onClick={() => handleClick(item)}
+              >
+                {item.title}
+              </div>
+            </div>
+          );
+        })}
         <div
           className="px-4"
           style={{

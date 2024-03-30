@@ -5,9 +5,9 @@ import Sidebar from "@/component/common/sidebar";
 import { Suspense } from "react";
 import { isMobile } from "react-device-detect";
 import Loader from "@/component/common/loader";
-import LiquidityForm from "@/component/liquidityForm";
+import CreatorForm from "@/component/creatorForm";
 
-export default function Liquidity() {
+export default function Creator() {
   return (
     <Suspense
       fallback={
@@ -28,7 +28,7 @@ export default function Liquidity() {
             <Header selectedLink="TOOLS" />
             <div className="width-100 flex flex-row h-full overflow-hidden bg-black">
               <Sidebar />
-              <LiquidityForm />
+              <CreatorForm />
             </div>
             <PrimaryHeader />
           </div>

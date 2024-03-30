@@ -7,47 +7,50 @@ import { SidebarItem } from "../../interfaces";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { get } from "lodash";
 import Image from "next/image";
-import { errorToast } from "../toast";
+import { errorToast } from "./toast";
 
 type SidebarProps = {};
 
 const Sidebar = ({}: SidebarProps) => {
   const [clicked, setClicked] = useState<string>("");
+  const [refersh, setRefresh] = useState(false);
   const [childClicked, setChildClicked] = useState<string>("");
 
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathName = usePathname();
+  const action = searchParams.get("action");
 
   useEffect(() => {
-    const tokenAction = searchParams.get("action");
-    if (tokenAction === TokenRoutes.createToken) {
-      setClicked("Token Management");
-      setChildClicked("Create Token");
-    } else if (tokenAction === TokenRoutes.manageToken) {
-      setClicked("Token Management");
-      setChildClicked("Manage Token");
-    } else if (tokenAction === TokenRoutes.updateMetadata) {
-      setClicked("Token Management");
-      setChildClicked("Update Metadata");
-    } else if (tokenAction === TokenRoutes.mintToken) {
-      setClicked("Token Management");
-      setChildClicked("Mint Tokens");
-    } else if (tokenAction === TokenRoutes.burnToken) {
-      setClicked("Token Management");
-      setChildClicked("Burn Tokens");
-    }
-    if (pathName === `/airdrop`) {
-      setClicked("Airdrop Checker");
-    }
-    //console.log(pathName);
-  }, []);
+    // const tokenAction = searchParams.get("action");
+    // if (tokenAction === TokenRoutes.createToken) {
+    //   setClicked("Token Management");
+    //   setChildClicked("Create Token");
+    // } else if (tokenAction === TokenRoutes.manageToken) {
+    //   setClicked("Token Management");
+    //   setChildClicked("Manage Token");
+    // } else if (tokenAction === TokenRoutes.updateMetadata) {
+    //   setClicked("Token Management");
+    //   setChildClicked("Update Metadata");
+    // } else if (tokenAction === TokenRoutes.mintToken) {
+    //   setClicked("Token Management");
+    //   setChildClicked("Mint Tokens");
+    // } else if (tokenAction === TokenRoutes.burnToken) {
+    //   setClicked("Token Management");
+    //   setChildClicked("Burn Tokens");
+    // }
+    // if (pathName === `/airdrop`) {
+    //   setClicked("Airdrop Checker");
+    // }
+    // console.log("path", pathName);
+    setRefresh(!refersh);
+  }, [action]);
 
   const handleChildClick = (val: string, navigateTo: string | undefined) => {
-    if (childClicked === val) {
-    } else {
-      setChildClicked(val);
-    }
+    // if (childClicked === val) {
+    // } else {
+    // setChildClicked(val);
+    // }
     // //console.log(navigateTo);
     if (navigateTo) {
       // //console.log(navigateTo);
@@ -176,6 +179,18 @@ const Sidebar = ({}: SidebarProps) => {
                   children &&
                   children.map((child, childIndex) => {
                     const { label, description, navigateTo, disabled } = child;
+                    // console.log("Child : ", child);
+                    let isChildChecked = false;
+                    if (window) {
+                      // console.log(window.location);
+                      if (
+                        window.location.href ===
+                        `${window.location.origin}${navigateTo}`
+                      ) {
+                        isChildChecked = true;
+                      }
+                    }
+                    // console.log("isChildChecked : ", isChildChecked);
                     return (
                       <div
                         className={`bg-background h-28 border-[1px] border-variant1 flex flex-col justify-center align-center p-6 hover:bg-variant1 cursor-pointer px-10 ${
@@ -194,7 +209,7 @@ const Sidebar = ({}: SidebarProps) => {
                           className={`text-left text-small font-Orbitron  font-medium tracking-normal ${
                             disabled
                               ? "text-disabledLink"
-                              : childClicked === label
+                              : isChildChecked
                               ? "text-yellow1"
                               : "text-white"
                           }`}

@@ -1,4 +1,4 @@
-import { SidebarItem } from "../interfaces";
+import { HeaderItem, SidebarItem } from "../interfaces";
 
 export const TokenRoutes: Record<string, string> = {
   createToken: "create-token",
@@ -11,9 +11,14 @@ export const TokenRoutes: Record<string, string> = {
 
 export const LiquidityRoutes: Record<string, string> = {
   createOpenBookMarketId: "create-openbook-marketid",
-  createRadyiumLiquidityPool: "create-raydium-liquidity-pool",
+  createLiquidityPool: "create-liquidity-pool",
   fundLiquidityPool: "fund-liquidity-pool",
   renounceLiquidityPool: "renounce-liquidity-pool",
+};
+
+export const CreatorRoutes: Record<string, string> = {
+  snapshotHolders: "snapshot-holders",
+  sendAirdrops: "send-airdrops",
 };
 
 export const sidebarData: SidebarItem[] = [
@@ -69,13 +74,13 @@ export const sidebarData: SidebarItem[] = [
         label: "Create Openbook Market ID",
         description: "Create Openbook Market ID To Set Up Liquidity Pool",
         navigateTo: `/liquidity?action=${LiquidityRoutes.createOpenBookMarketId}`,
-        disabled: true,
+        disabled: false,
       },
       {
-        label: "Create Raydium Liquidity Pool (LP)",
-        description: "Create a Raydium LP",
-        navigateTo: `/liquidity?action=${LiquidityRoutes.createRadyiumLiquidityPool}`,
-        disabled: true,
+        label: "Create Liquidity Pool (LP)",
+        description: "Create a Liquidity Pool on Raydium or Fluxbeam",
+        navigateTo: `/liquidity?action=${LiquidityRoutes.createLiquidityPool}`,
+        disabled: false,
       },
       {
         label: "Fund Liquidity Pool",
@@ -100,12 +105,14 @@ export const sidebarData: SidebarItem[] = [
       {
         label: "Snapshot Holders",
         description: "Snapshot Holder List For NFTs & SPL Tokens",
-        disabled: true,
+        navigateTo: `/creator?action=${CreatorRoutes.snapshotHolders}`,
+        disabled: false,
       },
       {
         label: "Send Airdrops",
         description: "Send Bulk Airdrops To Solana Wallets",
-        disabled: true,
+        navigateTo: `/creator?action=${CreatorRoutes.sendAirdrops}`,
+        disabled: false,
       },
       {
         label: "Create Airdrop Claim Contracts",
@@ -140,7 +147,30 @@ export const sidebarData: SidebarItem[] = [
     icon: "/airdrop.svg",
     activeIcon: "/airdropActive.svg",
     navigateTo: `/airdrop`,
+    disabled: false,
+  },
+];
+
+export const headerData: HeaderItem[] = [
+  {
+    title: "MARKETS",
     disabled: true,
+    navigateTo: "/markets",
+  },
+  {
+    title: "TRADE",
+    disabled: true,
+    navigateTo: "/trade",
+  },
+  {
+    title: "PORTFOLIO",
+    disabled: true,
+    navigateTo: "/portfolio",
+  },
+  {
+    title: "TOOLS",
+    disabled: false,
+    navigateTo: `/token?action=${TokenRoutes.createToken}`,
   },
 ];
 
@@ -157,3 +187,48 @@ export const envs: Record<string, string> = {
   devnet: "Devnet",
   mainnet: "Mainnet-Beta",
 };
+
+export const demoTokens = [
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+];
