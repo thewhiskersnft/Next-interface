@@ -48,6 +48,7 @@ export const fetchUserSPLTokens = async (
           image: rawtokenMetadata?.tokenLogo,
           amount,
           mint: mintAddress,
+          decimal: splTokens[i].decimals,
           isToken22: false,
         });
       }
