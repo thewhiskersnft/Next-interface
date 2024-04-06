@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "../common/modal";
 import CustomInput from "../common/customInput";
 import Image from "next/image";
 import CustomRadio from "../common/customRadio";
+import { fetchUserSPLTokens } from "@/solana/query/fetchUserSPLTokens";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 
 type TokenModalProps = {
   isOpen: boolean;
@@ -19,6 +21,17 @@ const TokenModal = ({ isOpen, onClose, tokenList }: TokenModalProps) => {
   const toggleShowTokenSetting = () => {
     setShowTokenSetting(!showTokenSetting);
   };
+
+  const wallet = useWallet();
+  const connection = useConnection();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchUserSPLTokens(wallet, connection.connection);
+      console.log(data);
+    };
+    fetchData();
+  });
 
   return (
     <Modal open={isOpen} onClose={onClose}>
