@@ -59,7 +59,9 @@ export const fetchUserSPLTokens = async (
           process.env.NEXT_PUBLIC_HELIUS_API_KEY
         }`
       );
+      console.log("Data helius : ", data);
       const tokens = data.data.tokens;
+      console.log("Tokens : ", tokens);
       const splTokens = tokens.filter(
         (item: any) => item.decimals > 0 && item.amount > 0
       );
@@ -75,6 +77,7 @@ export const fetchUserSPLTokens = async (
         if (!rawtokenMetadata) {
           continue;
         }
+        console.log("Raw data : ", rawtokenMetadata);
         renderTokenData.push({
           name: rawtokenMetadata?.tokenName,
           symbol: rawtokenMetadata?.tokenSymbol,

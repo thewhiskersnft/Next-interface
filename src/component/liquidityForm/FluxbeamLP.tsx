@@ -17,6 +17,7 @@ const FluxbeamLP = ({}) => {
         isOpen={showBaseTokenModal}
         onClose={toggleBaseTokenModal}
         tokenList={demoTokens}
+        handleTokenSelect={() => {}}
       />
       <div className="px-8 py-4 flex-1 border-[1px] border-lightGrey mr-4 mt-4 h-min">
         <section className="w-full">

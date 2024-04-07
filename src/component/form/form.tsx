@@ -13,7 +13,10 @@ import { useFormik, Formik } from "formik";
 import { metaplexBuilder } from "@/metaplex";
 import { createSPLTokenTxBuilder } from "@/solana/txBuilder/createSPLTokenTxBuilder";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { v1TokenValidation } from "../../utils/formikValidators";
+import {
+  v1TokenValidation,
+  v2TokenValidation,
+} from "../../utils/formikValidators";
 import { cloneDeep } from "lodash";
 import { errorToast, successToast } from "../common/toast";
 import MintOrBurnToken from "./mintOrBurnToken";
@@ -62,6 +65,7 @@ export default function Form() {
     interestBearing,
     defaultAccountState,
     permanentDelegate,
+    enableExtensions,
   } = useSelector((state: any) => state.formDataSlice);
   const { appLoading } = useSelector((state: any) => state.appDataSlice);
   const { allDevEndpoints, allMainEndpoints, currentEndpoint, priorityFees } =
@@ -241,13 +245,27 @@ export default function Form() {
     let resp = {} as any;
     if (selectedForm === keyPairs.createV1) {
       resp = v1TokenValidation(values);
-      ////console.log(metaplexFileData)
       if (!metaplexFileData?.fileName) {
         resp["logo"] = "Please select logo";
         errorToast({ message: "Please upload logo!" });
       }
     }
-    // add v2 token validations
+    if (selectedForm === keyPairs.createV2) {
+      resp = v2TokenValidation({
+        ...values,
+        transferTax,
+        interestBearing,
+        defaultAccountState,
+        permanentDelegate,
+        nonTransferable,
+        enableExtensions,
+      });
+      if (!metaplexFileData?.fileName) {
+        resp["logo"] = "Please select logo";
+        errorToast({ message: "Please upload logo!" });
+      }
+    }
+    resp["logo"] = "Please select logo";
     return resp;
   };
   const createTokenHandler = async (values: any) => {

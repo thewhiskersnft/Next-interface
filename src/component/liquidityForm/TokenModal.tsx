@@ -5,14 +5,23 @@ import Image from "next/image";
 import CustomRadio from "../common/customRadio";
 import { fetchUserSPLTokens } from "@/solana/query/fetchUserSPLTokens";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { handleCopy } from "@/utils/common";
+import Link from "next/link";
+import { getMintURL } from "@/utils/redirectURLs";
 
 type TokenModalProps = {
   isOpen: boolean;
   onClose: () => void;
   tokenList: Array<any>;
+  handleTokenSelect: (token: any, index: number) => any;
 };
 
-const TokenModal = ({ isOpen, onClose, tokenList }: TokenModalProps) => {
+const TokenModal = ({
+  isOpen,
+  onClose,
+  tokenList,
+  handleTokenSelect,
+}: TokenModalProps) => {
   const [showTokenSetting, setShowTokenSetting] = useState(false);
   const [radiyumTokenList, setRadiyumTokenList] = useState(false);
   const [solanaTokenList, setSolanaTokenList] = useState(false);
@@ -21,17 +30,6 @@ const TokenModal = ({ isOpen, onClose, tokenList }: TokenModalProps) => {
   const toggleShowTokenSetting = () => {
     setShowTokenSetting(!showTokenSetting);
   };
-
-  const wallet = useWallet();
-  const connection = useConnection();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchUserSPLTokens(wallet, connection.connection);
-      console.log(data);
-    };
-    fetchData();
-  });
 
   return (
     <Modal open={isOpen} onClose={onClose}>
@@ -113,51 +111,83 @@ const TokenModal = ({ isOpen, onClose, tokenList }: TokenModalProps) => {
             {tokenList.map((token: any, index: number) => {
               return (
                 <div
-                  className="flex justify-between items-center my-4 border-[0.5px] border-variant1 bg-black py-2 px-2"
+                  className="flex justify-between items-center my-4 border-[0.5px] border-variant1 bg-black py-2 px-2 cursor-pointer"
                   key={index}
+                  onClick={() => {
+                    handleTokenSelect(token, index);
+                  }}
                 >
                   <section className="flex">
-                    <Image
-                      src={"/cat1.svg"} // replace with logo
-                      alt="Token Logo"
-                      width={38}
-                      height={38}
-                      className="cursor-pointer mb-[2px]"
-                      priority
-                    />
+                    {token.image ? (
+                      <img
+                        src={token.image}
+                        alt="token logo"
+                        width={`${38}px`}
+                        style={{
+                          height: `${38}px`,
+                          objectFit: "cover",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    ) : (
+                      <Image
+                        src={"/cat1.svg"}
+                        alt="Token Logo"
+                        width={38}
+                        height={38}
+                        className="cursor-pointer mb-[2px]"
+                        priority
+                      />
+                    )}
                     <span className="ml-2">
                       <p className="text-xsmall font-Oxanium text-left text-white">
                         {token.name}
                       </p>
                       <p className="text-xxsmall font-Oxanium text-left text-disabledLink">
-                        {token.owner}
+                        {token.symbol}
                       </p>
                     </span>
                   </section>
                   <section className="ml-2 w-[150px] truncate">
                     <p className="text-xsmall font-Oxanium text-right text-white truncate">
-                      {token.amt}
+                      {token.amount}
                     </p>
                     <span className="flex mt-1">
                       <Image
-                        src={"/copy.svg"} // replace with logo
+                        src={"/copy.svg"}
                         alt="Copy Logo"
                         width={16}
                         height={16}
                         className="cursor-pointer mr-2"
                         priority
+                        onClick={(e: any) => {
+                          e.stopPropagation();
+                          handleCopy(token.mint);
+                        }}
                       />
                       <p className="text-xxsmall font-Oxanium text-center text-yellow1 truncate">
-                        {token.address}
+                        {token.mint}
                       </p>
-                      <Image
-                        src={"/exportWhite.svg"} // replace with logo
-                        alt="Export Logo"
-                        width={16}
-                        height={16}
-                        className="cursor-pointer ml-1"
-                        priority
-                      />
+                      <Link
+                        legacyBehavior
+                        href={getMintURL(token.mint)}
+                        passHref
+                      >
+                        <a
+                          target="_blank"
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-[70px] h-[16px]"
+                        >
+                          <Image
+                            src={"/exportWhite.svg"}
+                            alt="Export Logo"
+                            width={16}
+                            height={16}
+                            className="cursor-pointer"
+                            priority
+                          />
+                        </a>
+                      </Link>
                     </span>
                   </section>
                 </div>

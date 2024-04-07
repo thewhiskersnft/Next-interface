@@ -1,3 +1,4 @@
+import { handleCopy } from "@/utils/common";
 import { get } from "lodash";
 import Image from "next/image";
 import Link from "next/link";
@@ -42,10 +43,6 @@ const SuccessComp = ({
 }: ToastProps) => {
   const keys = Object.keys(keyPairs);
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    successToast({ message: "Copied!" });
-  };
   return (
     <div className="bg-successGreen flex items-center w-full">
       <Image

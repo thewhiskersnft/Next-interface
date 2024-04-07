@@ -104,6 +104,8 @@ export const createToken22TxBuilder = async (
     }
 
     const token22_mint = Keypair.generate();
+    console.log(wallet.publicKey, "wallet");
+    console.log(token22_mint.publicKey, "token22_mint");
 
     const ON_CHAIN_METADATA: TokenMetadata = {
       name: name,
