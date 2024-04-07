@@ -59,9 +59,9 @@ export const fetchUserSPLTokens = async (
           process.env.NEXT_PUBLIC_HELIUS_API_KEY
         }`
       );
-      console.log("Data helius : ", data);
+      // console.log("Data helius : ", data);
       const tokens = data.data.tokens;
-      console.log("Tokens : ", tokens);
+      // console.log("Tokens : ", tokens);
       const splTokens = tokens.filter(
         (item: any) => item.decimals > 0 && item.amount > 0
       );
@@ -69,6 +69,7 @@ export const fetchUserSPLTokens = async (
       const renderTokenData: any[] = [];
       for (var i = 0; i < splTokens.length; i++) {
         const mintAddress = splTokens[i].mint;
+        const decimal = splTokens[i].decimals;
         const amount = splTokens[i].amount / 10 ** splTokens[i].decimals;
         const rawtokenMetadata = await getTokenMetadata(
           new PublicKey(mintAddress),
@@ -77,13 +78,14 @@ export const fetchUserSPLTokens = async (
         if (!rawtokenMetadata) {
           continue;
         }
-        console.log("Raw data : ", rawtokenMetadata);
+        // console.log("Raw data : ", rawtokenMetadata);
         renderTokenData.push({
           name: rawtokenMetadata?.tokenName,
           symbol: rawtokenMetadata?.tokenSymbol,
           image: rawtokenMetadata?.tokenLogo,
           amount,
           mint: mintAddress,
+          decimal: decimal,
           isToken22: false,
         });
       }
