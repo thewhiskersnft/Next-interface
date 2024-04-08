@@ -5,6 +5,7 @@ import Image from "next/image";
 import CustomRadio from "../common/customRadio";
 import { fetchUserSPLTokens } from "@/solana/query/fetchUserSPLTokens";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { fetchUserToken22Tokens } from "@/solana/query/fetchUserToken22Tokens";
 
 type TokenModalProps = {
   isOpen: boolean;
@@ -27,7 +28,12 @@ const TokenModal = ({ isOpen, onClose, tokenList }: TokenModalProps) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchUserSPLTokens(wallet, connection.connection);
+      // const data = await fetchUserSPLTokens(wallet, connection.connection);
+
+      const data = await fetchUserToken22Tokens(
+        wallet.publicKey?.toString()!,
+        connection.connection
+      );
       console.log(data);
     };
     fetchData();
