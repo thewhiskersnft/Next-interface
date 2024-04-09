@@ -104,7 +104,7 @@ const CreateOpenBookMarketId = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchUserSPLTokens(wallet, connection.connection);
-      // console.log("data : ", data);
+      console.log("data : ", data);
       if (data && Array.isArray(data)) {
         setBaseTokenList(data); // base tokens list
         setQuoteTokenList(data); // quote token list

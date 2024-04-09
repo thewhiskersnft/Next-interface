@@ -112,21 +112,21 @@
 // }
 
 // // Example usage
-// callApi(
-//   "So11111111111111111111111111111111111111112", // solana addr
-//   0.001, // solana amt
-//   "28Ck8Mdr1RStJMRvCK5Dv9yk5thonnoubvSrr4vZKhhZ", //
-//   1000,
-//   6,
-//   "4N8EFytEqUWMeJ3tiT39XmmENNQMvbCwFh4bdkySuTWNBgRjBXjJcu4AewKWuGz9Gvq4XJZgZMbibt7UPxMPV84W"
-// )
-//   .then((result) => {
-//     if (result.success) {
-//       console.log("Transaction successful:", result.signature);
-//     } else {
-//       console.error("Transaction failed:", result.error);
-//     }
-//   })
-//   .catch((error) => {
-//     console.error("Unhandled error:", error.message);
-//   });
+// // callApi(
+// //   "So11111111111111111111111111111111111111112", // solana addr
+// //   0.001, // solana amt
+// //   "28Ck8Mdr1RStJMRvCK5Dv9yk5thonnoubvSrr4vZKhhZ", //
+// //   1000,
+// //   6,
+// //   "4N8EFytEqUWMeJ3tiT39XmmENNQMvbCwFh4bdkySuTWNBgRjBXjJcu4AewKWuGz9Gvq4XJZgZMbibt7UPxMPV84W"
+// // )
+// //   .then((result) => {
+// //     if (result.success) {
+// //       console.log("Transaction successful:", result.signature);
+// //     } else {
+// //       console.error("Transaction failed:", result.error);
+// //     }
+// //   })
+// //   .catch((error) => {
+// //     console.error("Unhandled error:", error.message);
+// //   });

@@ -3,8 +3,6 @@ import Modal from "../common/modal";
 import CustomInput from "../common/customInput";
 import Image from "next/image";
 import CustomRadio from "../common/customRadio";
-import { fetchUserSPLTokens } from "@/solana/query/fetchUserSPLTokens";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { handleCopy } from "@/utils/common";
 import Link from "next/link";
 import { getMintURL } from "@/utils/redirectURLs";
@@ -37,7 +35,6 @@ const TokenModal = ({
   };
 
   const handleTokenSearch = () => {
-    console.log(tokenAddr);
     if (tokenAddr) {
       let filteredTokens = tokenList.filter(
         (token: any, index: any) => token.mint === tokenAddr
