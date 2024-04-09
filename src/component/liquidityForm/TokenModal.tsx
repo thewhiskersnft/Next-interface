@@ -8,6 +8,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { handleCopy } from "@/utils/common";
 import Link from "next/link";
 import { getMintURL } from "@/utils/redirectURLs";
+import { get } from "lodash";
 
 type TokenModalProps = {
   isOpen: boolean;
@@ -27,9 +28,31 @@ const TokenModal = ({
   const [solanaTokenList, setSolanaTokenList] = useState(false);
   const [jupiterStrictTokenList, setJupiterStrictTokenList] = useState(false);
   const [userAddedTokenList, setUserAddedTokenList] = useState(false);
+  const [tokenAddr, setTokenAddr] = useState("");
+  const [filteredTokenList, setFilteredTokenList] = useState([...tokenList]);
+  const [recommendedTokens, setRecommendedTokens] = useState([] as any);
+
   const toggleShowTokenSetting = () => {
     setShowTokenSetting(!showTokenSetting);
   };
+
+  const handleTokenSearch = () => {
+    console.log(tokenAddr);
+    if (tokenAddr) {
+      let filteredTokens = tokenList.filter(
+        (token: any, index: any) => token.mint === tokenAddr
+      );
+      setFilteredTokenList([...filteredTokens]);
+    } else {
+      setFilteredTokenList([...tokenList]);
+    }
+  };
+
+  useEffect(() => {
+    setFilteredTokenList([...tokenList]);
+    setTokenAddr("");
+    setRecommendedTokens([...tokenList.slice(0, 4)]);
+  }, [isOpen]);
 
   return (
     <Modal open={isOpen} onClose={onClose}>
@@ -38,8 +61,10 @@ const TokenModal = ({
           label="Select a Token"
           id="tokenAddress"
           name="tokenAddress"
-          value={""}
-          onChange={(e) => {}}
+          value={tokenAddr}
+          onChange={(e) => {
+            setTokenAddr(e.target.value);
+          }}
           showSymbol={false}
           type={"text"}
           placeholder={"Enter Token Address"}
@@ -47,6 +72,7 @@ const TokenModal = ({
           errorMessage={""}
           showCopy={false}
           showSearch={true}
+          onSearchClick={handleTokenSearch}
         />
         <Image
           src={"/close.svg"}
@@ -59,26 +85,42 @@ const TokenModal = ({
         />
         <p className="font-Orbitron text-xsmall mt-4">Recommended Tokens</p>
         <section className="flex justify-between items-center mt-2">
-          {[1, 2, 3, 4].map((token: any, ind: number) => {
+          {recommendedTokens.map((token: any, ind: number) => {
             return (
               <div
                 className="w-[125px] h-[46px] bg-background border-[1px] border-solid border-variant1 hover:border-white"
                 key={ind}
+                onClick={() => {
+                  handleTokenSelect(token, ind);
+                }}
               >
                 <section
                   className="flex justify-start items-center px-2 h-full cursor-pointer"
                   //   onClick={toggleBaseTokenModal}
                 >
-                  <Image
-                    src={"/cat1.svg"}
-                    alt="Token Logo"
-                    width={33}
-                    height={33}
-                    className="cursor-pointer mb-[2px]"
-                    priority
-                  />
-                  <p className="text-xsmall font-Oxanium text-center ml-2">
-                    WIZZ
+                  {token.image ? (
+                    <img
+                      src={token.image}
+                      alt="token logo"
+                      width={`${33}px`}
+                      style={{
+                        height: `${33}px`,
+                        objectFit: "cover",
+                        borderRadius: "50%",
+                      }}
+                    />
+                  ) : (
+                    <Image
+                      src={"/cat1.svg"}
+                      alt="Token Logo"
+                      width={33}
+                      height={33}
+                      className="cursor-pointer"
+                      priority
+                    />
+                  )}
+                  <p className="text-xsmall font-Oxanium text-center ml-2 w-[50px] truncate">
+                    {get(token, "name", "")}
                   </p>
                 </section>
               </div>
@@ -108,7 +150,7 @@ const TokenModal = ({
         )}
         {!showTokenSetting && (
           <section className="h-[340px] w-full overflow-scroll scroll-smooth mt-2">
-            {tokenList.map((token: any, index: number) => {
+            {filteredTokenList.map((token: any, index: number) => {
               return (
                 <div
                   className="flex justify-between items-center my-4 border-[0.5px] border-variant1 bg-black py-2 px-2 cursor-pointer"
