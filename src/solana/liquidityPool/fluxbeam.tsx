@@ -1,132 +1,167 @@
-// const axios = require("axios");
-// const bs58 = require("bs58");
-// const solanaWeb3 = require("@solana/web3.js");
-// require("dotenv").config();
+import { errorToast, successToast } from "@/component/common/toast";
+import solanaWeb3, {
+  Keypair,
+  PublicKey,
+  VersionedTransaction,
+} from "@solana/web3.js";
+import axios from "axios";
+import base58 from "bs58";
 
-// const {
-//   Connection,
-//   Keypair,
-//   Transaction,
-//   ComputeBudgetProgram,
-//   PublicKey,
-//   LAMPORTS_PER_SOL,
-//   SystemProgram,
-// } = solanaWeb3;
+export async function createPoolFluxBeam(
+  tokenA: any,
+  tokenAAmount: number,
+  tokenB: any,
+  tokenBAmount: number,
+  decimal: number,
+  pvtKey: string,
+  connection: any
+) {
+  console.log("tokenA : ", tokenA);
+  console.log("tokenAAmount : ", tokenAAmount);
+  console.log("tokenB : ", tokenB);
+  console.log("tokenBAmount : ", tokenBAmount);
+  console.log("decimal : ", decimal);
+  console.log("pvtKey : ", pvtKey);
+  console.log("connection : ", connection);
+  const privateKey = base58.decode(pvtKey);
+  const payer = Keypair.fromSecretKey(privateKey);
+  //  console.log(parseInt(process.env.PRIORITY_FEE))
 
-// const connection = new Connection("https://api.mainnet-beta.solana.com"); // make it dyamic
+  const data = {
+    payer: payer.publicKey.toString(),
+    token_a: new PublicKey(tokenA),
+    token_a_amount: tokenAAmount * Math.pow(10, 9),
+    token_b: new PublicKey(tokenB),
+    token_b_amount: tokenBAmount * Math.pow(10, decimal),
+    priority_fee_lamports: 10_000_000,
+  };
+  const headers = {
+    accept: "application/json",
+    "Content-Type": "application/json",
+  };
+  try {
+    const response = await axios.post(
+      "https://api.fluxbeam.xyz/v1/token_pools",
+      data,
+      { headers }
+    );
+    if (response.data && response.data.transaction) {
+      //   console.log(response.data.transaction)
+      const sig = await signtx(response.data.transaction, payer, connection);
+      if (sig) {
+        successToast({ message: "confirmation done" });
+        return {
+          success: true,
+          signature: sig,
+          lpPool: response.data.pool,
+          lpMint: response.data.lp_mint,
+        };
+      } else {
+        // log_error('no confirmed.');
+        errorToast({ message: "Please try again. Network is conjested." });
+        return {
+          success: false,
+          error: "Please try again. Network is conjested.",
+        };
+      }
+    } else {
+      return { success: false, error: "API did not return a transaction." };
+    }
+  } catch (error: any) {
+    // log_error('Error calling the API:', error);
+    return { success: false, error: error.message };
+  }
+}
+async function signtx(rawTx: any, payer: any, connection: any) {
+  try {
+    const swapTransactionBuf = Buffer.from(rawTx, "base64");
+    const txn = VersionedTransaction.deserialize(swapTransactionBuf);
+    // console.log("HfhG",txn)
+    txn.sign([payer]);
+    // const simulationResult = await connection.simulateTransaction(txn);
+    //   console.log(simulationResult);
+    const sig = await connection
+      .sendRawTransaction(txn.serialize(), {
+        skipPreflight: false,
+        preflightCommitment: "processed",
+      })
+      .catch((e: any) => {
+        //   console.error(sendRawTransaction Transaction Failed, e);
+      });
 
-// async function callApi(
-//   tokenA, // base token addr
-//   tokenAAmount, // base token amt
-//   tokenADecimal, // extract from tokenA
-//   tokenB, // quote token
-//   tokenBAmount, // qupte token amt
-//   decimal, // extract from tokenB
-//   wallet
-// ) {
-//   //   const privateKey = bs58.decode(pvtKey);
-//   //   const payer = Keypair.fromSecretKey(privateKey);
-//   const data = {
-//     payer: wallet.publicKey.toString(),
-//     token_a: tokenA,
-//     token_a_amount: tokenAAmount * 10 ** tokenADecimal,
-//     token_b: tokenB,
-//     token_b_amount: tokenBAmount * 10 ** decimal,
-//   };
+    console.log(sig);
+    const resp = await recursiveCheckTransitionStatus(
+      Date.now(),
+      sig,
+      connection
+    );
+    if (resp) {
+      return sig;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error sending transaction:", error);
+  }
+}
+async function recursiveCheckTransitionStatus(
+  startTime: any,
+  txHash: any,
+  connection: any
+) {
+  return new Promise((resolve, reject) => {
+    try {
+      connection
+        .getSignatureStatus(txHash, { searchTransactionHistory: true })
+        .then(async (res: any) => {
+          if (res?.value?.confirmationStatus === "finalized") {
+            resolve(true);
+          } else if (res?.value?.confirmationStatus === "confirmed") {
+            resolve(true);
+          } else if (
+            (res?.value?.confirmationStatus === "processed" ||
+              res?.value?.confirmationStatus === "pending" ||
+              res?.value === null) &&
+            Date.now() - startTime < 45000 // 30sec
+          ) {
+            setTimeout(async () => {
+              let resp = await recursiveCheckTransitionStatus(
+                startTime,
+                txHash,
+                connection
+              );
+              resolve(resp);
+            }, 3000); // 3sec
+          } else {
+            // log_error({
+            //   message: "Network Is Conjested, Try Adding More Priority Fee.",
+            // });
+            resolve(false);
+          }
+        });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
 
-//   const headers = {
-//     accept: "application/json",
-//     "Content-Type": "application/json",
-//   };
+// createPoolFluxBeam(tokenA, tokenAAmount, tokenB, tokenBAmount, decimal, pvtKey)
 
-//   try {
-//     const response = await axios.post(
-//       "https://api.fluxbeam.xyz/v1/token_pools",
-//       data,
-//       { headers }
-//     );
-//     if (response.data && response.data.transaction) {
-//       const sig = await signtx(response.data.transaction, wallet);
-//       if (sig) {
-//         return {
-//           success: true,
-//           signature: sig,
-//           lpPool: response.data.pool,
-//           lpMint: response.data.lp_mint,
-//         };
-//       } else {
-//         return { success: false, error: "API did not return a transaction." };
-//       }
+//    createPoolFluxBeam(
+//     "So11111111111111111111111111111111111111112",
+//     0.001,
+//     "GnNt5hMLTRh2CW9YXrUrRouQroQt8dJwcNSYu37nCtcH",
+//     1000,
+//     6,
+//     "4N8EFytEqUWMeJ3tiT39XmmENNQMvbCwFh4bdkySuTWNBgRjBXjJcu4AewKWuGz9Gvq4XJZgZMbibt7UPxMPV84W"
+// ).then(result => {
+//     if (result.success) {
+//         console.log('Transaction successful:', result.signature);
 //     } else {
-//       console.error("API did not return a transaction.");
-//       return { success: false, error: "API did not return a transaction." };
+//         //log_error('Transaction failed:', result.error);
 //     }
-//   } catch (error) {
-//     console.error("Error calling the API:", error);
-//     return { success: false, error: error.message };
-//   }
-// }
-
-// /**
-//  * Signs a raw transaction and sends it to the Solana blockchain.
-//  */
-// async function signtx(rawTx, senderKeypair) {
-//   try {
-//     const recoveredTransaction = Transaction.from(Buffer.from(rawTx, "base64"));
-//     const PRIORITY_FEE_IX = ComputeBudgetProgram.setComputeUnitPrice({
-//       microLamports: process.env.PRIORITY_FEE,
-//     });
-//     const sentPlatFormfeeInstruction = SystemProgram.transfer({
-//       fromPubkey: senderKeypair.publicKey,
-//       toPubkey: new PublicKey(""),
-//       lamports: 0.000025 * LAMPORTS_PER_SOL,
-//     });
-//     const createPool = new Transaction().add(
-//       //   PRIORITY_FEE_IX,
-//       //   sentPlatFormfeeInstruction,
-//       recoveredTransaction
-//     );
-//     let blockhash = (await connection.getLatestBlockhash("finalized"))
-//       .blockhash;
-
-//     createPool.recentBlockhash = blockhash;
-
-//     createPool.feePayer = senderKeypair.publicKey;
-//     console.log("dsds", Object.entries(senderKeypair));
-
-//     createPool.partialSign(Object.entries(senderKeypair));
-//     const txnSignature = await connection.sendRawTransaction(
-//       createPool.serialize(),
-//       {
-//         signers: senderKeypair,
-//         skipPreflight: true,
-//         preflightCommitment: "finalized",
-//       }
-//     );
-//     console.log("Transaction confirmed", txnSignature);
-//     return txnSignature;
-//   } catch (error) {
-//     console.error("Error sending transaction:", error);
-//     throw error;
-//   }
-// }
-
-// // Example usage
-// // callApi(
-// //   "So11111111111111111111111111111111111111112", // solana addr
-// //   0.001, // solana amt
-// //   "28Ck8Mdr1RStJMRvCK5Dv9yk5thonnoubvSrr4vZKhhZ", //
-// //   1000,
-// //   6,
-// //   "4N8EFytEqUWMeJ3tiT39XmmENNQMvbCwFh4bdkySuTWNBgRjBXjJcu4AewKWuGz9Gvq4XJZgZMbibt7UPxMPV84W"
-// // )
-// //   .then((result) => {
-// //     if (result.success) {
-// //       console.log("Transaction successful:", result.signature);
-// //     } else {
-// //       console.error("Transaction failed:", result.error);
-// //     }
-// //   })
-// //   .catch((error) => {
-// //     console.error("Unhandled error:", error.message);
-// //   });
+// }).catch(error => {
+//     //log_error('Unhandled error:', error.message);
+// });
+// module.exports = {
+//     createPoolFluxBeam
+//     };

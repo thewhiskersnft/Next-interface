@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import TokenModal from "./TokenModal";
@@ -10,6 +11,10 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { fetchUserToken22Tokens } from "@/solana/query/fetchUserToken22Tokens";
 import { get } from "lodash";
 import { errorToast } from "../common/toast";
+import { createPoolFluxBeam } from "@/solana/liquidityPool/fluxbeam";
+import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
+import { Connection } from "@solana/web3.js";
+import { useSelector } from "react-redux";
 
 const FluxbeamLP = ({}) => {
   const [showBaseTokenModal, setShowBaseTokenModal] = useState(false);
@@ -22,6 +27,10 @@ const FluxbeamLP = ({}) => {
   const [quoteTokenList, setQuoteTokenList] = useState([] as any);
   const [baseToken22List, setBaseToken22List] = useState([] as any);
   const [quoteToken22List, setQuoteToken22List] = useState([] as any);
+
+  const { currentEndpoint, priorityFees } = useSelector(
+    (state: any) => state.connectionDataSlice
+  );
 
   const wallet = useWallet();
   const connection = useConnection();
@@ -45,6 +54,10 @@ const FluxbeamLP = ({}) => {
   };
 
   const handleSubmit = () => {
+    // if (!isMainnet()) {
+    //   errorToast({ message: "Please switch to mainnet!" });
+    //   return;
+    // }
     if (!baseToken) {
       errorToast({ message: "Please select base token" });
       return;
@@ -53,6 +66,16 @@ const FluxbeamLP = ({}) => {
       errorToast({ message: "Please select quote token" });
       return;
     }
+    const lpConnection = new Connection(currentEndpoint);
+    createPoolFluxBeam(
+      baseToken.mint,
+      baseTokenAmt,
+      quoteToken.mint,
+      quoteTokenAmt,
+      baseToken.decimal as number,
+      process.env.NEXT_PUBLIC_HELIUS_API_KEY || "",
+      lpConnection
+    );
   };
 
   useEffect(() => {

@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { HeaderItem } from "@/interfaces";
 import { SigninMessage } from "@/utils/auth/SigninMessage";
 import bs58 from "bs58";
+import base58 from "bs58";
 
 const borderColor: string = "#4D4D4D";
 
@@ -29,9 +30,10 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
   const [searchVal, setSearchVal] = useState<string>("");
   const [showButton, setShowButton] = useState(false);
+  const [signature, setSignature] = useState();
 
   const wallet = useWallet();
-  const walletModal = useWalletModal();
+  // const { publicKey, signMessage } = useWallet();
   const router = useRouter();
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
@@ -59,40 +61,55 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
     }
   };
 
+  // const handleSignIn = async () => {
+  //   try {
+  //     console.log("Wallet : ", wallet);
+  //     console.log("walletModal : ", walletModal);
+  //     if (!wallet.connected) {
+  //       walletModal.setVisible(true);
+  //     }
+
+  //     const csrf = await getCsrfToken();
+  //     console.log("CSFR : ", csrf);
+  //     if (!wallet.publicKey || !csrf || !wallet.signMessage) return;
+
+  //     const message = new SigninMessage({
+  //       domain: window.location.host,
+  //       publicKey: wallet.publicKey?.toBase58(),
+  //       statement: `Sign this message to sign in to the app.`,
+  //       nonce: csrf,
+  //     });
+  //     console.log("Message : ", message);
+
+  //     const data = new TextEncoder().encode(message.prepare());
+  // const signature = await wallet.signMessage(data);
+  //     const serializedSignature = bs58.encode(signature);
+  //     console.log("data : ", data);
+  //     console.log("signature : ", signature);
+  //     console.log("serializedSignature : ", serializedSignature);
+
+  //     signIn("credentials", {
+  //       message: JSON.stringify(message),
+  //       redirect: false,
+  //       signature: serializedSignature,
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   const handleSignIn = async () => {
+    const messageToSign = "Signin message!!";
     try {
-      console.log("Wallet : ", wallet);
-      console.log("walletModal : ", walletModal);
-      if (!wallet.connected) {
-        walletModal.setVisible(true);
+      const message = new TextEncoder().encode(messageToSign);
+      if (wallet.signMessage) {
+        const uint8arraySignature = await wallet.signMessage(message);
+        console.log(uint8arraySignature);
+        setSignature(base58.encode(uint8arraySignature) as any);
+        console.log(base58.encode(uint8arraySignature));
       }
-
-      const csrf = await getCsrfToken();
-      console.log("CSFR : ", csrf);
-      if (!wallet.publicKey || !csrf || !wallet.signMessage) return;
-
-      const message = new SigninMessage({
-        domain: window.location.host,
-        publicKey: wallet.publicKey?.toBase58(),
-        statement: `Sign this message to sign in to the app.`,
-        nonce: csrf,
-      });
-      console.log("Message : ", message);
-
-      const data = new TextEncoder().encode(message.prepare());
-      const signature = await wallet.signMessage(data);
-      const serializedSignature = bs58.encode(signature);
-      console.log("data : ", data);
-      console.log("signature : ", signature);
-      console.log("serializedSignature : ", serializedSignature);
-
-      signIn("credentials", {
-        message: JSON.stringify(message),
-        redirect: false,
-        signature: serializedSignature,
-      });
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      console.log("could not sign message");
     }
   };
 
