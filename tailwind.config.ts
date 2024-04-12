@@ -59,6 +59,8 @@ const config: Config = {
         successGreen: "#09A854",
         textGreen: "#09A854",
         loaderBG: "rgba(0,0,0,0.5)",
+        brownBG: "#1F1D16",
+        tableBorder: "#4D4D4D80",
       },
       keyframes: {
         wiggle: {
