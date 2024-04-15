@@ -13,8 +13,31 @@ import { fetchUserSPLTokens } from "@/solana/query/fetchUserSPLTokens";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { Token } from "@raydium-io/raydium-sdk";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
-import { PublicKey } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 import { get } from "lodash";
+import { MarketV2Updated } from "@/solana/market/createMarketID";
+
+import {
+  Base,
+  CacheLTA,
+  InstructionType,
+  MARKET_STATE_LAYOUT_V2,
+  TxVersion,
+  ZERO,
+  generatePubKey,
+  splitTxAndSigners,
+  struct,
+  u16,
+  u32,
+  u64,
+  u8,
+} from "@raydium-io/raydium-sdk";
+import {
+  PROGRAMIDS,
+  desiredMarketIdConfig,
+  makeTxVersion,
+} from "@/solana/market/config";
+import { buildAndSendTx } from "@/solana/market/util";
 
 const cardsData = [
   {
@@ -38,6 +61,9 @@ const cardsData = [
 ];
 
 const CreateOpenBookMarketId = () => {
+  const wallet = useWallet();
+  const connection = useConnection();
+
   const [showBaseTokenModal, setShowBaseTokenModal] = useState(false);
   const [showQuoteTokenModal, setShowQuoteTokenModal] = useState(false);
   // const [showTokenSetting, setShowTokenSetting] = useState(false);
@@ -89,17 +115,53 @@ const CreateOpenBookMarketId = () => {
     toggleQuoteTokenModal();
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("Base token : ", baseToken);
     console.log("Quote token : ", quoteToken);
+    const marketBytesData = desiredMarketIdConfig(2)!;
+
+    const wSOLToken = new Token(
+      TOKEN_PROGRAM_ID,
+      new PublicKey("So11111111111111111111111111111111111111112"),
+      9,
+      "WSOL",
+      "WSOL"
+    );
+
+    console.log(connection.connection.rpcEndpoint);
+
+    // -------- step 1: make instructions --------
+    const createMarketInstruments =
+      await MarketV2Updated.makeCreateMarketInstructionSimple({
+        connection: connection.connection,
+        wallet: wallet.publicKey!,
+        baseInfo: baseToken,
+        quoteInfo: wSOLToken,
+        lotSize: 0.001, // default 1
+        tickSize: 0.0001, // default 0.01
+        dexProgramId: PROGRAMIDS.OPENBOOK_MARKET,
+        makeTxVersion,
+        marketBytesData,
+      });
+    console.log(
+      "MarketId",
+      createMarketInstruments.address.marketId.toBase58()
+    );
+    const txids = await buildAndSendTx(
+      createMarketInstruments.innerTransactions,
+      connection.connection,
+      wallet,
+      {
+        skipPreflight: true,
+      }
+    );
+    console.log(txids);
   };
 
   const toggleShowAdvancedSettings = () => {
     setShowAdvancedSettings(!showAdvancedSettings);
   };
 
-  const wallet = useWallet();
-  const connection = useConnection();
   // console.log("Fetching data");
   useEffect(() => {
     const fetchData = async () => {
