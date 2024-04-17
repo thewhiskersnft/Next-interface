@@ -71,12 +71,17 @@ const CreateOpenBookMarketId = () => {
   // const [solanaTokenList, setSolanaTokenList] = useState(false);
   // const [jupiterStrictTokenList, setJupiterStrictTokenList] = useState(false);
   // const [userAddedTokenList, setUserAddedTokenList] = useState(false);
-  const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
+  const [showAdvancedSettings, setShowAdvancedSettings] = useState(true);
   const [baseTokenList, setBaseTokenList] = useState([] as any);
   const [quoteTokenList, setQuoteTokenList] = useState([] as any);
   const [baseToken, setBaseToken] = useState(null as any);
   const [baseTokenLogo, setBaseTokenLogo] = useState("");
   const [quoteToken, setQuoteToken] = useState(null as any);
+  const [baseTokenLoading, setBaseTokenLoading] = useState(false);
+  const [quoteTokenLoading, setQuoteTokenLoading] = useState(false);
+  const [minOrderSize, setMinOrderSize] = useState(1);
+  const [minPriceTicketSize, setMinPriceTicketSize] = useState(0.01);
+  const [selectedMarketIdConfig, setSelectedMarketIdConfig] = useState(1);
 
   const toggleBaseTokenModal = () => {
     setShowBaseTokenModal(!showBaseTokenModal);
@@ -116,9 +121,10 @@ const CreateOpenBookMarketId = () => {
   };
 
   const handleSubmit = async () => {
-    console.log("Base token : ", baseToken);
-    console.log("Quote token : ", quoteToken);
-    const marketBytesData = desiredMarketIdConfig(2)!;
+    // console.log("Base token : ", baseToken);
+    // console.log("Quote token : ", quoteToken);
+    console.log(selectedMarketIdConfig);
+    const marketBytesData = desiredMarketIdConfig(selectedMarketIdConfig)!;
 
     const wSOLToken = new Token(
       TOKEN_PROGRAM_ID,
@@ -137,8 +143,10 @@ const CreateOpenBookMarketId = () => {
         wallet: wallet.publicKey!,
         baseInfo: baseToken,
         quoteInfo: wSOLToken,
-        lotSize: 0.001, // default 1
-        tickSize: 0.0001, // default 0.01
+        // lotSize: 0.001, // default 1 // minOrderSize from state
+        // tickSize: 0.0001, // default 0.01 // minTickSize from state
+        lotSize: minOrderSize,
+        tickSize: minPriceTicketSize,
         dexProgramId: PROGRAMIDS.OPENBOOK_MARKET,
         makeTxVersion,
         marketBytesData,
@@ -165,13 +173,49 @@ const CreateOpenBookMarketId = () => {
   // console.log("Fetching data");
   useEffect(() => {
     const fetchData = async () => {
+      setBaseTokenLoading(true);
+      // setQuoteTokenLoading(true);
       const data = await fetchUserSPLTokens(wallet, connection.connection);
       console.log("data : ", data);
       if (data && Array.isArray(data)) {
         setBaseTokenList(data); // base tokens list
-        setQuoteTokenList(data); // quote token list
       }
+      setBaseTokenLoading(false);
+      // setQuoteTokenLoading(false);
     };
+    const wsol = new Token(
+      TOKEN_PROGRAM_ID,
+      new PublicKey("So11111111111111111111111111111111111111112"),
+      9,
+      "WSOL",
+      "WSOL"
+    );
+    const usdc = new Token(
+      TOKEN_PROGRAM_ID,
+      new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"),
+      6,
+      "USDC",
+      "USDC"
+    );
+    const quoteTokenList = [
+      {
+        amount: 1000,
+        decimal: wsol.decimals,
+        image: undefined,
+        mint: "So11111111111111111111111111111111111111112",
+        name: wsol.name,
+        symbol: wsol.symbol,
+      },
+      {
+        amount: 1000,
+        decimal: usdc.decimals,
+        image: undefined,
+        mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        name: usdc.name,
+        symbol: usdc.symbol,
+      },
+    ];
+    setQuoteTokenList(quoteTokenList);
     fetchData();
   }, []);
 
@@ -218,12 +262,14 @@ const CreateOpenBookMarketId = () => {
         <section className="mt-5">
           <TokenModal
             isOpen={showBaseTokenModal}
+            loading={baseTokenLoading}
             onClose={toggleBaseTokenModal}
             tokenList={baseTokenList}
             handleTokenSelect={handleBaseTokenSelect}
           />
           <TokenModal
             isOpen={showQuoteTokenModal}
+            loading={quoteTokenLoading}
             onClose={toggleQuoteTokenModal}
             tokenList={quoteTokenList}
             handleTokenSelect={handleQuoteTokenSelect}
@@ -251,7 +297,7 @@ const CreateOpenBookMarketId = () => {
                   />
                 ) : (
                   <Image
-                    src={"/cat1.svg"}
+                    src={"/noLogo.svg"}
                     alt="Token Logo"
                     width={33}
                     height={33}
@@ -296,10 +342,12 @@ const CreateOpenBookMarketId = () => {
           label="Minimum Order Size"
           id="minimumOrderSize"
           name="minimumOrderSize"
-          value={""}
-          onChange={(e) => {}}
+          value={minOrderSize}
+          onChange={(e) => {
+            setMinOrderSize(e.target.value);
+          }}
           showSymbol={false}
-          type={"text"}
+          type={"number"}
           placeholder={"Enter Minimum Order Size"}
           showError={false}
           errorMessage={""}
@@ -308,15 +356,17 @@ const CreateOpenBookMarketId = () => {
           label="Minimum Price Tick Size"
           id="minimumPriceTickSize"
           name="minimumPriceTickSize"
-          value={""}
-          onChange={(e) => {}}
+          value={minPriceTicketSize}
+          onChange={(e) => {
+            setMinPriceTicketSize(e.target.value);
+          }}
           showSymbol={false}
-          type={"text"}
+          type={"number"}
           placeholder={"Enter Minimum Price Tick Size"}
           showError={false}
           errorMessage={""}
         />
-        <CustomRadio
+        {/* <CustomRadio
           label={"Advanced Settings"}
           value={showAdvancedSettings}
           showSymbol={true}
@@ -325,11 +375,30 @@ const CreateOpenBookMarketId = () => {
             fontSize: "18px",
             fontFamily: "Orbitron",
           }}
-        />
+        /> */}
         {showAdvancedSettings && (
-          <div className="flex mt-6 gap-6 flex-wrap justify-center">
+          <div className="flex mt-16 gap-5 flex-wrap justify-center">
             {cardsData.map((item, index) => (
-              <SettingsCard item={item} key={index} />
+              // <section
+              //   className={`border-[1px] ${
+              //     selectedMarketIdConfig === index + 1
+              //       ? "border-yellow1"
+              //       : "border-transparent"
+              //   }`}
+              //   key={index}
+              //   onClick={() => {
+              //     setSelectedMarketIdConfig(index + 1);
+              //   }}
+              // >
+              <SettingsCard
+                key={index}
+                item={item}
+                selected={selectedMarketIdConfig === index + 1}
+                handleClick={() => {
+                  setSelectedMarketIdConfig(index + 1);
+                }}
+              />
+              // </section>
             ))}
           </div>
         )}

@@ -17,6 +17,8 @@ import {
 } from "@solana/web3.js";
 import { addLookupTableInfo, makeTxVersion } from "./config";
 import { WalletContextState } from "@solana/wallet-adapter-react";
+import { recursiveCheckTransitionStatus } from "@/utils/transactions";
+import { errorToast } from "@/component/common/toast";
 
 export async function sendTx(
   connection: Connection,
@@ -28,10 +30,24 @@ export async function sendTx(
   const signedTransactionArray = await wallet.signAllTransactions!(txs);
   console.log(signedTransactionArray);
   for (let i = 0; i < signedTransactionArray.length; i++) {
-    await sleepTime(15 * 1000);
+    // await sleepTime(15 * 1000);
     const transactionResponse = await connection.sendRawTransaction(
       signedTransactionArray[i].serialize()
     );
+    const timeNow = new Date();
+    const isTxConfirmed = recursiveCheckTransitionStatus(
+      timeNow,
+      transactionResponse,
+      connection,
+      wallet
+    );
+    if (!isTxConfirmed) {
+      errorToast({
+        message: "Solana Not Able To Broadcast TXN, Please Try Again",
+      });
+      i = signedTransactionArray.length;
+      break;
+    }
     console.log(transactionResponse);
     txids.push(transactionResponse);
   }

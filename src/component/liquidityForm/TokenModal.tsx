@@ -7,9 +7,11 @@ import { handleCopy } from "@/utils/common";
 import Link from "next/link";
 import { getMintURL } from "@/utils/redirectURLs";
 import { get } from "lodash";
+import Loader from "../common/loader";
 
 type TokenModalProps = {
   isOpen: boolean;
+  loading?: boolean;
   onClose: () => void;
   tokenList: Array<any>;
   handleTokenSelect: (token: any, index: number) => any;
@@ -17,6 +19,7 @@ type TokenModalProps = {
 
 const TokenModal = ({
   isOpen,
+  loading,
   onClose,
   tokenList,
   handleTokenSelect,
@@ -44,6 +47,7 @@ const TokenModal = ({
       setFilteredTokenList([...tokenList]);
     }
   };
+  console.log(filteredTokenList);
 
   useEffect(() => {
     setFilteredTokenList([...tokenList]);
@@ -108,7 +112,7 @@ const TokenModal = ({
                     />
                   ) : (
                     <Image
-                      src={"/cat1.svg"}
+                      src={"/noLogo.svg"}
                       alt="Token Logo"
                       width={33}
                       height={33}
@@ -145,7 +149,12 @@ const TokenModal = ({
             </span>
           </section>
         )}
-        {!showTokenSetting && (
+        {loading && (
+          <section className="h-[340px] w-full overflow-scroll scroll-smooth mt-2 flex justify-center items-center">
+            <Loader visible={loading} size={50} />
+          </section>
+        )}
+        {!showTokenSetting && !loading && (
           <section className="h-[340px] w-full overflow-scroll scroll-smooth mt-2">
             {filteredTokenList.map((token: any, index: number) => {
               return (
@@ -170,7 +179,7 @@ const TokenModal = ({
                       />
                     ) : (
                       <Image
-                        src={"/cat1.svg"}
+                        src={"/noLogo.svg"}
                         alt="Token Logo"
                         width={38}
                         height={38}
@@ -186,6 +195,9 @@ const TokenModal = ({
                         {token.symbol}
                       </p>
                     </span>
+                    <p className="bg-lightGrey h-min mx-2 p-1 text-[8px] font-Oxanium font-bold">
+                      {token.isToken22 ? "v2" : "v1"}
+                    </p>
                   </section>
                   <section className="ml-2 w-[150px] truncate">
                     <p className="text-xsmall font-Oxanium text-right text-white truncate">
@@ -234,7 +246,7 @@ const TokenModal = ({
             })}
           </section>
         )}
-        {showTokenSetting && (
+        {showTokenSetting && !loading && (
           <section className="flex items-center">
             <Image
               src={"/left.svg"}
@@ -250,7 +262,7 @@ const TokenModal = ({
             </p>
           </section>
         )}
-        {showTokenSetting && (
+        {showTokenSetting && !loading && (
           <section className="">
             <CustomRadio
               label={"Radiyum Token List"}

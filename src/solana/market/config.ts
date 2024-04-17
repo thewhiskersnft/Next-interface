@@ -1,3 +1,4 @@
+import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
 import {
   ENDPOINT as _ENDPOINT,
   Currency,
@@ -12,7 +13,9 @@ import {
   SOL,
 } from "@raydium-io/raydium-sdk";
 
-export const PROGRAMIDS = DEVNET_PROGRAM_ID;
+const isDevnet = !isMainnet();
+
+export const PROGRAMIDS = isDevnet ? DEVNET_PROGRAM_ID : MAINNET_PROGRAM_ID;
 
 export const ENDPOINT = _ENDPOINT;
 
@@ -20,7 +23,7 @@ export const RAYDIUM_MAINNET_API = RAYDIUM_MAINNET;
 
 export const makeTxVersion = TxVersion.V0; // LEGACY
 
-export const addLookupTableInfo = undefined; // only mainnet. other = undefined
+export const addLookupTableInfo = isDevnet ? undefined : LOOKUP_TABLE_CACHE; // only mainnet. other = undefined
 
 //  ------------- 2.77 : SOL MarketID Creation Fees -------------------
 // const marketBytesData: MarketBytesData = {
