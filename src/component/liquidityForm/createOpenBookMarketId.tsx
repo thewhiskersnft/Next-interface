@@ -404,9 +404,12 @@ const CreateOpenBookMarketId = () => {
         )}
         <div className="flex justify-left w-full mt-8">
           <CustomButton
+            labelStyles={{ height: "40px" }}
             disabled={false}
             label={"Submit"}
             onClick={handleSubmit}
+            loading={true}
+            loadingText={"Confirming Transaction 1/2"}
           />
         </div>
       </div>

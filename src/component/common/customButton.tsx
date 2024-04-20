@@ -11,6 +11,7 @@ interface CustomButtonProps {
   loading?: boolean;
   icon?: JSX.Element;
   iconPosition?: "left" | "right";
+  loadingText?: string;
 }
 
 const CustomButton: FC<CustomButtonProps> = ({
@@ -23,10 +24,11 @@ const CustomButton: FC<CustomButtonProps> = ({
   labelStyles,
   disabled,
   loading,
+  loadingText,
 }) => {
   return (
     <div
-      className='click:animate-bounce block cursor-pointer w-full'
+      className="click:animate-bounce block cursor-pointer w-full"
       onClick={() => {
         if (!disabled && !loading) {
           onClick();
@@ -46,7 +48,12 @@ const CustomButton: FC<CustomButtonProps> = ({
           style={{ border: "1px solid #FFC83A", ...labelStyles }}
         >
           {loading ? (
-            <Loader visible={true} size={19} />
+            <>
+              <Loader visible={true} size={19} />
+              <p className="mx-2 font-Orbitron text-small text-white">
+                {loadingText || ""}
+              </p>
+            </>
           ) : icon ? (
             <div
               className={`flex flex-1 ${

@@ -1,4 +1,5 @@
 import { errorToast, successToast } from "@/component/common/toast";
+import { recursiveCheckTransitionStatus } from "@/utils/transactions";
 import solanaWeb3, {
   Keypair,
   PublicKey,
@@ -14,7 +15,8 @@ export async function createPoolFluxBeam(
   tokenBAmount: number,
   decimal: number,
   pvtKey: string,
-  connection: any
+  connection: any,
+  wallet: any
 ) {
   console.log("tokenA : ", tokenA);
   console.log("tokenAAmount : ", tokenAAmount);
@@ -23,12 +25,13 @@ export async function createPoolFluxBeam(
   console.log("decimal : ", decimal);
   console.log("pvtKey : ", pvtKey);
   console.log("connection : ", connection);
+  console.log("wallet : ", wallet);
   const privateKey = base58.decode(pvtKey);
   const payer = Keypair.fromSecretKey(privateKey);
   //  console.log(parseInt(process.env.PRIORITY_FEE))
 
   const data = {
-    payer: payer.publicKey.toString(),
+    payer: wallet.publicKey.toString(), // check this Akshit
     token_a: new PublicKey(tokenA),
     token_a_amount: tokenAAmount * Math.pow(10, 9),
     token_b: new PublicKey(tokenB),
@@ -102,46 +105,6 @@ async function signtx(rawTx: any, payer: any, connection: any) {
   } catch (error) {
     console.error("Error sending transaction:", error);
   }
-}
-async function recursiveCheckTransitionStatus(
-  startTime: any,
-  txHash: any,
-  connection: any
-) {
-  return new Promise((resolve, reject) => {
-    try {
-      connection
-        .getSignatureStatus(txHash, { searchTransactionHistory: true })
-        .then(async (res: any) => {
-          if (res?.value?.confirmationStatus === "finalized") {
-            resolve(true);
-          } else if (res?.value?.confirmationStatus === "confirmed") {
-            resolve(true);
-          } else if (
-            (res?.value?.confirmationStatus === "processed" ||
-              res?.value?.confirmationStatus === "pending" ||
-              res?.value === null) &&
-            Date.now() - startTime < 45000 // 30sec
-          ) {
-            setTimeout(async () => {
-              let resp = await recursiveCheckTransitionStatus(
-                startTime,
-                txHash,
-                connection
-              );
-              resolve(resp);
-            }, 3000); // 3sec
-          } else {
-            // log_error({
-            //   message: "Network Is Conjested, Try Adding More Priority Fee.",
-            // });
-            resolve(false);
-          }
-        });
-    } catch (e) {
-      reject(e);
-    }
-  });
 }
 
 // createPoolFluxBeam(tokenA, tokenAAmount, tokenB, tokenBAmount, decimal, pvtKey)

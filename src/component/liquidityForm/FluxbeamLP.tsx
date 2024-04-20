@@ -74,7 +74,8 @@ const FluxbeamLP = ({}) => {
       quoteTokenAmt,
       baseToken.decimal as number,
       process.env.NEXT_PUBLIC_HELIUS_API_KEY || "",
-      lpConnection
+      lpConnection,
+      wallet
     );
   };
 

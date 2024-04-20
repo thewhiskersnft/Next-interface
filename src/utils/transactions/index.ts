@@ -4,7 +4,7 @@ export async function recursiveCheckTransitionStatus(
   startTime: any,
   txHash: any,
   connection: any,
-  wallet: any
+  wallet?: any
 ) {
   return new Promise((resolve: any, reject: any) => {
     try {

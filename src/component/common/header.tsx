@@ -19,6 +19,7 @@ import { HeaderItem } from "@/interfaces";
 import { SigninMessage } from "@/utils/auth/SigninMessage";
 import bs58 from "bs58";
 import base58 from "bs58";
+import { numberWithCommas } from "@/utils/common";
 
 const borderColor: string = "#4D4D4D";
 
@@ -31,6 +32,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
   const [searchVal, setSearchVal] = useState<string>("");
   const [showButton, setShowButton] = useState(false);
   const [signature, setSignature] = useState();
+  const [rewards, setRewards] = useState(234332);
 
   const wallet = useWallet();
   // const { publicKey, signMessage } = useWallet();
@@ -99,7 +101,27 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
   // };
 
   const handleSignIn = async () => {
-    const messageToSign = "Signin message!!";
+    const messageToSign = `Moonly wants you to signin!
+    Please signin after reading terms and conditions.
+    
+    ${JSON.stringify({
+      address: "9PzXGVBpyghgKDXA5eUxDJp17b1gdfrzJX2f5Ff5dpuV",
+      statement:
+        "moonly.trade wants you to sign in with your Solana account:\n9PzXGVBpyghgKDXA5eUxDJp17b1gdfrzJX2f5Ff5dpuV\n\nClick Sign or Approve only means you have proved this wallet is owned by you. This request will not trigger any blockchain transaction or cost any gas fee",
+      nonce: "7chut45Mzg",
+      chainId: "mainnet",
+      issuedAt: "2024-04-20T16:49:32.389Z",
+      resources: ["https://moonly.trade"],
+    })}`;
+    // JSON.stringify({
+    //   address: "9PzXGVBpyghgKDXA5eUxDJp17b1gdfrzJX2f5Ff5dpuV",
+    //   statement:
+    //     "moonly.trade wants you to sign in with your Solana account:\n9PzXGVBpyghgKDXA5eUxDJp17b1gdfrzJX2f5Ff5dpuV\n\nClick Sign or Approve only means you have proved this wallet is owned by you. This request will not trigger any blockchain transaction or cost any gas fee",
+    //   nonce: "7chut45Mzg",
+    //   chainId: "mainnet",
+    //   issuedAt: "2024-04-20T16:49:32.389Z",
+    //   resources: ["https://moonly.trade"],
+    // });
     try {
       const message = new TextEncoder().encode(messageToSign);
       if (wallet.signMessage) {
@@ -227,6 +249,24 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             borderColor: borderColor,
           }}
         >
+          <span
+            className="flex pr-2 justify-between items-center h-max"
+            style={{
+              borderRightWidth: "2px",
+              borderColor: borderColor,
+            }}
+          >
+            <Image
+              src={"/moon.svg"}
+              alt="moon Logo"
+              width={28}
+              height={28}
+              priority
+            />
+            <p className="font-Oxanium text-xsmall text-white ml-2">
+              {numberWithCommas(rewards)}
+            </p>
+          </span>
           {wallet.connected ? (
             <></>
           ) : (
