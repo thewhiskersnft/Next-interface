@@ -8,6 +8,12 @@ import { metaplexBuilder } from "@/metaplex";
 import { MetaplexFile } from "@metaplex-foundation/js";
 import { createSPLTokenTxBuilder } from "@/solana/txBuilder/createSPLTokenTxBuilder";
 import CustomButton from "./customButton";
+import { numberWithCommas } from "@/utils/common";
+import Lottie from "react-lottie";
+import * as moonAnimationData from "../../assets/gifs/13 Moon.json";
+import * as rocketAnimationData from "../../assets/gifs/27 rocket toy.json";
+import * as seasonAnimationData from "../../assets/gifs/18 Moon.json";
+import * as referalAnimationData from "../../assets/gifs/45 reference point.json";
 
 interface SidebarProps {
   data: PreviewData;
@@ -29,6 +35,9 @@ interface SidebarProps {
   loading?: boolean;
   logoStyles?: any;
   logoContainerStyles?: any;
+  showRewards?: boolean;
+  rewardPoints?: number;
+  hideValuesOverflow?: boolean;
 }
 
 const RightSidebar: FC<SidebarProps> = ({
@@ -46,92 +55,63 @@ const RightSidebar: FC<SidebarProps> = ({
   logoStyles,
   logoContainerStyles,
   hideCreateBtn,
+  showRewards,
+  rewardPoints,
+  hideValuesOverflow,
 }) => {
   const dataHeadings = Object.keys(data);
 
-  const {
-    name,
-    symbol,
-    description,
-    previewData,
-    delegate,
-    defaultAccountStateOption,
-    rate,
-    configAuthority,
-    withdrawAuthority,
-    maxFee,
-    fee,
-    nonTransferable,
-    permanentDelegate,
-    defaultAccountState,
-    interestBearing,
-    transferTax,
-    enableExtensions,
-    selectedForm,
-    isToggled,
-    discord,
-    telegram,
-    twitter,
-    fileData,
-    metaplexFileData,
-    website,
-    decimal,
-    supply,
+  const moonDefaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: moonAnimationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
 
-    tokenAddress,
-    mintAuthority,
-    freezeAuthority,
-    mutableMetadata,
-  } = useSelector((state: any) => state.formDataSlice);
-  // const wallet = useWallet();
-  // const { connection } = useConnection();
-  // const createTokenHandler = async () => {
-  //   // //console.log("here");
-  //   toast.error("Remove comment!");
-  //   if (!wallet.connected) {
-  //     // //console.log("Wallet not connected");
-  //   }
-  //   try {
-  //     const isSPL = true;
-  //     if (isSPL) {
-  //       const metaplexhandler = await metaplexBuilder(wallet, connection);
-  //       const imgURI = await metaplexhandler.storage().upload(metaplexFileData);
-  //       // //console.log("Uploaded Image URI (Arweave)", imgURI);
+  const seasonDefaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: seasonAnimationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+  const rocketDefaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: rocketAnimationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+  const referalDefaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: referalAnimationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
 
-  //       if (imgURI) {
-  //         const tokenMetadata = {
-  //           name: name,
-  //           symbol: symbol,
-  //           description: description,
-  //           image: imgURI,
-  //         };
-  //         const { uri } = await metaplexhandler
-  //           .nfts()
-  //           .uploadMetadata(tokenMetadata);
-
-  //         // //console.log("Uploaded Metadata URI (Arweave)", uri);
-
-  //         const txhash = await createSPLTokenTxBuilder(
-  //           name,
-  //           symbol,
-  //           decimal,
-  //           uri,
-  //           supply,
-  //           connection,
-  //           wallet
-  //         );
-
-  //         // //console.log("txhash", txhash);
-  //       } else {
-  //       }
-  //     } else {
-  //     }
-  //   } catch (error) {
-  //     // //console.log(error);
-  //   }
-  // };
-
-  // // //console.log("media  : ", mediaLinks);
+  const rewardsCards = [
+    {
+      defOptions: seasonDefaultOptions,
+      label: "Season 1 Multiplier",
+      rightText: "2x",
+    },
+    {
+      defOptions: rocketDefaultOptions,
+      label: "Boost",
+      rightText: "1.05x",
+    },
+    {
+      defOptions: referalDefaultOptions,
+      label: "Referals",
+      rightText: "23",
+    },
+  ];
 
   return (
     <div className="mr-4 my-12 h-max w-[383px]">
@@ -150,33 +130,35 @@ const RightSidebar: FC<SidebarProps> = ({
             {label || "Preview"}
           </div>
           <div className="p-4 bg-black">
-            <div
-              className={`border-yellow1 border-2 flex items-center justify-center h-[343px] w-[343px]`}
-              style={{ ...logoContainerStyles }}
-            >
-              {formik?.values.logo || logo ? (
-                <img
-                  src={formik?.values.logo || logo} // default image is cat1 for now
-                  alt="logo"
-                  width={`${254}px`}
-                  style={{
-                    height: `${254}px`,
-                    objectFit: "cover",
-                    borderRadius: "200px",
-                    ...logoStyles,
-                  }}
-                />
-              ) : (
-                <Image
-                  src={"/cat1.svg"}
-                  alt="Cat Logo"
-                  width={254}
-                  height={254}
-                  style={{ ...logoStyles }}
-                  priority
-                />
-              )}
-            </div>
+            {!showRewards && (
+              <div
+                className={`border-yellow1 border-2 flex items-center justify-center h-[343px] w-[343px]`}
+                style={{ ...logoContainerStyles }}
+              >
+                {formik?.values.logo || logo ? (
+                  <img
+                    src={formik?.values.logo || logo} // default image is cat1 for now
+                    alt="logo"
+                    width={`${254}px`}
+                    style={{
+                      height: `${254}px`,
+                      objectFit: "cover",
+                      borderRadius: "200px",
+                      ...logoStyles,
+                    }}
+                  />
+                ) : (
+                  <Image
+                    src={"/cat1.svg"}
+                    alt="Cat Logo"
+                    width={254}
+                    height={254}
+                    style={{ ...logoStyles }}
+                    priority
+                  />
+                )}
+              </div>
+            )}
             {!hideLinks && (
               <span className="w-[full] flex justify-between items-center my-[20px] px-[90px]">
                 <a
@@ -265,12 +247,35 @@ const RightSidebar: FC<SidebarProps> = ({
                 </a>
               </span>
             )}
+            {showRewards && (
+              <div className="mt-2 flex justify-between items-center">
+                <p className="text-left text-small text-white font-Orbitron">
+                  Moons Earned
+                </p>
+                <span className="flex items-center">
+                  <p className="text-right text-small text-yellow1 font-Orbitron my-2 mr-4">
+                    {numberWithCommas(rewardPoints || 0)}
+                  </p>
+                  <Lottie
+                    options={moonDefaultOptions}
+                    height={40}
+                    width={40}
+                    isStopped={false}
+                    isPaused={false}
+                  />
+                </span>
+              </div>
+            )}
             {dataHeadings.map((heading: string, headingIndex: number) => {
               const keys = Object.keys(data[heading]);
               const headingData = data[heading];
               return (
                 <React.Fragment key={headingIndex}>
-                  <span className="text-white flex mt-6">
+                  <span
+                    className={`text-white flex ${
+                      showRewards ? "mt-2" : "mt-6"
+                    }`}
+                  >
                     <p className="w-1/2 text-left text-small text-yellow1 font-Orbitron my-[10px]">
                       {heading}
                     </p>
@@ -290,7 +295,13 @@ const RightSidebar: FC<SidebarProps> = ({
                             {` : `}
                           </p>
                         </span>
-                        <p className="w-2/3 text-left text-xsmall font-Oxanium pl-[7px]">
+                        <p
+                          className={`w-2/3 text-left text-xsmall font-Oxanium pl-[7px] ${
+                            hideValuesOverflow
+                              ? "line-clamp-none truncate"
+                              : "line-clamp-5"
+                          }`}
+                        >
                           {`${val}`}
                         </p>
                       </span>
@@ -299,6 +310,32 @@ const RightSidebar: FC<SidebarProps> = ({
                 </React.Fragment>
               );
             })}
+            {showRewards && (
+              <div className="my-4">
+                {rewardsCards.map((reward: any, rIndex: number) => {
+                  const { defOptions, label, rightText } = reward;
+                  return (
+                    <section className="bg-background border-[1px] border-variant1 py-4 px-6 flex items-center justify-between mt-6">
+                      <span className="flex items-center">
+                        <Lottie
+                          options={defOptions}
+                          height={40}
+                          width={40}
+                          isStopped={false}
+                          isPaused={false}
+                        />
+                        <p className="font-Oxanium text-white text-xsmall ml-4">
+                          {label}
+                        </p>
+                      </span>
+                      <p className="font-Oxanium text-white text-xsmall ml-4">
+                        {rightText}
+                      </p>
+                    </section>
+                  );
+                })}
+              </div>
+            )}
             {!hideCreateBtn && (
               <CustomButton
                 onClick={formik?.handleSubmit}

@@ -219,24 +219,25 @@ const RewardsComponent = ({}: RewardsComponentProps) => {
       <div style={{ maxHeight: "calc(100% - 17px)", overflow: "scroll" }}>
         <RightSidebar
           hidePreview={false}
+          showRewards={true}
+          rewardPoints={77643}
           hideLinks={true}
           data={{
-            "Pool Details": {
-              "Trading Pair": "WHIZ/USDC",
-              "Token A": "sdvns...asdfa",
-              "Token B": "sdvns...asdfa",
-              "Trade Fee": "0.02",
-              "Owner Trade Fee": "0.005",
-              "Owner Withdraw Fee": 0,
-              "Curve Type": "Constant Price",
-              "Starting Price": "1 WHIZ ≈ 0.00000000 SOL",
+            User: {
+              "Wallet Address": "djklcnkldcldllklk348907njk",
+              Rank: "# 1345",
+              "Total Moons": "432,334",
+              "7-day Moons": "432",
+              Referals: "23",
+              "Moons from Referals": "3432",
+              "Moons from Engagements": "8765",
+              "Trading Volume": "$34,093",
             },
           }}
           logo={""}
           showInfo={true}
           createBtnText={""}
           logoContainerStyles={{ height: "104px" }}
-          logoStyles={{ height: "64px", width: "64px" }}
           mediaLinks={{
             website: "",
             twitter: "",

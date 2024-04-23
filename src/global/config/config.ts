@@ -17,4 +17,7 @@ export const AppENVConfig = {
   nft_storage_api_key: process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN
     ? process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN
     : "",
+  service_api_url: process.env.NEXT_PUBLIC_SERVICE_API_URL
+    ? process.env.NEXT_PUBLIC_SERVICE_API_URL
+    : "",
 };

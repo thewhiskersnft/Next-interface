@@ -20,6 +20,7 @@ import { SigninMessage } from "@/utils/auth/SigninMessage";
 import bs58 from "bs58";
 import base58 from "bs58";
 import { numberWithCommas } from "@/utils/common";
+import authService from "@/services/authService";
 
 const borderColor: string = "#4D4D4D";
 
@@ -101,34 +102,31 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
   // };
 
   const handleSignIn = async () => {
-    const messageToSign = `Moonly wants you to signin!
-    Please signin after reading terms and conditions.
-    
-    ${JSON.stringify({
-      address: "9PzXGVBpyghgKDXA5eUxDJp17b1gdfrzJX2f5Ff5dpuV",
-      statement:
-        "moonly.trade wants you to sign in with your Solana account:\n9PzXGVBpyghgKDXA5eUxDJp17b1gdfrzJX2f5Ff5dpuV\n\nClick Sign or Approve only means you have proved this wallet is owned by you. This request will not trigger any blockchain transaction or cost any gas fee",
-      nonce: "7chut45Mzg",
-      chainId: "mainnet",
-      issuedAt: "2024-04-20T16:49:32.389Z",
-      resources: ["https://moonly.trade"],
-    })}`;
-    // JSON.stringify({
-    //   address: "9PzXGVBpyghgKDXA5eUxDJp17b1gdfrzJX2f5Ff5dpuV",
-    //   statement:
-    //     "moonly.trade wants you to sign in with your Solana account:\n9PzXGVBpyghgKDXA5eUxDJp17b1gdfrzJX2f5Ff5dpuV\n\nClick Sign or Approve only means you have proved this wallet is owned by you. This request will not trigger any blockchain transaction or cost any gas fee",
-    //   nonce: "7chut45Mzg",
-    //   chainId: "mainnet",
-    //   issuedAt: "2024-04-20T16:49:32.389Z",
-    //   resources: ["https://moonly.trade"],
-    // });
+    // console.log("........ ", wallet.publicKey?.toBase58());
+    let loginMessage = await authService.loginMessage({
+      walletAddress: wallet.publicKey?.toBase58(),
+    });
+    console.log(loginMessage);
+    const messageToShow = `${loginMessage.data?.data?.statement}\nnonce: ${
+      loginMessage.data?.data?.nonce
+    }\ndomain: ${
+      loginMessage.data?.data?.resources &&
+      loginMessage.data?.data?.resources[0]
+    }\nissuedAt: ${loginMessage.data?.data?.issuedAt}`;
     try {
-      const message = new TextEncoder().encode(messageToSign);
+      const message = new TextEncoder().encode(messageToShow);
       if (wallet.signMessage) {
         const uint8arraySignature = await wallet.signMessage(message);
-        console.log(uint8arraySignature);
-        setSignature(base58.encode(uint8arraySignature) as any);
-        console.log(base58.encode(uint8arraySignature));
+        console.log(uint8arraySignature, "sign mess...");
+        if (uint8arraySignature) {
+          let signInResp = await authService.login({
+            signature: base58.encode(uint8arraySignature),
+            message: messageToShow,
+            wallet_address: wallet.publicKey?.toBase58(),
+            session_id: `${new Date().getTime()}`,
+          });
+          console.log("Success : ", signInResp);
+        }
       }
     } catch (e) {
       console.log("could not sign message");
@@ -263,7 +261,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
               height={28}
               priority
             />
-            <p className="font-Oxanium text-xsmall text-white ml-2">
+            <p className="font-Oxanium text-xsmall text-white ml-2 mr-[10px]">
               {numberWithCommas(rewards)}
             </p>
           </span>

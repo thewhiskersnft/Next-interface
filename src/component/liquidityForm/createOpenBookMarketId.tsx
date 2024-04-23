@@ -12,7 +12,7 @@ import SettingsCard from "./settingsCard";
 import { fetchUserSPLTokens } from "@/solana/query/fetchUserSPLTokens";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { Token } from "@raydium-io/raydium-sdk";
-import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { TOKEN_PROGRAM_ID, getAccount, getMint } from "@solana/spl-token";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { get } from "lodash";
 import { MarketV2Updated } from "@/solana/market/createMarketID";
@@ -170,19 +170,28 @@ const CreateOpenBookMarketId = () => {
     setShowAdvancedSettings(!showAdvancedSettings);
   };
 
-  // console.log("Fetching data");
-  useEffect(() => {
-    const fetchData = async () => {
-      setBaseTokenLoading(true);
-      // setQuoteTokenLoading(true);
-      const data = await fetchUserSPLTokens(wallet, connection.connection);
-      console.log("data : ", data);
-      if (data && Array.isArray(data)) {
-        setBaseTokenList(data); // base tokens list
-      }
-      setBaseTokenLoading(false);
-      // setQuoteTokenLoading(false);
-    };
+  async function getTokenBalanceSpl(connection: any, tokenAccount: any) {
+    console.log("Amount:::: connection : ", connection);
+    const info = await getAccount(connection, tokenAccount);
+    const amount = Number(info.amount);
+    const mint = await getMint(connection, info.mint);
+    const balance = amount / 10 ** mint.decimals;
+    console.log("Balance (using Solana-Web3.js): ", balance);
+    return balance;
+  }
+
+  const fetchData = async () => {
+    setBaseTokenLoading(true);
+    // setQuoteTokenLoading(true);
+    const data = await fetchUserSPLTokens(wallet, connection.connection);
+    // console.log("data : ", data);
+    if (data && Array.isArray(data)) {
+      setBaseTokenList(data); // base tokens list
+    }
+    setBaseTokenLoading(false);
+    // setQuoteTokenLoading(false);
+  };
+  const fetchAndSetQuoteTokens = async () => {
     const wsol = new Token(
       TOKEN_PROGRAM_ID,
       new PublicKey("So11111111111111111111111111111111111111112"),
@@ -197,6 +206,11 @@ const CreateOpenBookMarketId = () => {
       "USDC",
       "USDC"
     );
+    const usdcAmt = await getTokenBalanceSpl(
+      connection,
+      "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    );
+    console.log("Amount::::: ", usdcAmt);
     const quoteTokenList = [
       {
         amount: 1000,
@@ -216,6 +230,31 @@ const CreateOpenBookMarketId = () => {
       },
     ];
     setQuoteTokenList(quoteTokenList);
+  };
+
+  // const solBalance = async (recipientPublicKey: any) => {
+  //   try {
+  //     const recipientPublicKe = new PublicKey(recipientPublicKey);
+
+  //     const senderBalance = await connection.getBalance(recipientPublicKe);
+
+  //     log_info(balance of ${recipientPublicKe}: ${senderBalance / 1000000000});
+
+  //     return {
+  //       status: true,
+  //       data: senderBalance / 1000000000,
+  //     };
+  //   } catch (e) {
+  //     return {
+  //       status: false,
+  //       data: e,
+  //     };
+  //   }
+  // };
+
+  // console.log("Fetching data");
+  useEffect(() => {
+    fetchAndSetQuoteTokens();
     fetchData();
   }, []);
 
