@@ -232,3 +232,57 @@ export const demoTokens = [
     owner: "Whiskers",
   },
 ];
+
+export enum TransactionType {
+  Deposit = "Deposit",
+  Withdrawl = "Withdrawl",
+  Rewarded = "Rewarded",
+}
+
+export enum TransactionAmount {
+  // Login = 20,
+  SetUsername = "SetUsername",
+  GoogleAuth = "GoogleAuth",
+  InAppWalletCreate = "InAppWalletCreate",
+  InAppWalletFund = "InAppWalletFund",
+  CreateToken = "CreateToken",
+  ManageToken = "ManageToken",
+  UpdateMetadata = "UpdateMetadata",
+  GetTokenVerified = "GetTokenVerified",
+  MintTokens = "MintTokens",
+  BurnTokens = "BurnTokens",
+  MarketIDBareMetal = "MarketIDBareMetal",
+  MarketIDMinimal = "MarketIDMinimal",
+  MarketIDRecommended = "MarketIDRecommended",
+  RenounceLP = "RenounceLP",
+  SnapshotTokenHolders = "SnapshotTokenHolders",
+  SendAirdrops = "SendAirdrops",
+  CreateVanityAddress = "CreateVanityAddress",
+  BurnToClaimRent = "BurnToClaimRent",
+  AirdropChecker = "AirdropChecker",
+  AirdropCheckerBig = "AirdropCheckerBig",
+}
+
+export enum TransactionSource {
+  // Login = 5,
+  SetUsername = "SetUsername",
+  GoogleAuth = "GoogleAuth",
+  InAppWalletFund = "InAppWalletFund",
+  CreateToken = "CreateToken",
+  ManageToken = "ManageToken",
+  InAppWalletCreate = "InAppWalletCreate",
+  UpdateMetadata = "UpdateMetadata",
+  GetTokenVerified = "GetTokenVerified",
+  MintTokens = "MintTokens",
+  BurnTokens = "BurnTokens",
+  MarketIDBareMetal = "MarketIDBareMetal",
+  MarketIDMinimal = "MarketIDMinimal",
+  MarketIDRecommended = "MarketIDRecommended",
+  RenounceLP = "RenounceLP",
+  SnapshotTokenHolders = "SnapshotTokenHolders",
+  SendAirdrops = "SendAirdrops",
+  CreateVanityAddress = "CreateVanityAddress",
+  BurnToClaimRent = "BurnToClaimRent",
+  AirdropChecker = "AirdropChecker",
+  AirdropCheckerBig = "AirdropCheckerBig",
+}

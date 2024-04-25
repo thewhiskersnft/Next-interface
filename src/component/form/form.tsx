@@ -137,6 +137,7 @@ export default function Form() {
     validateOnBlur: false,
     validate: (values) => createTokenValidator(values),
     onSubmit: async (values) => {
+      console.log("Here");
       setButtonClicked(true);
       if (tokenAction === TokenRoutes.updateMetadata) {
         updateMetadataHandler();
@@ -265,10 +266,10 @@ export default function Form() {
         errorToast({ message: "Please upload logo!" });
       }
     }
-    resp["logo"] = "Please select logo";
     return resp;
   };
   const createTokenHandler = async (values: any) => {
+    console.log("Inside create token");
     if (!wallet.connected) {
       errorToast({ message: "Please Connect The Wallet" });
       setButtonClicked(false);

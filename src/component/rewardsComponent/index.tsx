@@ -1,7 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import RewardsTable from "./rewardsTable";
 import RightSidebar from "../common/rightSidebar";
+import rewardService from "@/services/rewardService";
+import { get } from "lodash";
 
 interface RewardsComponentProps {}
 
@@ -166,7 +168,20 @@ const dummyRewardsData = [
 
 const RewardsComponent = ({}: RewardsComponentProps) => {
   const [selectedTab, setSelectedTab] = useState(tabs.myRewards);
-  const [rewards, setRewards] = useState([...dummyRewardsData]);
+  const [rewards, setRewards] = useState([]);
+
+  useEffect(() => {
+    fetchLeaderboardData();
+  }, []);
+
+  const fetchLeaderboardData = async () => {
+    const leaderboardData = await rewardService.fetchLeaderboard();
+    console.log(leaderboardData);
+    if (leaderboardData.status) {
+      setRewards(get(leaderboardData, "data.data", []));
+    }
+  };
+
   return (
     <div className="h-full w-full px-4 py-4 box-border flex gap-4">
       <div className="flex flex-1 flex-col py-2">
@@ -175,7 +190,7 @@ const RewardsComponent = ({}: RewardsComponentProps) => {
             let tabLabel = tabs[tabKey];
             return (
               <button
-                key={index}
+                key={index + "button"}
                 className={`${
                   selectedTab === tabLabel
                     ? "bg-yellow1 text-black font-semibold"

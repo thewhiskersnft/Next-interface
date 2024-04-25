@@ -21,6 +21,10 @@ import bs58 from "bs58";
 import base58 from "bs58";
 import { numberWithCommas } from "@/utils/common";
 import authService from "@/services/authService";
+import rewardService from "@/services/rewardService";
+import { get } from "lodash";
+import { getDataFromCookies } from "@/utils/apiService";
+import { cookies } from "next/headers";
 
 const borderColor: string = "#4D4D4D";
 
@@ -49,8 +53,17 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
     if (appLoading) {
       dispatch(setAppLoading(false));
     }
+    fetchRewards();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const fetchRewards = async () => {
+    const allRewards = await rewardService.fetchRewards();
+    console.log(allRewards);
+    if (allRewards.status) {
+      setRewards(get(allRewards, "data.data.total_points", 0));
+    }
+  };
 
   const handleClick = (item: HeaderItem) => {
     if (tokenAction) {
@@ -102,6 +115,9 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
   // };
 
   const handleSignIn = async () => {
+    // getDataFromCookies("refreshToken");
+    // // console.log(cookies.toString());
+    // return;
     // console.log("........ ", wallet.publicKey?.toBase58());
     let loginMessage = await authService.loginMessage({
       walletAddress: wallet.publicKey?.toBase58(),

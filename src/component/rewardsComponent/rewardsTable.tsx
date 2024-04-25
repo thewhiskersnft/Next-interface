@@ -3,10 +3,11 @@ import Image from "next/image";
 import React from "react";
 
 interface RewardInterface {
-  rank: number;
-  user: string;
-  totalMoons: number;
-  sevenDayMoons: number;
+  rank?: number;
+  user_name: string;
+  total_points: number;
+  sevenDayPoints: number;
+  wallet_address: string;
 }
 
 interface RewardsTableProps {
@@ -14,6 +15,7 @@ interface RewardsTableProps {
 }
 
 const RewardsTable = ({ rewards }: RewardsTableProps) => {
+  console.log("Rewards : ", rewards);
   return (
     <div className="px-4 bg-brownBG">
       <table
@@ -30,21 +32,23 @@ const RewardsTable = ({ rewards }: RewardsTableProps) => {
         </thead>
         <tbody style={{ rowGap: "10px" }}>
           {rewards.map((trade: RewardInterface, index: number) => {
-            const { rank, user, totalMoons, sevenDayMoons } = trade;
+            const { rank, wallet_address, total_points, sevenDayPoints } =
+              trade;
 
             return (
               <tr
                 className={`text-xsmall font-Oxanium ${
                   index % 2 === 0 ? "bg-[#333333]" : "bg-[#222222]"
                 }`}
+                key={index}
               >
-                <td className="px-2 py-2 text-center">{rank}</td>
-                <td className="px-2 py-2 text-center">{user}</td>
+                <td className="px-2 py-2 text-center">{index + 1}</td>
+                <td className="px-2 py-2 text-center">{wallet_address}</td>
                 <td className="px-2 py-2 text-center">
-                  {numberWithCommas(totalMoons)}
+                  {numberWithCommas(total_points)}
                 </td>
                 <td className="px-2 py-2 text-center">
-                  {numberWithCommas(sevenDayMoons)}
+                  {numberWithCommas(sevenDayPoints)}
                 </td>
               </tr>
             );
