@@ -3,6 +3,7 @@ import {
   setLocalAccessToken,
   setLocalGUID,
   setLocalSessionId,
+  setLocalWalletAddress,
 } from "@/utils/apiService";
 import { Post } from "../helper/Agent";
 import { AUTH_API_PATH } from "@/constants/apiURLs";
@@ -17,7 +18,11 @@ class AuthService {
     return resp;
   };
 
-  login = async (data: Object) => {
+  login = async (data: Object, walletAddress: string) => {
+    if (!walletAddress) {
+      console.warn("Wallet not connected!");
+      return;
+    }
     const URL = getServiceApiUrl() + AUTH_API_PATH.LOGIN;
     const resp = await Post(URL, data, false, { withCredentials: true }, true);
     if (resp) {
@@ -27,6 +32,7 @@ class AuthService {
       setLocalAccessToken(accessToken);
       setLocalSessionId(sessionId);
       setLocalGUID(userGUID);
+      setLocalWalletAddress(walletAddress);
       const fetchPointsEvents = new CustomEvent(EVENTS.GET_REWARD_POINTS);
       window.dispatchEvent(fetchPointsEvents);
     }
