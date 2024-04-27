@@ -11,6 +11,8 @@ interface CustomDropdownProps {
   containerStyles?: CSSProperties;
   options: Array<any>;
   placeholder?: string;
+  showError?: boolean;
+  errorMessage?: string;
 }
 
 const CustomDropdown: FC<CustomDropdownProps> = ({
@@ -21,6 +23,8 @@ const CustomDropdown: FC<CustomDropdownProps> = ({
   containerStyles,
   options,
   placeholder,
+  showError,
+  errorMessage,
 }) => {
   return (
     <>
@@ -55,6 +59,11 @@ const CustomDropdown: FC<CustomDropdownProps> = ({
           value={value}
           placeholder={placeholder || ""}
         />
+        {showError && (
+          <div className="bg-[#D93535] text-[10px] font-Oxanium px-[16px]">
+            {errorMessage}
+          </div>
+        )}
       </div>
     </>
   );

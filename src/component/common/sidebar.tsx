@@ -42,7 +42,6 @@ const Sidebar = ({}: SidebarProps) => {
     // if (pathName === `/airdrop`) {
     //   setClicked("Airdrop Checker");
     // }
-    // console.log("path", pathName);
     setRefresh(!refersh);
   }, [action]);
 
@@ -51,9 +50,7 @@ const Sidebar = ({}: SidebarProps) => {
     // } else {
     // setChildClicked(val);
     // }
-    // //console.log(navigateTo);
     if (navigateTo) {
-      // //console.log(navigateTo);
       router.push(navigateTo);
     }
   };
@@ -179,10 +176,8 @@ const Sidebar = ({}: SidebarProps) => {
                   children &&
                   children.map((child, childIndex) => {
                     const { label, description, navigateTo, disabled } = child;
-                    // console.log("Child : ", child);
                     let isChildChecked = false;
                     if (window) {
-                      // console.log(window.location);
                       if (
                         window.location.href ===
                         `${window.location.origin}${navigateTo}`
@@ -190,7 +185,6 @@ const Sidebar = ({}: SidebarProps) => {
                         isChildChecked = true;
                       }
                     }
-                    // console.log("isChildChecked : ", isChildChecked);
                     return (
                       <div
                         className={`bg-background h-28 border-[1px] border-variant1 flex flex-col justify-center align-center p-6 hover:bg-variant1 cursor-pointer px-10 ${

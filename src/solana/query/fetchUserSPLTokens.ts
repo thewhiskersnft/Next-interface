@@ -67,6 +67,7 @@ export const fetchUserSPLTokens = async (
       const renderTokenData: any[] = [];
       for (var i = 0; i < splTokens.length; i++) {
         const mintAddress = splTokens[i].mint;
+        const decimal = splTokens[i].decimals;
         const amount = splTokens[i].amount / 10 ** splTokens[i].decimals;
         const rawtokenMetadata = await getTokenMetadata(
           new PublicKey(mintAddress),
@@ -81,12 +82,13 @@ export const fetchUserSPLTokens = async (
           image: rawtokenMetadata?.tokenLogo,
           amount,
           mint: mintAddress,
+          decimal: decimal,
           isToken22: false,
         });
       }
       return renderTokenData;
     }
   } catch (error) {
-    console.log(error);
+    console.warn(error);
   }
 };

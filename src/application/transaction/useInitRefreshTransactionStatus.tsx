@@ -17,17 +17,14 @@ export default function useInitRefreshTransactionStatus() {
   );
 
   const initRefreshTransactionStatus = useCallback(async () => {
-    //console.log("//////////////////////");
     if (!connection) return;
     const pendingTx = txHistory.filter((i: any) => i.status === "pending");
     const results = await fetchTransitionStatus(
       pendingTx.map((i: any) => i.txid),
       connection
     );
-    //console.log(results, "results in refreshTX");
     results.forEach((result, idx) => {
       const tx = pendingTx[idx];
-      //console.log("------------------------- >>>>>>>> ", tx);
       if (
         !result &&
         parseDurationAbsolute(Date.now() - Number(tx.time)).minutes > 5

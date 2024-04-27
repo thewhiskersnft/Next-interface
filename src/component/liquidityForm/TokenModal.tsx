@@ -3,41 +3,56 @@ import Modal from "../common/modal";
 import CustomInput from "../common/customInput";
 import Image from "next/image";
 import CustomRadio from "../common/customRadio";
-import { fetchUserSPLTokens } from "@/solana/query/fetchUserSPLTokens";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { fetchUserToken22Tokens } from "@/solana/query/fetchUserToken22Tokens";
+import { handleCopy } from "@/utils/common";
+import Link from "next/link";
+import { getMintURL } from "@/utils/redirectURLs";
+import { get } from "lodash";
+import Loader from "../common/loader";
 
 type TokenModalProps = {
   isOpen: boolean;
+  loading?: boolean;
   onClose: () => void;
   tokenList: Array<any>;
+  handleTokenSelect: (token: any, index: number) => any;
 };
 
-const TokenModal = ({ isOpen, onClose, tokenList }: TokenModalProps) => {
+const TokenModal = ({
+  isOpen,
+  loading,
+  onClose,
+  tokenList,
+  handleTokenSelect,
+}: TokenModalProps) => {
   const [showTokenSetting, setShowTokenSetting] = useState(false);
   const [radiyumTokenList, setRadiyumTokenList] = useState(false);
   const [solanaTokenList, setSolanaTokenList] = useState(false);
   const [jupiterStrictTokenList, setJupiterStrictTokenList] = useState(false);
   const [userAddedTokenList, setUserAddedTokenList] = useState(false);
+  const [tokenAddr, setTokenAddr] = useState("");
+  const [filteredTokenList, setFilteredTokenList] = useState([...tokenList]);
+  const [recommendedTokens, setRecommendedTokens] = useState([] as any);
+
   const toggleShowTokenSetting = () => {
     setShowTokenSetting(!showTokenSetting);
   };
 
-  const wallet = useWallet();
-  const connection = useConnection();
+  const handleTokenSearch = () => {
+    if (tokenAddr) {
+      let filteredTokens = tokenList.filter(
+        (token: any, index: any) => token.mint === tokenAddr
+      );
+      setFilteredTokenList([...filteredTokens]);
+    } else {
+      setFilteredTokenList([...tokenList]);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      // const data = await fetchUserSPLTokens(wallet, connection.connection);
-
-      const data = await fetchUserToken22Tokens(
-        wallet.publicKey?.toString()!,
-        connection.connection
-      );
-      console.log(data);
-    };
-    fetchData();
-  });
+    setFilteredTokenList([...tokenList]);
+    setTokenAddr("");
+    setRecommendedTokens([...tokenList.slice(0, 4)]);
+  }, [isOpen]);
 
   return (
     <Modal open={isOpen} onClose={onClose}>
@@ -46,8 +61,10 @@ const TokenModal = ({ isOpen, onClose, tokenList }: TokenModalProps) => {
           label="Select a Token"
           id="tokenAddress"
           name="tokenAddress"
-          value={""}
-          onChange={(e) => {}}
+          value={tokenAddr}
+          onChange={(e) => {
+            setTokenAddr(e.target.value);
+          }}
           showSymbol={false}
           type={"text"}
           placeholder={"Enter Token Address"}
@@ -55,6 +72,7 @@ const TokenModal = ({ isOpen, onClose, tokenList }: TokenModalProps) => {
           errorMessage={""}
           showCopy={false}
           showSearch={true}
+          onSearchClick={handleTokenSearch}
         />
         <Image
           src={"/close.svg"}
@@ -67,26 +85,42 @@ const TokenModal = ({ isOpen, onClose, tokenList }: TokenModalProps) => {
         />
         <p className="font-Orbitron text-xsmall mt-4">Recommended Tokens</p>
         <section className="flex justify-between items-center mt-2">
-          {[1, 2, 3, 4].map((token: any, ind: number) => {
+          {recommendedTokens.map((token: any, ind: number) => {
             return (
               <div
                 className="w-[125px] h-[46px] bg-background border-[1px] border-solid border-variant1 hover:border-white"
                 key={ind}
+                onClick={() => {
+                  handleTokenSelect(token, ind);
+                }}
               >
                 <section
                   className="flex justify-start items-center px-2 h-full cursor-pointer"
                   //   onClick={toggleBaseTokenModal}
                 >
-                  <Image
-                    src={"/cat1.svg"}
-                    alt="Token Logo"
-                    width={33}
-                    height={33}
-                    className="cursor-pointer mb-[2px]"
-                    priority
-                  />
-                  <p className="text-xsmall font-Oxanium text-center ml-2">
-                    WIZZ
+                  {token.image ? (
+                    <img
+                      src={token.image}
+                      alt="token logo"
+                      width={`${33}px`}
+                      style={{
+                        height: `${33}px`,
+                        objectFit: "cover",
+                        borderRadius: "50%",
+                      }}
+                    />
+                  ) : (
+                    <Image
+                      src={"/noLogo.svg"}
+                      alt="Token Logo"
+                      width={33}
+                      height={33}
+                      className="cursor-pointer"
+                      priority
+                    />
+                  )}
+                  <p className="text-xsmall font-Oxanium text-center ml-2 w-[50px] truncate">
+                    {get(token, "name", "")}
                   </p>
                 </section>
               </div>
@@ -114,56 +148,96 @@ const TokenModal = ({ isOpen, onClose, tokenList }: TokenModalProps) => {
             </span>
           </section>
         )}
-        {!showTokenSetting && (
+        {loading && (
+          <section className="h-[340px] w-full overflow-scroll scroll-smooth mt-2 flex justify-center items-center">
+            <Loader visible={loading} size={50} />
+          </section>
+        )}
+        {!showTokenSetting && !loading && (
           <section className="h-[340px] w-full overflow-scroll scroll-smooth mt-2">
-            {tokenList.map((token: any, index: number) => {
+            {filteredTokenList.map((token: any, index: number) => {
               return (
                 <div
-                  className="flex justify-between items-center my-4 border-[0.5px] border-variant1 bg-black py-2 px-2"
+                  className="flex justify-between items-center my-4 border-[0.5px] border-variant1 bg-black py-2 px-2 cursor-pointer"
                   key={index}
+                  onClick={() => {
+                    handleTokenSelect(token, index);
+                  }}
                 >
                   <section className="flex">
-                    <Image
-                      src={"/cat1.svg"} // replace with logo
-                      alt="Token Logo"
-                      width={38}
-                      height={38}
-                      className="cursor-pointer mb-[2px]"
-                      priority
-                    />
+                    {token.image ? (
+                      <img
+                        src={token.image}
+                        alt="token logo"
+                        width={`${38}px`}
+                        style={{
+                          height: `${38}px`,
+                          objectFit: "cover",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    ) : (
+                      <Image
+                        src={"/noLogo.svg"}
+                        alt="Token Logo"
+                        width={38}
+                        height={38}
+                        className="cursor-pointer mb-[2px]"
+                        priority
+                      />
+                    )}
                     <span className="ml-2">
                       <p className="text-xsmall font-Oxanium text-left text-white">
                         {token.name}
                       </p>
                       <p className="text-xxsmall font-Oxanium text-left text-disabledLink">
-                        {token.owner}
+                        {token.symbol}
                       </p>
                     </span>
+                    <p className="bg-lightGrey h-min mx-2 p-1 text-[8px] font-Oxanium font-bold">
+                      {token.isToken22 ? "v2" : "v1"}
+                    </p>
                   </section>
                   <section className="ml-2 w-[150px] truncate">
                     <p className="text-xsmall font-Oxanium text-right text-white truncate">
-                      {token.amt}
+                      {token.amount}
                     </p>
                     <span className="flex mt-1">
                       <Image
-                        src={"/copy.svg"} // replace with logo
+                        src={"/copy.svg"}
                         alt="Copy Logo"
                         width={16}
                         height={16}
                         className="cursor-pointer mr-2"
                         priority
+                        onClick={(e: any) => {
+                          e.stopPropagation();
+                          handleCopy(token.mint);
+                        }}
                       />
                       <p className="text-xxsmall font-Oxanium text-center text-yellow1 truncate">
-                        {token.address}
+                        {token.mint}
                       </p>
-                      <Image
-                        src={"/exportWhite.svg"} // replace with logo
-                        alt="Export Logo"
-                        width={16}
-                        height={16}
-                        className="cursor-pointer ml-1"
-                        priority
-                      />
+                      <Link
+                        legacyBehavior
+                        href={getMintURL(token.mint)}
+                        passHref
+                      >
+                        <a
+                          target="_blank"
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-[70px] h-[16px]"
+                        >
+                          <Image
+                            src={"/exportWhite.svg"}
+                            alt="Export Logo"
+                            width={16}
+                            height={16}
+                            className="cursor-pointer"
+                            priority
+                          />
+                        </a>
+                      </Link>
                     </span>
                   </section>
                 </div>
@@ -171,7 +245,7 @@ const TokenModal = ({ isOpen, onClose, tokenList }: TokenModalProps) => {
             })}
           </section>
         )}
-        {showTokenSetting && (
+        {showTokenSetting && !loading && (
           <section className="flex items-center">
             <Image
               src={"/left.svg"}
@@ -187,7 +261,7 @@ const TokenModal = ({ isOpen, onClose, tokenList }: TokenModalProps) => {
             </p>
           </section>
         )}
-        {showTokenSetting && (
+        {showTokenSetting && !loading && (
           <section className="">
             <CustomRadio
               label={"Radiyum Token List"}

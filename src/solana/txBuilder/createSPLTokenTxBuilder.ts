@@ -36,12 +36,17 @@ import {} from "@metaplex-foundation/umi";
 import {
   PLATFORM_FEE_SOL_TOKEN_CREATION,
   PLATFORM_OWNER_ADDRESS,
+  TransactionAmount,
+  TransactionSource,
+  TransactionType,
 } from "@/constants";
 import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
 import { errorToast, successToast } from "@/component/common/toast";
 import { recursiveCheckTransitionStatus } from "@/utils/transactions";
 import { getMintURL, getSignatureURL } from "@/utils/redirectURLs";
 import { getPriorityLambports } from "@/utils/transactions/getPriorityLambports";
+import rewardService from "@/services/rewardService";
+import { getLocalGUID } from "@/utils/apiService";
 let network = isMainnet() ? "mainnet-beta" : "devnet";
 
 export const createSPLTokenTxBuilder = async (
@@ -75,16 +80,12 @@ export const createSPLTokenTxBuilder = async (
     };
 
     const mint_rent = await getMinimumBalanceForRentExemptMint(connection);
-    // //console.log("mint_rent", mint_rent);
 
     const mint_account = Keypair.generate();
-    // //console.log("mint_account", mint_account.publicKey.toBase58());
 
     const [metadataPDA] = getMetadataPda(mint_account.publicKey);
-    // //console.log("metadataPDA", metadataPDA.toBase58());
 
     const owner = wallet.publicKey!;
-    // //console.log("owner", owner.toBase58());
 
     const umi = createUmi(endpoint);
 
@@ -179,7 +180,6 @@ export const createSPLTokenTxBuilder = async (
       lamports: PLATFORM_FEE_SOL_TOKEN_CREATION * LAMPORTS_PER_SOL,
     });
     const PRIORITY_FEE_IX = getPriorityLambports(priorityFees);
-    // console.log(priorityFees, PRIORITY_FEE_IX);
     const createTokentTransaction = new Transaction().add(
       createMintAccountInstruction,
       InitMint,
@@ -198,7 +198,6 @@ export const createSPLTokenTxBuilder = async (
 
     const startTime = Date.now();
     // while()
-    //console.log(" Now : ", startTime);
     // 2afRSao7JckbxdV4p1Ak3jcD7uKsW4C7kY2tRukyXLtncdiTW4jpiaZDSR4nKYveok1WYzXgyc337PY3bAmJkzoK', mint: '5Pm6NTDoRYHjyy36XyJy3bY8ezpPHnzfLvug1zrHuhKK
     // let resp = await recursiveCheckTransitionStatus(
     //   startTime,
@@ -210,7 +209,6 @@ export const createSPLTokenTxBuilder = async (
     //   mint_account,
     //   0
     // );
-    // //console.log("Resp : ", resp);
     let resp = await recursiveCheckTransitionStatus(
       Date.now(),
       createAccountSignature,
@@ -218,6 +216,11 @@ export const createSPLTokenTxBuilder = async (
       wallet
     );
     if (resp) {
+      let updateTokenResp = await rewardService.addUserPoints({
+        trans_type: TransactionType.Rewarded,
+        trans_source: TransactionSource.CreateToken,
+        user_guid: getLocalGUID(),
+      });
       successToast({
         keyPairs: {
           mintAddress: {
@@ -243,6 +246,6 @@ export const createSPLTokenTxBuilder = async (
         }
       : null;
   } catch (error) {
-    // //console.log(error);
+    console.warn(error);
   }
 };

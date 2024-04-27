@@ -19,6 +19,7 @@ interface CustomInputProps {
   showCurrency?: boolean;
   showCopy?: boolean;
   showSearch?: boolean;
+  onSearchClick?: () => void;
 }
 
 const CustomInput = ({
@@ -38,12 +39,12 @@ const CustomInput = ({
   showCurrency,
   showCopy,
   showSearch,
+  onSearchClick,
 }: CustomInputProps) => {
   const handleCopy = () => {
     navigator.clipboard.writeText(`${value}`);
     successToast({ message: "Coppied!" });
   };
-  const handleSearch = () => {};
 
   return (
     <>
@@ -95,7 +96,7 @@ const CustomInput = ({
               height={19}
               className="mx-1 cursor-pointer"
               priority
-              onClick={handleSearch}
+              onClick={onSearchClick ? onSearchClick : undefined}
             />
           )}
           {showCopy && (

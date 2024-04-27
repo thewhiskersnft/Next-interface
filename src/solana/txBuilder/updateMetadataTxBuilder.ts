@@ -38,11 +38,15 @@ import {} from "@metaplex-foundation/umi";
 import {
   PLATFORM_FEE_SOL_TOKEN_CREATION,
   PLATFORM_OWNER_ADDRESS,
+  TransactionSource,
+  TransactionType,
 } from "@/constants";
 import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
 import { recursiveCheckTransitionStatus } from "@/utils/transactions";
 import { getMintURL, getSignatureURL } from "@/utils/redirectURLs";
 import { getPriorityLambports } from "@/utils/transactions/getPriorityLambports";
+import rewardService from "@/services/rewardService";
+import { getLocalGUID } from "@/utils/apiService";
 
 let network = isMainnet() ? "mainnet-beta" : "devnet";
 
@@ -71,7 +75,6 @@ export const updateSPLTokenMetadataTxBuilder = async (
     };
 
     const [metadataPDA] = getMetadataPda(mintAddress);
-    // //console.log("metadataPDA", metadataPDA.toBase58());
 
     const endpoint = clusterApiUrl(network as any);
     const umi = createUmi(endpoint);
@@ -124,7 +127,6 @@ export const updateSPLTokenMetadataTxBuilder = async (
         return newKey;
       }
     );
-    // //console.log("Successfully Added Update Metadata Instructions");
 
     const sentPlatFormfeeInstruction = SystemProgram.transfer({
       fromPubkey: wallet.publicKey,
@@ -150,6 +152,11 @@ export const updateSPLTokenMetadataTxBuilder = async (
       wallet
     );
     if (resp) {
+      let updateMetadataResp = await rewardService.addUserPoints({
+        trans_type: TransactionType.Rewarded,
+        trans_source: TransactionSource.UpdateMetadata,
+        user_guid: getLocalGUID(),
+      });
       successToast({
         keyPairs: {
           signature: {
@@ -169,6 +176,6 @@ export const updateSPLTokenMetadataTxBuilder = async (
       : null;
   } catch (error) {
     errorToast({ message: "Please Try Again!" });
-    // //console.log(error);
+    console.warn(error);
   }
 };

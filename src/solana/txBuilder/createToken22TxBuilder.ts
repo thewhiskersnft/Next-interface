@@ -48,6 +48,8 @@ import {} from "@metaplex-foundation/umi";
 import {
   PLATFORM_FEE_SOL_TOKEN_CREATION,
   PLATFORM_OWNER_ADDRESS,
+  TransactionSource,
+  TransactionType,
 } from "@/constants";
 import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
 import { errorToast, successToast } from "@/component/common/toast";
@@ -61,6 +63,8 @@ import {
   pack,
   TokenMetadata,
 } from "@solana/spl-token-metadata";
+import rewardService from "@/services/rewardService";
+import { getLocalGUID } from "@/utils/apiService";
 let network = isMainnet() ? "mainnet-beta" : "devnet";
 
 type TransferTaxProps = {
@@ -322,10 +326,8 @@ export const createToken22TxBuilder = async (
         signers: [token22_mint],
       }
     );
-    console.log(createAccountSignature);
     const startTime = Date.now();
     // while()
-    //console.log(" Now : ", startTime);
     // 2afRSao7JckbxdV4p1Ak3jcD7uKsW4C7kY2tRukyXLtncdiTW4jpiaZDSR4nKYveok1WYzXgyc337PY3bAmJkzoK', mint: '5Pm6NTDoRYHjyy36XyJy3bY8ezpPHnzfLvug1zrHuhKK
     // let resp = await recursiveCheckTransitionStatus(
     //   startTime,
@@ -337,7 +339,6 @@ export const createToken22TxBuilder = async (
     //   mint_account,
     //   0
     // );
-    // //console.log("Resp : ", resp);
     let resp = await recursiveCheckTransitionStatus(
       Date.now(),
       createAccountSignature,
@@ -345,6 +346,11 @@ export const createToken22TxBuilder = async (
       wallet
     );
     if (resp) {
+      let updateTokenResp = await rewardService.addUserPoints({
+        trans_type: TransactionType.Rewarded,
+        trans_source: TransactionSource.CreateToken,
+        user_guid: getLocalGUID(),
+      });
       successToast({
         keyPairs: {
           mintAddress: {
@@ -370,6 +376,6 @@ export const createToken22TxBuilder = async (
         }
       : null;
   } catch (error) {
-    console.log(error);
+    console.warn(error);
   }
 };

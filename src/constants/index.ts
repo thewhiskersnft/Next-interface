@@ -106,13 +106,13 @@ export const sidebarData: SidebarItem[] = [
         label: "Snapshot Holders",
         description: "Snapshot Holder List For NFTs & SPL Tokens",
         navigateTo: `/creator?action=${CreatorRoutes.snapshotHolders}`,
-        disabled: false,
+        disabled: true,
       },
       {
         label: "Send Airdrops",
         description: "Send Bulk Airdrops To Solana Wallets",
         navigateTo: `/creator?action=${CreatorRoutes.sendAirdrops}`,
-        disabled: false,
+        disabled: true,
       },
       {
         label: "Create Airdrop Claim Contracts",
@@ -147,7 +147,7 @@ export const sidebarData: SidebarItem[] = [
     icon: "/airdrop.svg",
     activeIcon: "/airdropActive.svg",
     navigateTo: `/airdrop`,
-    disabled: false,
+    disabled: true,
   },
 ];
 
@@ -232,3 +232,62 @@ export const demoTokens = [
     owner: "Whiskers",
   },
 ];
+
+export enum TransactionType {
+  Deposit = "Deposit",
+  Withdrawl = "Withdrawl",
+  Rewarded = "Rewarded",
+}
+
+export enum TransactionAmount {
+  // Login = 20,
+  SetUsername = "SetUsername",
+  GoogleAuth = "GoogleAuth",
+  InAppWalletCreate = "InAppWalletCreate",
+  InAppWalletFund = "InAppWalletFund",
+  CreateToken = "CreateToken",
+  ManageToken = "ManageToken",
+  UpdateMetadata = "UpdateMetadata",
+  GetTokenVerified = "GetTokenVerified",
+  MintTokens = "MintTokens",
+  BurnTokens = "BurnTokens",
+  MarketIDBareMetal = "MarketIDBareMetal",
+  MarketIDMinimal = "MarketIDMinimal",
+  MarketIDRecommended = "MarketIDRecommended",
+  RenounceLP = "RenounceLP",
+  SnapshotTokenHolders = "SnapshotTokenHolders",
+  SendAirdrops = "SendAirdrops",
+  CreateVanityAddress = "CreateVanityAddress",
+  BurnToClaimRent = "BurnToClaimRent",
+  AirdropChecker = "AirdropChecker",
+  AirdropCheckerBig = "AirdropCheckerBig",
+}
+
+export enum TransactionSource {
+  // Login = 5,
+  SetUsername = "SetUsername",
+  GoogleAuth = "GoogleAuth",
+  InAppWalletFund = "InAppWalletFund",
+  CreateToken = "CreateToken",
+  ManageToken = "ManageToken",
+  InAppWalletCreate = "InAppWalletCreate",
+  UpdateMetadata = "UpdateMetadata",
+  GetTokenVerified = "GetTokenVerified",
+  MintTokens = "MintTokens",
+  BurnTokens = "BurnTokens",
+  MarketIDBareMetal = "MarketIDBareMetal",
+  MarketIDMinimal = "MarketIDMinimal",
+  MarketIDRecommended = "MarketIDRecommended",
+  RenounceLP = "RenounceLP",
+  SnapshotTokenHolders = "SnapshotTokenHolders",
+  SendAirdrops = "SendAirdrops",
+  CreateVanityAddress = "CreateVanityAddress",
+  BurnToClaimRent = "BurnToClaimRent",
+  AirdropChecker = "AirdropChecker",
+  AirdropCheckerBig = "AirdropCheckerBig",
+}
+
+export enum API_METHODS {
+  GET = "GET",
+  POST = "POST",
+}

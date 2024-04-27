@@ -14,6 +14,8 @@ import {
 import {
   PLATFORM_FEE_SOL_TOKEN_CREATION,
   PLATFORM_OWNER_ADDRESS,
+  TransactionSource,
+  TransactionType,
 } from "@/constants";
 
 import { WalletContextState } from "@solana/wallet-adapter-react";
@@ -30,6 +32,8 @@ import {
 import { getPriorityLambports } from "@/utils/transactions/getPriorityLambports";
 import { recursiveCheckTransitionStatus } from "@/utils/transactions";
 import { getSignatureURL } from "@/utils/redirectURLs";
+import rewardService from "@/services/rewardService";
+import { getLocalGUID } from "@/utils/apiService";
 
 export const createBurnTokensTxBuilder = async (
   connection: Connection,
@@ -88,6 +92,11 @@ export const createBurnTokensTxBuilder = async (
       // mint_account.publicKey.toBase58()
     );
     if (resp) {
+      let burnTokenResp = await rewardService.addUserPoints({
+        trans_type: TransactionType.Rewarded,
+        trans_source: TransactionSource.BurnTokens,
+        user_guid: getLocalGUID(),
+      });
       successToast({
         keyPairs: {
           signature: {
@@ -101,7 +110,6 @@ export const createBurnTokensTxBuilder = async (
     }
     return resp ? createBurnTokensTransactionSignature : null;
   } catch (error) {
-    // //console.log(error);
     errorToast({ message: "Insufficent balance!" });
     return "";
   }

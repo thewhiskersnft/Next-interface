@@ -1,22 +1,119 @@
+"use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TokenModal from "./TokenModal";
 import { demoTokens } from "@/constants";
 import CustomButton from "../common/customButton";
 import RightSidebar from "../common/rightSidebar";
+import CustomInput from "../common/customInput";
+import { fetchUserSPLTokens } from "@/solana/query/fetchUserSPLTokens";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { fetchUserToken22Tokens } from "@/solana/query/fetchUserToken22Tokens";
+import { get } from "lodash";
+import { errorToast } from "../common/toast";
+import { createPoolFluxBeam } from "@/solana/liquidityPool/fluxbeam";
+import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
+import { Connection } from "@solana/web3.js";
+import { useSelector } from "react-redux";
 
 const FluxbeamLP = ({}) => {
   const [showBaseTokenModal, setShowBaseTokenModal] = useState(false);
+  const [showQuoteTokenModal, setShowQuoteTokenModal] = useState(false);
+  const [baseTokenAmt, setBaseTokenAmt] = useState(0);
+  const [quoteTokenAmt, setQuoteTokenAmt] = useState(0);
+  const [baseToken, setBaseToken] = useState(null as any);
+  const [quoteToken, setQuoteToken] = useState(null as any);
+  const [baseTokenList, setBaseTokenList] = useState([] as any);
+  const [quoteTokenList, setQuoteTokenList] = useState([] as any);
+  const [baseToken22List, setBaseToken22List] = useState([] as any);
+  const [quoteToken22List, setQuoteToken22List] = useState([] as any);
+
+  const { currentEndpoint, priorityFees } = useSelector(
+    (state: any) => state.connectionDataSlice
+  );
+
+  const wallet = useWallet();
+  const connection = useConnection();
 
   const toggleBaseTokenModal = () => {
     setShowBaseTokenModal(!showBaseTokenModal);
   };
+
+  const toggleQuoteTokenModal = () => {
+    setShowQuoteTokenModal(!showQuoteTokenModal);
+  };
+
+  const handleBaseTokenSelect = (token: any, index: number) => {
+    setBaseToken(token);
+    toggleBaseTokenModal();
+  };
+
+  const handleQuoteTokenSelect = (token: any, index: number) => {
+    setQuoteToken(token);
+    toggleQuoteTokenModal();
+  };
+
+  const handleSubmit = () => {
+    // if (!isMainnet()) {
+    //   errorToast({ message: "Please switch to mainnet!" });
+    //   return;
+    // }
+    if (!baseToken) {
+      errorToast({ message: "Please select base token" });
+      return;
+    }
+    if (!quoteToken) {
+      errorToast({ message: "Please select quote token" });
+      return;
+    }
+    const lpConnection = new Connection(currentEndpoint);
+    createPoolFluxBeam(
+      baseToken.mint,
+      baseTokenAmt,
+      quoteToken.mint,
+      quoteTokenAmt,
+      baseToken.decimal as number,
+      process.env.NEXT_PUBLIC_HELIUS_API_KEY || "",
+      lpConnection,
+      wallet
+    );
+  };
+
+  useEffect(() => {
+    const fetchTokenData = async () => {
+      const data = await fetchUserSPLTokens(wallet, connection.connection);
+      if (data && Array.isArray(data)) {
+        setBaseTokenList(data); // base tokens list
+        setQuoteTokenList(data); // quote token list
+      }
+    };
+    const fetchToken22Data = async () => {
+      const data = await fetchUserToken22Tokens(
+        wallet.publicKey?.toString()!,
+        connection.connection
+      );
+      if (data && Array.isArray(data)) {
+        setBaseToken22List(data); // base tokens list
+        setQuoteToken22List(data); // quote token list
+      }
+    };
+    fetchTokenData();
+    fetchToken22Data();
+  }, []);
+
   return (
     <div className="flex">
       <TokenModal
         isOpen={showBaseTokenModal}
         onClose={toggleBaseTokenModal}
-        tokenList={demoTokens}
+        tokenList={[...baseTokenList, ...baseToken22List]}
+        handleTokenSelect={handleBaseTokenSelect}
+      />
+      <TokenModal
+        isOpen={showQuoteTokenModal}
+        onClose={toggleQuoteTokenModal}
+        tokenList={[...quoteTokenList, ...quoteToken22List]}
+        handleTokenSelect={handleQuoteTokenSelect}
       />
       <div className="px-8 py-4 flex-1 border-[1px] border-lightGrey mr-4 mt-4 h-min">
         <section className="w-full">
@@ -30,15 +127,30 @@ const FluxbeamLP = ({}) => {
                   className="flex justify-between items-center px-4 h-[50px] cursor-pointer"
                   onClick={toggleBaseTokenModal}
                 >
-                  <Image
-                    src={"/cat1.svg"}
-                    alt="Token Logo"
-                    width={33}
-                    height={33}
-                    className="cursor-pointer mb-[2px]"
-                    priority
-                  />
-                  <p className="text-xsmall font-Oxanium text-center">WHIZ</p>
+                  {baseToken?.image ? (
+                    <img
+                      src={baseToken.image}
+                      alt="base token logo"
+                      width={`${33}px`}
+                      style={{
+                        height: `${33}px`,
+                        objectFit: "cover",
+                        borderRadius: "50%",
+                      }}
+                    />
+                  ) : (
+                    <Image
+                      src={"/cat1.svg"}
+                      alt="Token Logo"
+                      width={33}
+                      height={33}
+                      className="cursor-pointer mb-[2px]"
+                      priority
+                    />
+                  )}
+                  <p className="text-xsmall font-Oxanium text-center truncate ml-2">
+                    {get(baseToken, "name", "")}
+                  </p>
                   <Image
                     src={"/arrowUp.svg"}
                     alt="Up Logo"
@@ -58,7 +170,29 @@ const FluxbeamLP = ({}) => {
             </div>
             <div className="flex flex-col">
               <p className="font-Oxanium text-disabledLink text-xsmall text-right">{`Balance : 3746293746.12`}</p>
-              <p className="font-Oxanium text-white text-normal text-right mt-1">{`34872934872`}</p>
+              <CustomInput
+                label=""
+                id="baseTokenAmount"
+                name="baseTokenAmount"
+                value={baseTokenAmt}
+                onChange={(e) => {
+                  setBaseTokenAmt(e.target.value);
+                }}
+                showSymbol={false}
+                type={"number"}
+                placeholder={"Enter Base Token Amt."}
+                showError={false}
+                errorMessage={""}
+                showCopy={false}
+                showSearch={false}
+                containerStyles={{ marginTop: "2px", textAlign: "right" }}
+                inputStyles={{
+                  textAlign: "right",
+                  paddingRight: 0,
+                  fontFamily: "Oxanium",
+                  fontSize: "16px",
+                }}
+              />
               <p className="font-Oxanium text-disabledLink text-right text-xsmall mt-1">{`$ 7,423.00`}</p>
             </div>
           </div>
@@ -72,17 +206,32 @@ const FluxbeamLP = ({}) => {
               <div className="w-[190px] h-[50px] bg-background border-[1px] border-solid border-variant1 hover:border-white">
                 <section
                   className="flex justify-between items-center px-4 h-[50px] cursor-pointer"
-                  onClick={toggleBaseTokenModal}
+                  onClick={toggleQuoteTokenModal}
                 >
-                  <Image
-                    src={"/cat1.svg"}
-                    alt="Token Logo"
-                    width={33}
-                    height={33}
-                    className="cursor-pointer mb-[2px]"
-                    priority
-                  />
-                  <p className="text-xsmall font-Oxanium text-center">WHIZ</p>
+                  {quoteToken?.image ? (
+                    <img
+                      src={quoteToken.image}
+                      alt="base token logo"
+                      width={`${33}px`}
+                      style={{
+                        height: `${33}px`,
+                        objectFit: "cover",
+                        borderRadius: "50%",
+                      }}
+                    />
+                  ) : (
+                    <Image
+                      src={"/cat1.svg"}
+                      alt="Token Logo"
+                      width={33}
+                      height={33}
+                      className="cursor-pointer mb-[2px]"
+                      priority
+                    />
+                  )}
+                  <p className="text-xsmall font-Oxanium text-center truncate ml-2">
+                    {get(quoteToken, "name", "")}
+                  </p>
                   <Image
                     src={"/arrowUp.svg"}
                     alt="Up Logo"
@@ -102,13 +251,42 @@ const FluxbeamLP = ({}) => {
             </div>
             <div className="flex flex-col">
               <p className="font-Oxanium text-disabledLink text-xsmall text-right">{`Balance : 3746293746.12`}</p>
-              <p className="font-Oxanium text-white text-normal text-right mt-1">{`34872934872`}</p>
+              <CustomInput
+                label=""
+                id="quoteTokenAmount"
+                name="quoteTokenAmount"
+                value={quoteTokenAmt}
+                onChange={(e) => {
+                  setQuoteTokenAmt(e.target.value);
+                }}
+                showSymbol={false}
+                type={"number"}
+                placeholder={"Enter Quote Token Amt."}
+                showError={false}
+                errorMessage={""}
+                showCopy={false}
+                showSearch={false}
+                containerStyles={{
+                  marginTop: "2px",
+                  textAlign: "right",
+                }}
+                inputStyles={{
+                  textAlign: "right",
+                  paddingRight: 0,
+                  fontFamily: "Oxanium",
+                  fontSize: "16px",
+                }}
+              />
               <p className="font-Oxanium text-disabledLink text-right text-xsmall mt-1">{`$ 7,423.00`}</p>
             </div>
           </div>
         </section>
         <div className="flex justify-left w-full mt-8">
-          <CustomButton disabled={false} label={"Submit"} onClick={() => {}} />
+          <CustomButton
+            disabled={false}
+            label={"Submit"}
+            onClick={handleSubmit}
+          />
         </div>
       </div>
       <section>

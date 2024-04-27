@@ -13,7 +13,10 @@ import { useFormik, Formik } from "formik";
 import { metaplexBuilder } from "@/metaplex";
 import { createSPLTokenTxBuilder } from "@/solana/txBuilder/createSPLTokenTxBuilder";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { v1TokenValidation } from "../../utils/formikValidators";
+import {
+  v1TokenValidation,
+  v2TokenValidation,
+} from "../../utils/formikValidators";
 import { cloneDeep } from "lodash";
 import { errorToast, successToast } from "../common/toast";
 import MintOrBurnToken from "./mintOrBurnToken";
@@ -62,6 +65,7 @@ export default function Form() {
     interestBearing,
     defaultAccountState,
     permanentDelegate,
+    enableExtensions,
   } = useSelector((state: any) => state.formDataSlice);
   const { appLoading } = useSelector((state: any) => state.appDataSlice);
   const { allDevEndpoints, allMainEndpoints, currentEndpoint, priorityFees } =
@@ -89,7 +93,6 @@ export default function Form() {
   }, []);
 
   const checkAndUpdateRPC = async () => {
-    //console.log("........................ main ", allMainEndpoints);
     let data = {
       strategy: "speed",
       success: true,
@@ -100,7 +103,6 @@ export default function Form() {
       data as any
     );
     dispatch(setCurrentEndpoint(selectedEndpointUrl));
-    //console.log("Selected endpoint : ", selectedEndpointUrl);
   };
 
   const formik = useFormik({
@@ -154,7 +156,6 @@ export default function Form() {
           new PublicKey(formik.values.tokenAddress),
           connection
         );
-        //console.log("Old data : ", oldData);
         if (oldData.isMutable) {
           formik.setFieldValue("name", oldData.tokenName);
           formik.setFieldValue("symbol", oldData.tokenSymbol);
@@ -168,7 +169,6 @@ export default function Form() {
             },
           };
           formik.setFieldValue("logo", oldData.tokenLogo);
-          //console.log("Updated metadata : ", updatedPreviewData);
           dispatch(setPreviewData(updatedPreviewData));
           if (!isFetchOnly) {
             toggleShowUpdateMetadata();
@@ -203,7 +203,6 @@ export default function Form() {
     try {
       const uri = await createURI();
       let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
-      //console.log("Final uri : ", finalURI);
       successToast({ message: `MetaData Uploaded` });
       const txData = await updateSPLTokenMetadataTxBuilder(
         formik.values.name,
@@ -227,7 +226,6 @@ export default function Form() {
           },
         };
         formik.setFieldValue("logo", getImageURL());
-        //console.log("Updated metadata : ", updatedPreviewData);
         dispatch(setPreviewData(updatedPreviewData));
       }
       setButtonClicked(false);
@@ -241,13 +239,26 @@ export default function Form() {
     let resp = {} as any;
     if (selectedForm === keyPairs.createV1) {
       resp = v1TokenValidation(values);
-      ////console.log(metaplexFileData)
       if (!metaplexFileData?.fileName) {
         resp["logo"] = "Please select logo";
         errorToast({ message: "Please upload logo!" });
       }
     }
-    // add v2 token validations
+    if (selectedForm === keyPairs.createV2) {
+      resp = v2TokenValidation({
+        ...values,
+        transferTax,
+        interestBearing,
+        defaultAccountState,
+        permanentDelegate,
+        nonTransferable,
+        enableExtensions,
+      });
+      if (!metaplexFileData?.fileName) {
+        resp["logo"] = "Please select logo";
+        errorToast({ message: "Please upload logo!" });
+      }
+    }
     return resp;
   };
   const createTokenHandler = async (values: any) => {
@@ -265,7 +276,6 @@ export default function Form() {
       try {
         const uri = await createURI();
         let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
-        // console.log("Final uri : ", finalURI);
         successToast({ message: `MetaData Uploaded` });
         // const txhash = await createToken22TxBuilder(
         //   formik.values.name,
@@ -278,7 +288,6 @@ export default function Form() {
         //   currentEndpoint,
         //   priorityFees
         // );
-        // console.log(txhash);
         const txhash = await createSPLTokenTxBuilder(
           formik.values.name,
           formik.values.symbol,
@@ -291,7 +300,6 @@ export default function Form() {
           priorityFees
         );
 
-        // //console.log("txhash : ", txhash);
         if (!txhash) {
           setButtonClicked(false);
           errorToast({ message: "Please Try Again" });
@@ -300,7 +308,7 @@ export default function Form() {
 
         setButtonClicked(false);
       } catch (error) {
-        console.log(error);
+        console.warn(error);
         errorToast({ message: "Try Again!" });
         setButtonClicked(false);
       }
@@ -361,7 +369,6 @@ export default function Form() {
           currentEndpoint,
           priorityFees
         );
-        console.log(txhash);
         if (!txhash) {
           setButtonClicked(false);
           errorToast({ message: "Please Try Again" });
@@ -369,7 +376,7 @@ export default function Form() {
         }
         setButtonClicked(false);
       } catch (error) {
-        console.log(error);
+        console.warn(error);
         errorToast({ message: "Try Again!" });
         setButtonClicked(false);
       }
@@ -390,7 +397,6 @@ export default function Form() {
 
   const createURI = async () => {
     const NFT_STORAGE_TOKEN = AppENVConfig.nft_storage_api_key;
-    //console.log(NFT_STORAGE_TOKEN, "token");
 
     const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
     const imageFile = new File([fileData], "nft.png", { type: "image/png" });
@@ -401,10 +407,8 @@ export default function Form() {
       symbol: formik.values.symbol,
       description: formik.values.description,
     });
-    //console.log(imageMetadata, imageMetadata.embed());
     // const imageURL = await getExampleImage(imageMetadata?.embed()?.image?.href);
     const imageURL = imageMetadata?.embed()?.image?.href;
-    //console.log("Img url blob : ", imageURL);
     let tokenMetadata = {
       name: formik.values.name,
       symbol: formik.values.symbol,
@@ -424,8 +428,6 @@ export default function Form() {
       tokenMetadata["twitter"] = formik.values.twitter;
     }
     const metadata = await client.store(tokenMetadata);
-    //console.log("Metadat : ", metadata);
-    //console.log("Metadat emb : ", metadata.embed());
     return metadata;
   };
 
@@ -616,7 +618,7 @@ export default function Form() {
         </div>
       ) : (
         <div className="flex flex-1 items-center justify-center">
-          {appLoading ? <></> : <Loader visible={true} size={30} />}
+          {appLoading ? <></> : <Loader visible={true} size={80} />}
         </div>
       )}
     </>

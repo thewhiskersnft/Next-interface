@@ -25,7 +25,6 @@ export const getTokenMetadata = async (
     const token = await metaplex
       .nfts()
       .findByMint({ mintAddress: mintAddress });
-    // //console.log("Token : ", token);
     tokenName = token.name;
     tokenSymbol = token.symbol;
     tokenLogo = token.json?.image;
@@ -34,14 +33,12 @@ export const getTokenMetadata = async (
   } else {
     const provider = await new TokenListProvider().resolve();
     const tokenList = provider.filterByChainId(ENV.MainnetBeta).getList();
-    // //console.log(tokenList);
     const tokenMap = tokenList.reduce((map, item) => {
       map.set(item.address, item);
       return map;
     }, new Map());
 
     const token = tokenMap.get(mintAddress.toBase58());
-    // //console.log("Token : ", token);
 
     tokenName = token.name;
     tokenSymbol = token.symbol;

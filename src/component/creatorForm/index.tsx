@@ -49,17 +49,13 @@ const CreatorForm = () => {
     },
     validateOnChange: false,
     validateOnBlur: false,
-    onSubmit: async (values) => {
-      console.log("On Submit ----> ", values);
-    },
+    onSubmit: async (values) => {},
   });
 
   useEffect(() => {
     setRenderForm(true);
     // checkAndUpdateRPC();
   }, []);
-
-  console.log("LA : ", creatorAction);
 
   const enableRightSidebar = () => {
     if (
@@ -80,7 +76,7 @@ const CreatorForm = () => {
   return (
     <>
       {renderForm ? (
-        <div className='flex flex-row flex-1 h-full overflow-auto scroll-smooth px-4'>
+        <div className="flex flex-row flex-1 h-full overflow-auto scroll-smooth px-4">
           {creatorAction === CreatorRoutes.snapshotHolders && (
             <SnapshotHolder />
           )}
@@ -116,7 +112,7 @@ const CreatorForm = () => {
           )}
         </div>
       ) : (
-        <div className='flex flex-1 items-center justify-center'>
+        <div className="flex flex-1 items-center justify-center">
           {appLoading ? <></> : <Loader visible={true} size={30} />}
         </div>
       )}
