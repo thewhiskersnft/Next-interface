@@ -42,7 +42,6 @@ export const v1TokenValidation = (values: createV1TokenSchema) => {
 
 export const v2TokenValidation = async (values: any) => {
   let errors = {} as any;
-  console.log(values);
   if (values.name.length < 3) {
     errors.name = "Name must be 3 characters long";
   }

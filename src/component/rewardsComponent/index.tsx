@@ -4,6 +4,8 @@ import RewardsTable from "./rewardsTable";
 import RightSidebar from "../common/rightSidebar";
 import rewardService from "@/services/rewardService";
 import { get } from "lodash";
+import { useSelector } from "react-redux";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 interface RewardsComponentProps {}
 
@@ -170,14 +172,16 @@ const RewardsComponent = ({}: RewardsComponentProps) => {
   const [selectedTab, setSelectedTab] = useState(tabs.myRewards);
   const [rewards, setRewards] = useState([]);
 
+  const { totalRewards } = useSelector((state: any) => state.userDataSlice);
+
+  const wallet = useWallet();
+
   useEffect(() => {
-    console.log("Fetching LeaderBoard : ...................");
     fetchLeaderboardData();
   }, []);
 
   const fetchLeaderboardData = async () => {
     const leaderboardData = await rewardService.fetchLeaderboard();
-    console.log(leaderboardData);
     if (leaderboardData.status) {
       setRewards(get(leaderboardData, "data.data", []));
     }
@@ -236,14 +240,14 @@ const RewardsComponent = ({}: RewardsComponentProps) => {
         <RightSidebar
           hidePreview={false}
           showRewards={true}
-          rewardPoints={77643}
+          rewardPoints={totalRewards}
           hideLinks={true}
           data={{
             User: {
-              "Wallet Address": "djklcnkldcldllklk348907njk",
+              "Wallet Address": `${wallet?.publicKey?.toString()}`,
               Rank: "# 1345",
-              "Total Moons": "432,334",
-              "7-day Moons": "432",
+              "Total Moons": `${totalRewards}`,
+              "7-day Moons": `${totalRewards}`,
               Referals: "-",
               "Moons from Referals": "-",
               "Moons from Engagements": "-",

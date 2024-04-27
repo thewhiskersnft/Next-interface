@@ -233,8 +233,6 @@ export class MarketV2Updated extends Base {
       )
     );
 
-    console.log(marketBytesData);
-
     const ins2: TransactionInstruction[] = [];
     ins2.push(
       SystemProgram.createAccountWithSeed({

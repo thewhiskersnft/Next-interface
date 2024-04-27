@@ -69,7 +69,7 @@ async function getToken22Accounts(wallet: string, connection: Connection) {
     }
     return res_data;
   } catch (error) {
-    console.log(error);
+    console.warn(error);
     return [];
   }
 }

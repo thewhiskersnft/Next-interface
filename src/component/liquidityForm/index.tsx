@@ -24,8 +24,6 @@ const LiquidityForm = () => {
     // checkAndUpdateRPC();
   }, []);
 
-  console.log("LA : ", liquidityAction);
-
   const enableRightSidebar = () => {
     if (
       [LiquidityRoutes.createOpenBookMarketId].includes(liquidityAction || "")

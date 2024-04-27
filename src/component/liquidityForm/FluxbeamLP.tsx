@@ -82,7 +82,6 @@ const FluxbeamLP = ({}) => {
   useEffect(() => {
     const fetchTokenData = async () => {
       const data = await fetchUserSPLTokens(wallet, connection.connection);
-      console.log("data : ", data);
       if (data && Array.isArray(data)) {
         setBaseTokenList(data); // base tokens list
         setQuoteTokenList(data); // quote token list
@@ -93,7 +92,6 @@ const FluxbeamLP = ({}) => {
         wallet.publicKey?.toString()!,
         connection.connection
       );
-      console.log("data22 : ", data);
       if (data && Array.isArray(data)) {
         setBaseToken22List(data); // base tokens list
         setQuoteToken22List(data); // quote token list

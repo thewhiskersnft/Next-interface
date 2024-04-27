@@ -15,7 +15,6 @@ interface RewardsTableProps {
 }
 
 const RewardsTable = ({ rewards }: RewardsTableProps) => {
-  console.log("Rewards : ", rewards);
   return (
     <div className="px-4 bg-brownBG">
       <table

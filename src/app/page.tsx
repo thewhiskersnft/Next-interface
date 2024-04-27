@@ -2,5 +2,5 @@
 import ComingSoon from "@/component/common/comingSoon";
 
 export default function Home() {
-  return <ComingSoon />;
+  return <ComingSoon triggerHeadersApi={true} />;
 }

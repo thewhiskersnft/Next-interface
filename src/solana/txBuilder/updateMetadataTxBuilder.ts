@@ -75,7 +75,6 @@ export const updateSPLTokenMetadataTxBuilder = async (
     };
 
     const [metadataPDA] = getMetadataPda(mintAddress);
-    // //console.log("metadataPDA", metadataPDA.toBase58());
 
     const endpoint = clusterApiUrl(network as any);
     const umi = createUmi(endpoint);
@@ -128,7 +127,6 @@ export const updateSPLTokenMetadataTxBuilder = async (
         return newKey;
       }
     );
-    // //console.log("Successfully Added Update Metadata Instructions");
 
     const sentPlatFormfeeInstruction = SystemProgram.transfer({
       fromPubkey: wallet.publicKey,
@@ -178,6 +176,6 @@ export const updateSPLTokenMetadataTxBuilder = async (
       : null;
   } catch (error) {
     errorToast({ message: "Please Try Again!" });
-    // //console.log(error);
+    console.warn(error);
   }
 };

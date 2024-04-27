@@ -5,7 +5,6 @@ import { errorToast } from "./component/common/toast";
 
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
-  // console.log("Middleware executed here..........................");
   // if (!isSignedIn()) {
   //   errorToast({ message: "Please Login!" });
   //   return NextResponse.redirect(new URL("/", request.url));

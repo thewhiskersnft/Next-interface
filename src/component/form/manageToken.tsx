@@ -74,7 +74,6 @@ const ManageToken = ({
       }
       setFreezeLoading(false);
     } catch (error) {
-      // //console.log(error);
       errorToast({ message: "Please try again!" });
       setFreezeLoading(false);
     }
@@ -113,7 +112,6 @@ const ManageToken = ({
               label="Load"
               loading={tokenLoading}
               onClick={async () => {
-                // // //console.log("Load clicked");
                 setTokenLoading(true);
                 if (!formik?.values?.tokenAddress) {
                   errorToast({ message: "Please enter token address!" });
@@ -126,7 +124,6 @@ const ManageToken = ({
                     new PublicKey(formik?.values?.tokenAddress)
                   );
 
-                  // //console.log("MA : ", mintAccount);
                   if (mintAccount) {
                     formik.setFieldValue(
                       "mintAuthority",

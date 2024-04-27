@@ -100,7 +100,6 @@ const CreateOpenBookMarketId = () => {
   };
 
   const handleBaseTokenSelect = (token: any, index: number) => {
-    // console.log(token, index);
     let newFormatToken = new Token(
       TOKEN_PROGRAM_ID,
       new PublicKey(token.mint),
@@ -108,14 +107,12 @@ const CreateOpenBookMarketId = () => {
       token.symbol,
       token.name
     );
-    // console.log("Base token conv : ", newFormatToken);
     setBaseTokenLogo(token.image);
     setBaseToken(newFormatToken);
     toggleBaseTokenModal();
   };
 
   const handleQuoteTokenSelect = (token: any, index: number) => {
-    // console.log(token, index);
     let newFormatToken = new Token(
       TOKEN_PROGRAM_ID,
       new PublicKey(token.mint),
@@ -123,16 +120,12 @@ const CreateOpenBookMarketId = () => {
       token.symbol,
       token.name
     );
-    // console.log("Quote token conv : ", newFormatToken);
     setQuoteToken(newFormatToken);
     toggleQuoteTokenModal();
   };
 
   const handleSubmit = async () => {
-    // console.log("Base token : ", baseToken);
-    // console.log("Quote token : ", quoteToken);
     setSubmitLoading(true);
-    console.log(selectedMarketIdConfig);
     const marketBytesData = desiredMarketIdConfig(selectedMarketIdConfig)!;
 
     const wSOLToken = new Token(
@@ -142,8 +135,6 @@ const CreateOpenBookMarketId = () => {
       "WSOL",
       "WSOL"
     );
-
-    console.log(connection.connection.rpcEndpoint);
 
     // -------- step 1: make instructions --------
     const createMarketInstruments =
@@ -160,10 +151,6 @@ const CreateOpenBookMarketId = () => {
         makeTxVersion,
         marketBytesData,
       });
-    console.log(
-      "MarketId",
-      createMarketInstruments.address.marketId.toBase58()
-    );
     setOpenBookMarketId(createMarketInstruments.address.marketId.toBase58());
     const txids = await buildAndSendTx(
       createMarketInstruments.innerTransactions,
@@ -173,7 +160,6 @@ const CreateOpenBookMarketId = () => {
         skipPreflight: true,
       },
       (index: number) => {
-        console.log(index);
         setConformingTx(index);
       }
     );
@@ -192,35 +178,18 @@ const CreateOpenBookMarketId = () => {
         user_guid: getLocalGUID(),
       });
     }
-    console.log(txids);
   };
 
   const toggleShowAdvancedSettings = () => {
     setShowAdvancedSettings(!showAdvancedSettings);
   };
 
-  // async function getTokenBalanceSpl(connection: any, tokenAccount: any) {
-  //   console.log("Amount:::: connection : ", connection);
-  //   const info = await getAccount(connection, tokenAccount);
-  //   const amount = Number(info.amount);
-  //   const mint = await getMint(connection, info.mint);
-  //   const balance = amount / 10 ** mint.decimals;
-  //   console.log("Balance (using Solana-Web3.js): ", balance);
-  //   return balance;
-  // }
-
   const getSolBalance = async (ownerPublicKey: string, connection: any) => {
-    console.log("ewfhnjkwdbencdsncdskjckjsdncjnsdjkcnkdsckdscnj");
     try {
       const recipientPublicKe = new PublicKey(ownerPublicKey);
       const senderBalance = await connection.connection.getBalance(
         recipientPublicKe
       );
-
-      console.log(
-        `balance of ${recipientPublicKe}: ${senderBalance / 1000000000}`
-      );
-
       return {
         status: true,
         data: senderBalance / 1000000000,
@@ -240,9 +209,6 @@ const CreateOpenBookMarketId = () => {
   ) => {
     try {
       const ownerPublicKey = new PublicKey(ownerAddress);
-      // log_info(ownerPublicKey);
-      // console.log("Connection : ", connection);
-
       const tokenPublicKey = new PublicKey(tokenAddress);
       const balance = await connection.connection.getParsedTokenAccountsByOwner(
         ownerPublicKey,
@@ -250,15 +216,12 @@ const CreateOpenBookMarketId = () => {
           mint: tokenPublicKey,
         }
       );
-      // log_info(balance);
       let bal = balance.value[0].account.data.parsed.info.tokenAmount.uiAmount;
-      // log_info("Token Balance => ", bal);
       return {
         status: true,
         balance: bal,
       };
     } catch (e) {
-      // log_info(e);
       return {
         status: false,
         data: e,
@@ -270,7 +233,6 @@ const CreateOpenBookMarketId = () => {
     setBaseTokenLoading(true);
     // setQuoteTokenLoading(true);
     const data = await fetchUserSPLTokens(wallet, connection.connection);
-    // console.log("data : ", data);
     if (data && Array.isArray(data)) {
       setBaseTokenList(data); // base tokens list
     }
@@ -299,12 +261,10 @@ const CreateOpenBookMarketId = () => {
     //     : "5Css4tPfqK8vnb61U4oUCNSz4VuWcMbGmSTiDwhhF5oo",
     //   connection
     // );
-    // console.log(".,,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,. ", usdcAmt);
     const solAmt = await getSolBalance(
       wallet.publicKey?.toString() || "",
       connection
     );
-    // console.log("Amount::::: ", usdcAmt);
     const quoteTokenList = isMainnet()
       ? [
           {
@@ -338,28 +298,6 @@ const CreateOpenBookMarketId = () => {
         ];
     setQuoteTokenList(quoteTokenList);
   };
-
-  // const solBalance = async (recipientPublicKey: any) => {
-  //   try {
-  //     const recipientPublicKe = new PublicKey(recipientPublicKey);
-
-  //     const senderBalance = await connection.getBalance(recipientPublicKe);
-
-  //     log_info(balance of ${recipientPublicKe}: ${senderBalance / 1000000000});
-
-  //     return {
-  //       status: true,
-  //       data: senderBalance / 1000000000,
-  //     };
-  //   } catch (e) {
-  //     return {
-  //       status: false,
-  //       data: e,
-  //     };
-  //   }
-  // };
-
-  // console.log("Fetching data");
 
   const handleCreateOpenBookMarketId = () => {
     setOpenBookMarketId("");

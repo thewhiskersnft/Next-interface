@@ -47,7 +47,6 @@ const TokenModal = ({
       setFilteredTokenList([...tokenList]);
     }
   };
-  console.log(filteredTokenList);
 
   useEffect(() => {
     setFilteredTokenList([...tokenList]);

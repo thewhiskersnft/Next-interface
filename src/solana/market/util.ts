@@ -29,7 +29,6 @@ export async function sendTx(
 ): Promise<string[]> {
   const txids: string[] = [];
   const signedTransactionArray = await wallet.signAllTransactions!(txs);
-  console.log(signedTransactionArray);
   for (let i = 0; i < signedTransactionArray.length; i++) {
     callBak && callBak(i + 1);
     await sleepTime(15 * 1000);
@@ -50,7 +49,6 @@ export async function sendTx(
       i = signedTransactionArray.length;
       break;
     }
-    console.log(transactionResponse);
     txids.push(transactionResponse);
   }
   return txids;
@@ -91,7 +89,6 @@ export async function buildAndSendTx(
     willSendTx,
     options,
     (index: number) => {
-      console.log(index);
       callBak && callBak(index);
     }
   );
@@ -110,6 +107,5 @@ export function getATAAddress(
 }
 
 export async function sleepTime(ms: number) {
-  console.log(new Date().toLocaleString(), "sleepTime", ms);
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

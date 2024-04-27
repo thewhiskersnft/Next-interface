@@ -106,13 +106,13 @@ export const sidebarData: SidebarItem[] = [
         label: "Snapshot Holders",
         description: "Snapshot Holder List For NFTs & SPL Tokens",
         navigateTo: `/creator?action=${CreatorRoutes.snapshotHolders}`,
-        disabled: false,
+        disabled: true,
       },
       {
         label: "Send Airdrops",
         description: "Send Bulk Airdrops To Solana Wallets",
         navigateTo: `/creator?action=${CreatorRoutes.sendAirdrops}`,
-        disabled: false,
+        disabled: true,
       },
       {
         label: "Create Airdrop Claim Contracts",

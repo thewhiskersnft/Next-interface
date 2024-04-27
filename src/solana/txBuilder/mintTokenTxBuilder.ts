@@ -45,7 +45,6 @@ export const createMintTokensTxBuilder = async (
     let Tx = new Transaction();
 
     const mintAccount = await getMint(connection, tokenMint);
-    // //console.log("mintAccount", mintAccount);
 
     const destination_account = await getAssociatedTokenAddress(
       tokenMint,
@@ -115,7 +114,7 @@ export const createMintTokensTxBuilder = async (
     return resp ? createMintTokensTransactionSignature : null;
   } catch (error) {
     errorToast({ message: "Please Try Again!" });
-    // //console.log(error);
+    console.warn(error);
     return "";
   }
 };

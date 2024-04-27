@@ -18,17 +18,8 @@ export async function createPoolFluxBeam(
   connection: any,
   wallet: any
 ) {
-  console.log("tokenA : ", tokenA);
-  console.log("tokenAAmount : ", tokenAAmount);
-  console.log("tokenB : ", tokenB);
-  console.log("tokenBAmount : ", tokenBAmount);
-  console.log("decimal : ", decimal);
-  console.log("pvtKey : ", pvtKey);
-  console.log("connection : ", connection);
-  console.log("wallet : ", wallet);
   const privateKey = base58.decode(pvtKey);
   const payer = Keypair.fromSecretKey(privateKey);
-  //  console.log(parseInt(process.env.PRIORITY_FEE))
 
   const data = {
     payer: wallet.publicKey.toString(), // check this Akshit
@@ -49,7 +40,6 @@ export async function createPoolFluxBeam(
       { headers }
     );
     if (response.data && response.data.transaction) {
-      //   console.log(response.data.transaction)
       const sig = await signtx(response.data.transaction, payer, connection);
       if (sig) {
         successToast({ message: "confirmation done" });
@@ -79,10 +69,8 @@ async function signtx(rawTx: any, payer: any, connection: any) {
   try {
     const swapTransactionBuf = Buffer.from(rawTx, "base64");
     const txn = VersionedTransaction.deserialize(swapTransactionBuf);
-    // console.log("HfhG",txn)
     txn.sign([payer]);
     // const simulationResult = await connection.simulateTransaction(txn);
-    //   console.log(simulationResult);
     const sig = await connection
       .sendRawTransaction(txn.serialize(), {
         skipPreflight: false,
@@ -92,7 +80,6 @@ async function signtx(rawTx: any, payer: any, connection: any) {
         //   console.error(sendRawTransaction Transaction Failed, e);
       });
 
-    console.log(sig);
     const resp = await recursiveCheckTransitionStatus(
       Date.now(),
       sig,
@@ -118,7 +105,6 @@ async function signtx(rawTx: any, payer: any, connection: any) {
 //     "4N8EFytEqUWMeJ3tiT39XmmENNQMvbCwFh4bdkySuTWNBgRjBXjJcu4AewKWuGz9Gvq4XJZgZMbibt7UPxMPV84W"
 // ).then(result => {
 //     if (result.success) {
-//         console.log('Transaction successful:', result.signature);
 //     } else {
 //         //log_error('Transaction failed:', result.error);
 //     }

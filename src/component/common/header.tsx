@@ -21,18 +21,19 @@ import { clearLocalStorageForLogout, isSignedIn } from "@/utils/auth/checkAuth";
 import { EVENTS } from "@/constants/eventListeners";
 import { getVariableFromLocalStorage } from "@/utils/apiService";
 import { LocalStorageVariables } from "@/constants/appStorageVars";
+import { setTotalRewards } from "@/redux/slice/userDataSlice";
 
 const borderColor: string = "#4D4D4D";
 
 interface HeaderProps {
-  selectedLink?: string;
+  selectedLink?: string | undefined | null;
   handleClickProp?: Function;
 }
 
 const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
   const [searchVal, setSearchVal] = useState<string>("");
   const [showButton, setShowButton] = useState(false);
-  const [rewards, setRewards] = useState(0);
+  // const [rewards, setRewards] = useState(0);
 
   const wallet = useWallet();
   const router = useRouter();
@@ -41,6 +42,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
   const tokenAction = searchParams.get("action");
 
   const { appLoading } = useSelector((state: any) => state.appDataSlice);
+  const { totalRewards } = useSelector((state: any) => state.userDataSlice);
 
   const attachEvents = () => {
     window.addEventListener(EVENTS.GET_REWARD_POINTS, fetchRewards);
@@ -50,8 +52,17 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
     window.removeEventListener(EVENTS.GET_REWARD_POINTS, fetchRewards);
   };
 
+  console.log("Tatal rew : ", totalRewards);
+
   useEffect(() => {
-    console.log("Use effect triggered./../././././../.");
+    if (selectedLink === undefined || selectedLink === null) {
+      if (appLoading) {
+        dispatch(setAppLoading(false));
+      }
+      setShowButton(true);
+      return;
+    }
+    console.log("Use effect triggered./../././././../.", selectedLink);
     authenticateRouteAndFetchData();
     attachEvents();
     return () => {
@@ -61,6 +72,10 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
   }, []);
 
   useEffect(() => {
+    if (selectedLink === undefined || selectedLink === null) {
+      return;
+    }
+    console.log("In wallet useEffect");
     const walletName = getVariableFromLocalStorage(
       LocalStorageVariables.walletName
     );
@@ -89,16 +104,18 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
     if (appLoading) {
       dispatch(setAppLoading(false));
     }
-    await fetchRewards();
+    fetchRewards();
   };
 
   const fetchRewards = async () => {
-    console.log(
-      "Fetching rewards......................------------------>>>>>>>>>>>>>"
-    );
+    // console.log(
+    //   "Fetching rewards......................------------------>>>>>>>>>>>>>"
+    // );
     const allRewards = await rewardService.fetchRewards();
     if (allRewards?.status) {
-      setRewards(get(allRewards, "data.data.total_points", 0));
+      const updatedRewards = get(allRewards, "data.data.total_points", 0);
+      // setRewards(updatedRewards);
+      dispatch(setTotalRewards(updatedRewards));
     }
   };
 
@@ -191,7 +208,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             borderRightWidth: "2px",
             borderColor: borderColor,
           }}
-          onClick={handleSignIn}
+          // onClick={handleSignIn}
         >
           <Image
             src={"/menuDisabled.svg"}
@@ -281,7 +298,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
               priority
             />
             <p className="font-Oxanium text-xsmall text-white ml-2 mr-[10px]">
-              {numberWithCommas(rewards)}
+              {numberWithCommas(totalRewards)}
             </p>
           </span>
           {wallet.connected ? (
@@ -331,7 +348,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             // if (!tokenAction) {
             //   return;
             // } else {
-            console.log("Clicking");
+            // console.log("Clicking");
             handleClickProp ? handleClickProp() : null;
             router.push(`/`);
             // }

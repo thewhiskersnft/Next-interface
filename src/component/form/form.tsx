@@ -93,7 +93,6 @@ export default function Form() {
   }, []);
 
   const checkAndUpdateRPC = async () => {
-    //console.log("........................ main ", allMainEndpoints);
     let data = {
       strategy: "speed",
       success: true,
@@ -104,7 +103,6 @@ export default function Form() {
       data as any
     );
     dispatch(setCurrentEndpoint(selectedEndpointUrl));
-    //console.log("Selected endpoint : ", selectedEndpointUrl);
   };
 
   const formik = useFormik({
@@ -137,7 +135,6 @@ export default function Form() {
     validateOnBlur: false,
     validate: (values) => createTokenValidator(values),
     onSubmit: async (values) => {
-      console.log("Here");
       setButtonClicked(true);
       if (tokenAction === TokenRoutes.updateMetadata) {
         updateMetadataHandler();
@@ -159,7 +156,6 @@ export default function Form() {
           new PublicKey(formik.values.tokenAddress),
           connection
         );
-        //console.log("Old data : ", oldData);
         if (oldData.isMutable) {
           formik.setFieldValue("name", oldData.tokenName);
           formik.setFieldValue("symbol", oldData.tokenSymbol);
@@ -173,7 +169,6 @@ export default function Form() {
             },
           };
           formik.setFieldValue("logo", oldData.tokenLogo);
-          //console.log("Updated metadata : ", updatedPreviewData);
           dispatch(setPreviewData(updatedPreviewData));
           if (!isFetchOnly) {
             toggleShowUpdateMetadata();
@@ -208,7 +203,6 @@ export default function Form() {
     try {
       const uri = await createURI();
       let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
-      //console.log("Final uri : ", finalURI);
       successToast({ message: `MetaData Uploaded` });
       const txData = await updateSPLTokenMetadataTxBuilder(
         formik.values.name,
@@ -232,7 +226,6 @@ export default function Form() {
           },
         };
         formik.setFieldValue("logo", getImageURL());
-        //console.log("Updated metadata : ", updatedPreviewData);
         dispatch(setPreviewData(updatedPreviewData));
       }
       setButtonClicked(false);
@@ -269,7 +262,6 @@ export default function Form() {
     return resp;
   };
   const createTokenHandler = async (values: any) => {
-    console.log("Inside create token");
     if (!wallet.connected) {
       errorToast({ message: "Please Connect The Wallet" });
       setButtonClicked(false);
@@ -284,7 +276,6 @@ export default function Form() {
       try {
         const uri = await createURI();
         let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
-        // console.log("Final uri : ", finalURI);
         successToast({ message: `MetaData Uploaded` });
         // const txhash = await createToken22TxBuilder(
         //   formik.values.name,
@@ -297,7 +288,6 @@ export default function Form() {
         //   currentEndpoint,
         //   priorityFees
         // );
-        // console.log(txhash);
         const txhash = await createSPLTokenTxBuilder(
           formik.values.name,
           formik.values.symbol,
@@ -310,7 +300,6 @@ export default function Form() {
           priorityFees
         );
 
-        // //console.log("txhash : ", txhash);
         if (!txhash) {
           setButtonClicked(false);
           errorToast({ message: "Please Try Again" });
@@ -319,7 +308,7 @@ export default function Form() {
 
         setButtonClicked(false);
       } catch (error) {
-        console.log(error);
+        console.warn(error);
         errorToast({ message: "Try Again!" });
         setButtonClicked(false);
       }
@@ -380,7 +369,6 @@ export default function Form() {
           currentEndpoint,
           priorityFees
         );
-        console.log(txhash);
         if (!txhash) {
           setButtonClicked(false);
           errorToast({ message: "Please Try Again" });
@@ -388,7 +376,7 @@ export default function Form() {
         }
         setButtonClicked(false);
       } catch (error) {
-        console.log(error);
+        console.warn(error);
         errorToast({ message: "Try Again!" });
         setButtonClicked(false);
       }
@@ -409,7 +397,6 @@ export default function Form() {
 
   const createURI = async () => {
     const NFT_STORAGE_TOKEN = AppENVConfig.nft_storage_api_key;
-    //console.log(NFT_STORAGE_TOKEN, "token");
 
     const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
     const imageFile = new File([fileData], "nft.png", { type: "image/png" });
@@ -420,10 +407,8 @@ export default function Form() {
       symbol: formik.values.symbol,
       description: formik.values.description,
     });
-    //console.log(imageMetadata, imageMetadata.embed());
     // const imageURL = await getExampleImage(imageMetadata?.embed()?.image?.href);
     const imageURL = imageMetadata?.embed()?.image?.href;
-    //console.log("Img url blob : ", imageURL);
     let tokenMetadata = {
       name: formik.values.name,
       symbol: formik.values.symbol,
@@ -443,8 +428,6 @@ export default function Form() {
       tokenMetadata["twitter"] = formik.values.twitter;
     }
     const metadata = await client.store(tokenMetadata);
-    //console.log("Metadat : ", metadata);
-    //console.log("Metadat emb : ", metadata.embed());
     return metadata;
   };
 

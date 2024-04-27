@@ -84,7 +84,7 @@ export const revokeMintAuthTxBuilder = async (
 
     return resp ? createRevokeMintAuthTransactionSignature : null;
   } catch (error) {
-    // //console.log(error);
+    console.warn(error);
     return "";
   }
 };

@@ -48,8 +48,3 @@ export const getVariableFromLocalStorage = (key: string) => {
   const data = stringfiedData ? JSON.parse(stringfiedData || "") : "";
   return data;
 };
-// export const getDataFromCookies = (key: string) => {
-//   const cookies = new Cookies();
-//   let val = cookies.getAll();
-//   console.log(val, "val");
-// };

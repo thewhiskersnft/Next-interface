@@ -88,7 +88,7 @@ export const revokeFreezeAuthTxBuilder = async (
 
     return resp ? createRevokeFreezeAuthTransactionSignature : null;
   } catch (error) {
-    // //console.log(error);
+    console.warn(error);
     return "";
   }
 };

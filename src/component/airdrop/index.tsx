@@ -15,7 +15,7 @@ export default function AirdropChecker() {
   const SortIcon = (
     <Image
       src={"/swapVertical.svg"}
-      alt='paste'
+      alt="paste"
       width={18}
       height={18}
       priority
@@ -33,10 +33,10 @@ export default function AirdropChecker() {
   };
 
   return (
-    <div className='flex flex-col flex-1 h-full overflow-auto scroll-smooth p-4'>
+    <div className="flex flex-col flex-1 h-full overflow-auto scroll-smooth p-4">
       {/* Airdrop address form */}
-      <div className='flex flex-col border-[0.2px] border-variant1 p-6 lg:p-8 xl:p-10 mb-4'>
-        <p className='text-white text-large font-Orbitron'>Airdrop Checker</p>
+      <div className="flex flex-col border-[0.2px] border-variant1 p-6 lg:p-8 xl:p-10 mb-4">
+        <p className="text-white text-large font-Orbitron">Airdrop Checker</p>
         <AirdropAddresses
           fees={[
             {
@@ -69,24 +69,22 @@ export default function AirdropChecker() {
       </div>
 
       {/* Cards Sections */}
-      <div className='flex flex-col border-[0.2px] border-variant1 p-6 lg:p-8 xl:p-10 mb-4'>
-        <div className='flex flex-row justify-between items-start'>
-          <p className='text-white text-large basis-1/2 font-Orbitron'>
+      <div className="flex flex-col border-[0.2px] border-variant1 p-6 lg:p-8 xl:p-10 mb-4">
+        <div className="flex flex-row justify-between items-start">
+          <p className="text-white text-large basis-1/2 font-Orbitron">
             Eligibility
           </p>
-          <div className='flex items-center flex-row basis-1/2'>
+          <div className="flex items-center flex-row basis-1/2">
             <CustomInput
               label={""}
               value={""}
-              onChange={(e) => {
-                console.log("searchInput -->", e.target.value);
-              }}
+              onChange={(e) => {}}
               containerStyles={{ marginTop: 0, height: "28px" }}
               placeholderColor={"#989C9F"}
               placeholder={"Search for Tokens"}
               type={"string"}
             />
-            <div className='ml-4'>
+            <div className="ml-4">
               <CustomButton
                 onClick={() => {}}
                 label={"Sort"}
@@ -101,7 +99,7 @@ export default function AirdropChecker() {
             </div>
           </div>
         </div>
-        <div className='grid grid-cols-2 xl:grid-cols-3 gap-6 mt-6'>
+        <div className="grid grid-cols-2 xl:grid-cols-3 gap-6 mt-6">
           {[1, 2, 3, 4].map((item, index) => {
             return (
               <AirdropCard

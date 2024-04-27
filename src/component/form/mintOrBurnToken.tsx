@@ -35,7 +35,6 @@ const MintOrBurnToken = ({
         connection,
         new PublicKey(formik.values.tokenAddress)
       );
-      // //console.log("mintAccount", mintAccount);
       if (!mintAccount) {
         errorToast({ message: "Please Check the address" });
       } else {
@@ -104,7 +103,6 @@ const MintOrBurnToken = ({
       } else {
         errorToast({ message: "Please try again" });
       }
-      // //console.log(txhash);
       setBurnOrMintLoading(false);
     } catch (e) {
       errorToast({ message: "Please try again" });
@@ -185,7 +183,6 @@ const MintOrBurnToken = ({
                   } else {
                     mintToken();
                   }
-                  // // //console.log("Mint token clicked!");
                 }}
               />
             </div>

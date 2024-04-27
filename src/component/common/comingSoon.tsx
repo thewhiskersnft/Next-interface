@@ -10,9 +10,13 @@ import Loader from "./loader";
 
 type ComingSoonProps = {
   hideOnWeb?: boolean;
+  triggerHeadersApi?: boolean;
 };
 
-export default function ComingSoon({ hideOnWeb }: ComingSoonProps) {
+export default function ComingSoon({
+  hideOnWeb,
+  triggerHeadersApi,
+}: ComingSoonProps) {
   return (
     <Suspense
       fallback={
@@ -27,7 +31,7 @@ export default function ComingSoon({ hideOnWeb }: ComingSoonProps) {
           overflow: "scroll",
         }}
       >
-        <Header />
+        <Header selectedLink={triggerHeadersApi ? "" : null} />
 
         <div
           className="bg-gradient-to-t from-black to-transparent absolute h-[90vh] w-[100vw] bottom-[30px] flex items-center justify-center"

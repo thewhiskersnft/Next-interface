@@ -108,8 +108,6 @@ export const createToken22TxBuilder = async (
     }
 
     const token22_mint = Keypair.generate();
-    console.log(wallet.publicKey, "wallet");
-    console.log(token22_mint.publicKey, "token22_mint");
 
     const ON_CHAIN_METADATA: TokenMetadata = {
       name: name,
@@ -328,10 +326,8 @@ export const createToken22TxBuilder = async (
         signers: [token22_mint],
       }
     );
-    console.log(createAccountSignature);
     const startTime = Date.now();
     // while()
-    //console.log(" Now : ", startTime);
     // 2afRSao7JckbxdV4p1Ak3jcD7uKsW4C7kY2tRukyXLtncdiTW4jpiaZDSR4nKYveok1WYzXgyc337PY3bAmJkzoK', mint: '5Pm6NTDoRYHjyy36XyJy3bY8ezpPHnzfLvug1zrHuhKK
     // let resp = await recursiveCheckTransitionStatus(
     //   startTime,
@@ -343,7 +339,6 @@ export const createToken22TxBuilder = async (
     //   mint_account,
     //   0
     // );
-    // //console.log("Resp : ", resp);
     let resp = await recursiveCheckTransitionStatus(
       Date.now(),
       createAccountSignature,
@@ -381,6 +376,6 @@ export const createToken22TxBuilder = async (
         }
       : null;
   } catch (error) {
-    console.log(error);
+    console.warn(error);
   }
 };

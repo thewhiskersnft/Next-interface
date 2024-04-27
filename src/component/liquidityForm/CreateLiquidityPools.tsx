@@ -2,6 +2,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import FluxbeamLP from "./FluxbeamLP";
 import RadiyumLP from "./RadiyumLP";
+import { errorToast } from "../common/toast";
 
 const lpMethods = {
   radiyum: "radiyum",
@@ -41,7 +42,8 @@ const CreateLiquidityPools = ({}) => {
               <div
                 className="flex justify-center items-center custom-card-border hover:border-[1px] hover:border-yellow1 py-4 cursor-pointer"
                 onClick={() => {
-                  setSelectedMethod(lpMethods.radiyum);
+                  errorToast({ message: "Coming Soon!" });
+                  // setSelectedMethod(lpMethods.radiyum);
                 }}
               >
                 <Image
@@ -64,7 +66,8 @@ const CreateLiquidityPools = ({}) => {
               <div
                 className="flex justify-center items-center custom-card-border hover:border-[1px] hover:border-yellow1 py-4 cursor-pointer mt-16"
                 onClick={() => {
-                  setSelectedMethod(lpMethods.fluxbeam);
+                  errorToast({ message: "Coming Soon!" });
+                  // setSelectedMethod(lpMethods.fluxbeam);
                 }}
               >
                 <Image

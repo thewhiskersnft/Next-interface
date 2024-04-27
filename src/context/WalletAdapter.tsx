@@ -191,7 +191,6 @@ export function SolanaWalletProviders({ children }: { children?: ReactNode }) {
   //     }, 100);
   //   }
   // }, []);
-  //console.log("Endpoint : ", endpoint);
 
   return (
     <ConnectionProvider
