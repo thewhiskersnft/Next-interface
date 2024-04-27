@@ -19,7 +19,10 @@ import rewardService from "@/services/rewardService";
 import { get } from "lodash";
 import { clearLocalStorageForLogout, isSignedIn } from "@/utils/auth/checkAuth";
 import { EVENTS } from "@/constants/eventListeners";
-import { getVariableFromLocalStorage } from "@/utils/apiService";
+import {
+  getLocalWalletAddress,
+  getVariableFromLocalStorage,
+} from "@/utils/apiService";
 import { LocalStorageVariables } from "@/constants/appStorageVars";
 import { setTotalRewards } from "@/redux/slice/userDataSlice";
 
@@ -52,8 +55,6 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
     window.removeEventListener(EVENTS.GET_REWARD_POINTS, fetchRewards);
   };
 
-  console.log("Tatal rew : ", totalRewards);
-
   useEffect(() => {
     if (selectedLink === undefined || selectedLink === null) {
       if (appLoading) {
@@ -62,7 +63,6 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
       setShowButton(true);
       return;
     }
-    console.log("Use effect triggered./../././././../.", selectedLink);
     authenticateRouteAndFetchData();
     attachEvents();
     return () => {
@@ -75,13 +75,22 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
     if (selectedLink === undefined || selectedLink === null) {
       return;
     }
-    console.log("In wallet useEffect");
     const walletName = getVariableFromLocalStorage(
       LocalStorageVariables.walletName
     );
     if (wallet && !walletName) {
       // wallet disconnection
+      console.warn("Please connect wallet!");
       clearLocalStorageForLogout();
+    }
+    if (
+      wallet &&
+      wallet.connected &&
+      wallet?.publicKey?.toString() !== getLocalWalletAddress()
+    ) {
+      // wallet addr changed
+      clearLocalStorageForLogout();
+      // errorToast({ message: "Wallet address changed, please relogin!" });
     }
     if (wallet.connected && !isSignedIn()) {
       // wallet connected but not signed in
@@ -108,9 +117,6 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
   };
 
   const fetchRewards = async () => {
-    // console.log(
-    //   "Fetching rewards......................------------------>>>>>>>>>>>>>"
-    // );
     const allRewards = await rewardService.fetchRewards();
     if (allRewards?.status) {
       const updatedRewards = get(allRewards, "data.data.total_points", 0);
@@ -153,12 +159,15 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
       if (wallet.signMessage) {
         const uint8arraySignature = await wallet.signMessage(message);
         if (uint8arraySignature) {
-          let signInResp = await authService.login({
-            signature: base58.encode(uint8arraySignature),
-            message: messageToShow,
-            wallet_address: wallet.publicKey?.toBase58(),
-            session_id: `${new Date().getTime()}_${wallet.publicKey?.toString()}`,
-          });
+          let signInResp = await authService.login(
+            {
+              signature: base58.encode(uint8arraySignature),
+              message: messageToShow,
+              wallet_address: wallet.publicKey?.toBase58(),
+              session_id: `${new Date().getTime()}_${wallet.publicKey?.toString()}`,
+            },
+            wallet.publicKey?.toString() || ""
+          );
         }
       }
     } catch (e) {
@@ -348,7 +357,6 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             // if (!tokenAction) {
             //   return;
             // } else {
-            // console.log("Clicking");
             handleClickProp ? handleClickProp() : null;
             router.push(`/`);
             // }
