@@ -1,7 +1,8 @@
 export enum AUTH_API_PATH {
   LOGIN_MESSAGE = "/user/api/signin-data",
   LOGIN = "/user/api/signin",
-  REFRESH_ACCESS_TOKEN = "/refreshTokens/createOrUpdateToken",
+  LOGOUT = "/refreshTokens/logout",
+  REFRESH_ACCESS_TOKEN = "/refreshTokens/provideAccessFromRefreshToken",
 }
 
 export enum REWARD_API_PATH {

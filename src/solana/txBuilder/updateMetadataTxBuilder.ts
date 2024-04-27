@@ -38,11 +38,15 @@ import {} from "@metaplex-foundation/umi";
 import {
   PLATFORM_FEE_SOL_TOKEN_CREATION,
   PLATFORM_OWNER_ADDRESS,
+  TransactionSource,
+  TransactionType,
 } from "@/constants";
 import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
 import { recursiveCheckTransitionStatus } from "@/utils/transactions";
 import { getMintURL, getSignatureURL } from "@/utils/redirectURLs";
 import { getPriorityLambports } from "@/utils/transactions/getPriorityLambports";
+import rewardService from "@/services/rewardService";
+import { getLocalGUID } from "@/utils/apiService";
 
 let network = isMainnet() ? "mainnet-beta" : "devnet";
 
@@ -150,6 +154,11 @@ export const updateSPLTokenMetadataTxBuilder = async (
       wallet
     );
     if (resp) {
+      let updateMetadataResp = await rewardService.addUserPoints({
+        trans_type: TransactionType.Rewarded,
+        trans_source: TransactionSource.UpdateMetadata,
+        user_guid: getLocalGUID(),
+      });
       successToast({
         keyPairs: {
           signature: {

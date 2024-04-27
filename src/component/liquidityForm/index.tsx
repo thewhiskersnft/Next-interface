@@ -71,7 +71,7 @@ const LiquidityForm = () => {
         </div>
       ) : (
         <div className="flex flex-1 items-center justify-center">
-          {appLoading ? <></> : <Loader visible={true} size={30} />}
+          {appLoading ? <></> : <Loader visible={true} size={80} />}
         </div>
       )}
     </>

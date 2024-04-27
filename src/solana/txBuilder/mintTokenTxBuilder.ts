@@ -2,7 +2,11 @@ import { errorToast, successToast } from "@/component/common/toast";
 import {
   PLATFORM_FEE_SOL_TOKEN_CREATION,
   PLATFORM_OWNER_ADDRESS,
+  TransactionSource,
+  TransactionType,
 } from "@/constants";
+import rewardService from "@/services/rewardService";
+import { getLocalGUID } from "@/utils/apiService";
 import { getSignatureURL } from "@/utils/redirectURLs";
 import { recursiveCheckTransitionStatus } from "@/utils/transactions";
 import { getPriorityLambports } from "@/utils/transactions/getPriorityLambports";
@@ -91,6 +95,11 @@ export const createMintTokensTxBuilder = async (
       // mint_account.publicKey.toBase58()
     );
     if (resp) {
+      let mintTokenResp = await rewardService.addUserPoints({
+        trans_type: TransactionType.Rewarded,
+        trans_source: TransactionSource.MintTokens,
+        user_guid: getLocalGUID(),
+      });
       successToast({
         keyPairs: {
           signature: {

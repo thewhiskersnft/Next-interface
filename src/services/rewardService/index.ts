@@ -6,6 +6,7 @@ import {
 } from "@/utils/apiService";
 import { Get, Post } from "../helper/Agent";
 import { REWARD_API_PATH } from "@/constants/apiURLs";
+import { EVENTS } from "@/constants/eventListeners";
 
 interface addUserPointsInterface {
   trans_type: string;
@@ -48,7 +49,11 @@ class RewardsService {
         authorization: `Bearer ${getLocalAccessToken()}`,
       },
     });
-    console.log("Update points resp : ", resp);
+    if (resp.status) {
+      const fetchPointsEvents = new CustomEvent(EVENTS.GET_REWARD_POINTS);
+      window.dispatchEvent(fetchPointsEvents);
+    }
+    return resp;
   };
 }
 

@@ -147,7 +147,7 @@ export const sidebarData: SidebarItem[] = [
     icon: "/airdrop.svg",
     activeIcon: "/airdropActive.svg",
     navigateTo: `/airdrop`,
-    disabled: false,
+    disabled: true,
   },
 ];
 
@@ -285,4 +285,9 @@ export enum TransactionSource {
   BurnToClaimRent = "BurnToClaimRent",
   AirdropChecker = "AirdropChecker",
   AirdropCheckerBig = "AirdropCheckerBig",
+}
+
+export enum API_METHODS {
+  GET = "GET",
+  POST = "POST",
 }

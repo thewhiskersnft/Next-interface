@@ -18,7 +18,7 @@ export const getLocalAccessToken = () => {
   const stringfiedData = localStorage.getItem(
     LocalStorageVariables.accessToken
   );
-  const data = JSON.parse(stringfiedData || "");
+  const data = stringfiedData ? JSON.parse(stringfiedData || "") : "";
   return data;
 };
 export const setLocalSessionId = (sessionId: string) => {
@@ -30,7 +30,7 @@ export const setLocalSessionId = (sessionId: string) => {
 
 export const getLocalSessionId = () => {
   const stringfiedData = localStorage.getItem(LocalStorageVariables.sessionId);
-  const data = JSON.parse(stringfiedData || "");
+  const data = stringfiedData ? JSON.parse(stringfiedData || "") : "";
   return data;
 };
 export const setLocalGUID = (guid: string) => {
@@ -39,12 +39,17 @@ export const setLocalGUID = (guid: string) => {
 
 export const getLocalGUID = () => {
   const stringfiedData = localStorage.getItem(LocalStorageVariables.guid);
-  const data = JSON.parse(stringfiedData || "");
+  const data = stringfiedData ? JSON.parse(stringfiedData || "") : "";
   return data;
 };
 
-export const getDataFromCookies = (key: string) => {
-  const cookies = new Cookies();
-  let val = cookies.getAll();
-  console.log(val, "val");
+export const getVariableFromLocalStorage = (key: string) => {
+  const stringfiedData = localStorage.getItem(key);
+  const data = stringfiedData ? JSON.parse(stringfiedData || "") : "";
+  return data;
 };
+// export const getDataFromCookies = (key: string) => {
+//   const cookies = new Cookies();
+//   let val = cookies.getAll();
+//   console.log(val, "val");
+// };

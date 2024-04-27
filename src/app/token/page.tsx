@@ -4,14 +4,13 @@ import Header from "@/component/common/header";
 import PrimaryHeader from "@/component/common/primaryHeader";
 import Sidebar from "@/component/common/sidebar";
 import { Suspense } from "react";
-import { isMobile } from "react-device-detect";
 import Loader from "@/component/common/loader";
 
 export default function Token() {
   return (
     <Suspense
       fallback={
-        <div className="flex h-[100vh] w-[100vw] justify-center items-center absolute top-[0]">
+        <div className="flex h-[100vh] w-[100vw] bg-black justify-center items-center absolute top-[0]">
           <Loader visible={true} size={80} />
         </div>
       }

@@ -10,6 +10,7 @@ import {
   SystemProgram,
   TransactionInstruction,
 } from "@solana/web3.js";
+// @ts-ignore
 import BN from "bn.js";
 
 import {

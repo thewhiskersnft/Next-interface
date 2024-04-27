@@ -48,6 +48,8 @@ import {} from "@metaplex-foundation/umi";
 import {
   PLATFORM_FEE_SOL_TOKEN_CREATION,
   PLATFORM_OWNER_ADDRESS,
+  TransactionSource,
+  TransactionType,
 } from "@/constants";
 import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
 import { errorToast, successToast } from "@/component/common/toast";
@@ -61,6 +63,8 @@ import {
   pack,
   TokenMetadata,
 } from "@solana/spl-token-metadata";
+import rewardService from "@/services/rewardService";
+import { getLocalGUID } from "@/utils/apiService";
 let network = isMainnet() ? "mainnet-beta" : "devnet";
 
 type TransferTaxProps = {
@@ -347,6 +351,11 @@ export const createToken22TxBuilder = async (
       wallet
     );
     if (resp) {
+      let updateTokenResp = await rewardService.addUserPoints({
+        trans_type: TransactionType.Rewarded,
+        trans_source: TransactionSource.CreateToken,
+        user_guid: getLocalGUID(),
+      });
       successToast({
         keyPairs: {
           mintAddress: {

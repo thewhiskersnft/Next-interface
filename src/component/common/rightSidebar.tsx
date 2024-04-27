@@ -9,6 +9,7 @@ import { MetaplexFile } from "@metaplex-foundation/js";
 import { createSPLTokenTxBuilder } from "@/solana/txBuilder/createSPLTokenTxBuilder";
 import CustomButton from "./customButton";
 import { numberWithCommas } from "@/utils/common";
+// @ts-ignore
 import Lottie from "react-lottie";
 import * as moonAnimationData from "../../assets/gifs/13 Moon.json";
 import * as rocketAnimationData from "../../assets/gifs/27 rocket toy.json";
@@ -275,6 +276,7 @@ const RightSidebar: FC<SidebarProps> = ({
                     className={`text-white flex ${
                       showRewards ? "mt-2" : "mt-6"
                     }`}
+                    key={headingIndex + "sp"}
                   >
                     <p className="w-1/2 text-left text-small text-yellow1 font-Orbitron my-[10px]">
                       {heading}
@@ -315,7 +317,10 @@ const RightSidebar: FC<SidebarProps> = ({
                 {rewardsCards.map((reward: any, rIndex: number) => {
                   const { defOptions, label, rightText } = reward;
                   return (
-                    <section className="bg-background border-[1px] border-variant1 py-4 px-6 flex items-center justify-between mt-6">
+                    <section
+                      className="bg-background border-[1px] border-variant1 py-4 px-6 flex items-center justify-between mt-6"
+                      key={rIndex + "rws"}
+                    >
                       <span className="flex items-center">
                         <Lottie
                           options={defOptions}

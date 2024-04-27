@@ -201,7 +201,7 @@ export function SolanaWalletProviders({ children }: { children?: ReactNode }) {
       <WalletProvider
         wallets={wallets}
         onError={(e) => {
-          console.warn(e);
+          console.warn(e, "------------------");
         }}
         autoConnect={
           // pathname !== "/" &&

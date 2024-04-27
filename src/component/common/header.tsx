@@ -1,30 +1,26 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  WalletMultiButton,
-  useWalletModal,
-} from "@solana/wallet-adapter-react-ui";
-import { getCsrfToken, signIn, signOut, useSession } from "next-auth/react";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import CustomInput from "./customInput";
 import Image from "next/image";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { TokenRoutes, headerData } from "@/constants";
+import { headerData } from "@/constants";
 import { errorToast } from "./toast";
 import Loader from "./loader";
 import { setAppLoading } from "../../redux/slice/appDataSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { HeaderItem } from "@/interfaces";
-import { SigninMessage } from "@/utils/auth/SigninMessage";
-import bs58 from "bs58";
 import base58 from "bs58";
 import { numberWithCommas } from "@/utils/common";
 import authService from "@/services/authService";
 import rewardService from "@/services/rewardService";
 import { get } from "lodash";
-import { getDataFromCookies } from "@/utils/apiService";
-import { cookies } from "next/headers";
+import { clearLocalStorageForLogout, isSignedIn } from "@/utils/auth/checkAuth";
+import { EVENTS } from "@/constants/eventListeners";
+import { getVariableFromLocalStorage } from "@/utils/apiService";
+import { LocalStorageVariables } from "@/constants/appStorageVars";
 
 const borderColor: string = "#4D4D4D";
 
@@ -36,11 +32,9 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
   const [searchVal, setSearchVal] = useState<string>("");
   const [showButton, setShowButton] = useState(false);
-  const [signature, setSignature] = useState();
-  const [rewards, setRewards] = useState(234332);
+  const [rewards, setRewards] = useState(0);
 
   const wallet = useWallet();
-  // const { publicKey, signMessage } = useWallet();
   const router = useRouter();
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
@@ -48,19 +42,62 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
 
   const { appLoading } = useSelector((state: any) => state.appDataSlice);
 
+  const attachEvents = () => {
+    window.addEventListener(EVENTS.GET_REWARD_POINTS, fetchRewards);
+  };
+
+  const detachEvents = () => {
+    window.removeEventListener(EVENTS.GET_REWARD_POINTS, fetchRewards);
+  };
+
   useEffect(() => {
-    setShowButton(true);
-    if (appLoading) {
-      dispatch(setAppLoading(false));
-    }
-    fetchRewards();
+    console.log("Use effect triggered./../././././../.");
+    authenticateRouteAndFetchData();
+    attachEvents();
+    return () => {
+      detachEvents();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    const walletName = getVariableFromLocalStorage(
+      LocalStorageVariables.walletName
+    );
+    if (wallet && !walletName) {
+      // wallet disconnection
+      clearLocalStorageForLogout();
+    }
+    if (wallet.connected && !isSignedIn()) {
+      // wallet connected but not signed in
+      handleSignIn();
+    }
+  }, [wallet?.connected]);
+
+  const authenticateRouteAndFetchData = async () => {
+    // const isAuthenticated = isSignedIn();
+    setShowButton(true);
+    // if (!isAuthenticated) {
+    //   if (window?.location?.pathname !== "/")
+    //     // errorToast({ message: "Please login!" });
+    //     router.push("/");
+    //   if (appLoading) {
+    //     dispatch(setAppLoading(false));
+    //   }
+    //   return;
+    // }
+    if (appLoading) {
+      dispatch(setAppLoading(false));
+    }
+    await fetchRewards();
+  };
+
   const fetchRewards = async () => {
+    console.log(
+      "Fetching rewards......................------------------>>>>>>>>>>>>>"
+    );
     const allRewards = await rewardService.fetchRewards();
-    console.log(allRewards);
-    if (allRewards.status) {
+    if (allRewards?.status) {
       setRewards(get(allRewards, "data.data.total_points", 0));
     }
   };
@@ -77,52 +114,17 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
     }
   };
 
-  // const handleSignIn = async () => {
-  //   try {
-  //     console.log("Wallet : ", wallet);
-  //     console.log("walletModal : ", walletModal);
-  //     if (!wallet.connected) {
-  //       walletModal.setVisible(true);
-  //     }
-
-  //     const csrf = await getCsrfToken();
-  //     console.log("CSFR : ", csrf);
-  //     if (!wallet.publicKey || !csrf || !wallet.signMessage) return;
-
-  //     const message = new SigninMessage({
-  //       domain: window.location.host,
-  //       publicKey: wallet.publicKey?.toBase58(),
-  //       statement: `Sign this message to sign in to the app.`,
-  //       nonce: csrf,
-  //     });
-  //     console.log("Message : ", message);
-
-  //     const data = new TextEncoder().encode(message.prepare());
-  // const signature = await wallet.signMessage(data);
-  //     const serializedSignature = bs58.encode(signature);
-  //     console.log("data : ", data);
-  //     console.log("signature : ", signature);
-  //     console.log("serializedSignature : ", serializedSignature);
-
-  //     signIn("credentials", {
-  //       message: JSON.stringify(message),
-  //       redirect: false,
-  //       signature: serializedSignature,
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   const handleSignIn = async () => {
-    // getDataFromCookies("refreshToken");
-    // // console.log(cookies.toString());
-    // return;
-    // console.log("........ ", wallet.publicKey?.toBase58());
+    if (!wallet.connected) {
+      errorToast({ message: "Please connect wallet!" });
+      return;
+    }
     let loginMessage = await authService.loginMessage({
       walletAddress: wallet.publicKey?.toBase58(),
     });
-    console.log(loginMessage);
+    if (!loginMessage) {
+      return;
+    }
     const messageToShow = `${loginMessage.data?.data?.statement}\nnonce: ${
       loginMessage.data?.data?.nonce
     }\ndomain: ${
@@ -133,19 +135,17 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
       const message = new TextEncoder().encode(messageToShow);
       if (wallet.signMessage) {
         const uint8arraySignature = await wallet.signMessage(message);
-        console.log(uint8arraySignature, "sign mess...");
         if (uint8arraySignature) {
           let signInResp = await authService.login({
             signature: base58.encode(uint8arraySignature),
             message: messageToShow,
             wallet_address: wallet.publicKey?.toBase58(),
-            session_id: `${new Date().getTime()}`,
+            session_id: `${new Date().getTime()}_${wallet.publicKey?.toString()}`,
           });
-          console.log("Success : ", signInResp);
         }
       }
     } catch (e) {
-      console.log("could not sign message");
+      console.warn("could not sign message");
     }
   };
 
@@ -160,7 +160,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             appLoading ? "visible" : "hidden"
           }`}
         >
-          <Loader visible={appLoading} size={50} />
+          <Loader visible={appLoading} size={80} />
         </div>
         <div
           className="cursor-pointer px-4 flex items-center h-full"
@@ -169,7 +169,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             borderColor: borderColor,
           }}
           onClick={() => {
-            if (!tokenAction) {
+            if (get(window, "location.pathname", "") === "/") {
               return;
             } else {
               dispatch(setAppLoading(true));
@@ -264,10 +264,13 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           }}
         >
           <span
-            className="flex pr-2 justify-between items-center h-max"
+            className="flex pr-2 justify-between items-center h-max cursor-pointer"
             style={{
               borderRightWidth: "2px",
               borderColor: borderColor,
+            }}
+            onClick={() => {
+              router.push("/rewards");
             }}
           >
             <Image
@@ -325,12 +328,13 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             borderColor: borderColor,
           }}
           onClick={() => {
-            if (!tokenAction) {
-              return;
-            } else {
-              handleClickProp ? handleClickProp() : null;
-              router.push(`/`);
-            }
+            // if (!tokenAction) {
+            //   return;
+            // } else {
+            console.log("Clicking");
+            handleClickProp ? handleClickProp() : null;
+            router.push(`/`);
+            // }
           }}
         >
           <Image

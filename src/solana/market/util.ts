@@ -24,18 +24,20 @@ export async function sendTx(
   connection: Connection,
   wallet: WalletContextState,
   txs: (VersionedTransaction | Transaction)[],
-  options?: SendOptions
+  options?: SendOptions,
+  callBak?: any
 ): Promise<string[]> {
   const txids: string[] = [];
   const signedTransactionArray = await wallet.signAllTransactions!(txs);
   console.log(signedTransactionArray);
   for (let i = 0; i < signedTransactionArray.length; i++) {
-    // await sleepTime(15 * 1000);
+    callBak && callBak(i + 1);
+    await sleepTime(15 * 1000);
     const transactionResponse = await connection.sendRawTransaction(
       signedTransactionArray[i].serialize()
     );
     const timeNow = new Date();
-    const isTxConfirmed = recursiveCheckTransitionStatus(
+    const isTxConfirmed = await recursiveCheckTransitionStatus(
       timeNow,
       transactionResponse,
       connection,
@@ -72,7 +74,8 @@ export async function buildAndSendTx(
   innerSimpleV0Transaction: InnerSimpleV0Transaction[],
   connection: Connection,
   wallet: WalletContextState,
-  options?: SendOptions
+  options?: SendOptions,
+  callBak?: any
 ) {
   const willSendTx = await buildSimpleTransaction({
     connection,
@@ -82,7 +85,16 @@ export async function buildAndSendTx(
     addLookupTableInfo: addLookupTableInfo,
   });
 
-  return await sendTx(connection, wallet, willSendTx, options);
+  return await sendTx(
+    connection,
+    wallet,
+    willSendTx,
+    options,
+    (index: number) => {
+      console.log(index);
+      callBak && callBak(index);
+    }
+  );
 }
 
 export function getATAAddress(

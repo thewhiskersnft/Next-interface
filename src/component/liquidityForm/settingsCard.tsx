@@ -23,7 +23,7 @@ const data = [
 ];
 
 function SettingsCard({ item, selected, handleClick }: any) {
-  console.log("eiorhndcnceklrwdnclodenlikcvenrloincfloijn", item, selected);
+  // console.log("eiorhndcnceklrwdnclodenlikcvenrloincfloijn", item, selected);
   return (
     <div
       className={`flex-1 flex flex-col custom-card-border hover:border-yellow1 min-w-[254px] max-w-[350px] p-5`}

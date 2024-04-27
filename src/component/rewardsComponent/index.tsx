@@ -11,7 +11,7 @@ const tabs = {
   myRewards: "My Rewards",
   referals: "Referals",
   earnPoints: "Earn Points",
-};
+} as { [key: string]: string };
 
 const dummyRewardsData = [
   {
@@ -171,6 +171,7 @@ const RewardsComponent = ({}: RewardsComponentProps) => {
   const [rewards, setRewards] = useState([]);
 
   useEffect(() => {
+    console.log("Fetching LeaderBoard : ...................");
     fetchLeaderboardData();
   }, []);
 
@@ -186,8 +187,8 @@ const RewardsComponent = ({}: RewardsComponentProps) => {
     <div className="h-full w-full px-4 py-4 box-border flex gap-4">
       <div className="flex flex-1 flex-col py-2">
         <div className="flex" id="tabs">
-          {Object.keys(tabs).map((tabKey: any, index: number) => {
-            let tabLabel = tabs[tabKey];
+          {Object.keys(tabs).map((tabKey: string, index: number) => {
+            let tabLabel = tabs[tabKey] as any;
             return (
               <button
                 key={index + "button"}
@@ -243,10 +244,10 @@ const RewardsComponent = ({}: RewardsComponentProps) => {
               Rank: "# 1345",
               "Total Moons": "432,334",
               "7-day Moons": "432",
-              Referals: "23",
-              "Moons from Referals": "3432",
-              "Moons from Engagements": "8765",
-              "Trading Volume": "$34,093",
+              Referals: "-",
+              "Moons from Referals": "-",
+              "Moons from Engagements": "-",
+              "Trading Volume": "-",
             },
           }}
           logo={""}
