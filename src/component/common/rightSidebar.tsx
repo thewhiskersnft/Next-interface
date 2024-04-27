@@ -12,9 +12,9 @@ import { numberWithCommas } from "@/utils/common";
 // @ts-ignore
 import Lottie from "react-lottie";
 import * as moonAnimationData from "../../assets/gifs/13 Moon.json";
-import * as rocketAnimationData from "../../assets/gifs/27 rocket toy.json";
+import * as rocketAnimationData from "../../assets/gifs/27 Rocket toy.json";
 import * as seasonAnimationData from "../../assets/gifs/18 Moon.json";
-import * as referalAnimationData from "../../assets/gifs/45 reference point.json";
+import * as referalAnimationData from "../../assets/gifs/45 Reference point.json";
 
 interface SidebarProps {
   data: PreviewData;
