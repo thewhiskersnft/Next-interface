@@ -3,4 +3,5 @@ export const LocalStorageVariables = {
   guid: "moonly.guid",
   sessionId: "moonly.sessionId",
   walletName: "walletName",
+  walletAddress: "walletAddress",
 };

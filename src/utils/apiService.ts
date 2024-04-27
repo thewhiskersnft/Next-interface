@@ -7,6 +7,21 @@ export const getServiceApiUrl = () => {
   return AppENVConfig.service_api_url;
 };
 
+export const setLocalWalletAddress = (walletAddress: string) => {
+  localStorage.setItem(
+    LocalStorageVariables.walletAddress,
+    JSON.stringify(walletAddress)
+  );
+};
+
+export const getLocalWalletAddress = () => {
+  const stringfiedData = localStorage.getItem(
+    LocalStorageVariables.walletAddress
+  );
+  const data = stringfiedData ? JSON.parse(stringfiedData || "") : "";
+  return data;
+};
+
 export const setLocalAccessToken = (accessToken: string) => {
   localStorage.setItem(
     LocalStorageVariables.accessToken,
