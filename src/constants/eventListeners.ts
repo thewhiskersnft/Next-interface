@@ -1,0 +1,3 @@
+export enum EVENTS {
+  GET_REWARD_POINTS = "GET_REWARD_POINTS",
+}

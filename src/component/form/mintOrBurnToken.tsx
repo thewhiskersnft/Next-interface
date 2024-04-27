@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from "react";
-import CustomInput from "../customInput";
-import CustomButton from "../customButton";
+import CustomInput from "../common/customInput";
+import CustomButton from "../common/customButton";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 
 import { createMintTokensTxBuilder } from "../../solana/txBuilder/mintTokenTxBuilder";
 import { validateAddress } from "@/solana/txBuilder/checkAddress";
-import { errorToast, successToast } from "../toast";
+import { errorToast, successToast } from "../common/toast";
 import { createBurnTokensTxBuilder } from "@/solana/txBuilder/burnTokenTxBuilder";
 import { getSignatureURL } from "@/utils/redirectURLs";
 
@@ -35,7 +35,6 @@ const MintOrBurnToken = ({
         connection,
         new PublicKey(formik.values.tokenAddress)
       );
-      // //console.log("mintAccount", mintAccount);
       if (!mintAccount) {
         errorToast({ message: "Please Check the address" });
       } else {
@@ -104,7 +103,6 @@ const MintOrBurnToken = ({
       } else {
         errorToast({ message: "Please try again" });
       }
-      // //console.log(txhash);
       setBurnOrMintLoading(false);
     } catch (e) {
       errorToast({ message: "Please try again" });
@@ -185,7 +183,6 @@ const MintOrBurnToken = ({
                   } else {
                     mintToken();
                   }
-                  // // //console.log("Mint token clicked!");
                 }}
               />
             </div>

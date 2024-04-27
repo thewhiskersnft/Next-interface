@@ -6,22 +6,34 @@ import CustomInput from "./customInput";
 import Image from "next/image";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { TokenRoutes } from "@/constants";
+import { headerData } from "@/constants";
 import { errorToast } from "./toast";
 import Loader from "./loader";
-import { setAppLoading } from "../redux/slice/appDataSlice";
+import { setAppLoading } from "../../redux/slice/appDataSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { HeaderItem } from "@/interfaces";
+import base58 from "bs58";
+import { numberWithCommas } from "@/utils/common";
+import authService from "@/services/authService";
+import rewardService from "@/services/rewardService";
+import { get } from "lodash";
+import { clearLocalStorageForLogout, isSignedIn } from "@/utils/auth/checkAuth";
+import { EVENTS } from "@/constants/eventListeners";
+import { getVariableFromLocalStorage } from "@/utils/apiService";
+import { LocalStorageVariables } from "@/constants/appStorageVars";
+import { setTotalRewards } from "@/redux/slice/userDataSlice";
 
 const borderColor: string = "#4D4D4D";
 
 interface HeaderProps {
-  selectedLink?: string;
+  selectedLink?: string | undefined | null;
   handleClickProp?: Function;
 }
 
 const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
   const [searchVal, setSearchVal] = useState<string>("");
   const [showButton, setShowButton] = useState(false);
+  // const [rewards, setRewards] = useState(0);
 
   const wallet = useWallet();
   const router = useRouter();
@@ -30,24 +42,127 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
   const tokenAction = searchParams.get("action");
 
   const { appLoading } = useSelector((state: any) => state.appDataSlice);
+  const { totalRewards } = useSelector((state: any) => state.userDataSlice);
+
+  const attachEvents = () => {
+    window.addEventListener(EVENTS.GET_REWARD_POINTS, fetchRewards);
+  };
+
+  const detachEvents = () => {
+    window.removeEventListener(EVENTS.GET_REWARD_POINTS, fetchRewards);
+  };
+
+  console.log("Tatal rew : ", totalRewards);
 
   useEffect(() => {
+    if (selectedLink === undefined || selectedLink === null) {
+      if (appLoading) {
+        dispatch(setAppLoading(false));
+      }
+      setShowButton(true);
+      return;
+    }
+    console.log("Use effect triggered./../././././../.", selectedLink);
+    authenticateRouteAndFetchData();
+    attachEvents();
+    return () => {
+      detachEvents();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (selectedLink === undefined || selectedLink === null) {
+      return;
+    }
+    console.log("In wallet useEffect");
+    const walletName = getVariableFromLocalStorage(
+      LocalStorageVariables.walletName
+    );
+    if (wallet && !walletName) {
+      // wallet disconnection
+      clearLocalStorageForLogout();
+    }
+    if (wallet.connected && !isSignedIn()) {
+      // wallet connected but not signed in
+      handleSignIn();
+    }
+  }, [wallet?.connected]);
+
+  const authenticateRouteAndFetchData = async () => {
+    // const isAuthenticated = isSignedIn();
     setShowButton(true);
+    // if (!isAuthenticated) {
+    //   if (window?.location?.pathname !== "/")
+    //     // errorToast({ message: "Please login!" });
+    //     router.push("/");
+    //   if (appLoading) {
+    //     dispatch(setAppLoading(false));
+    //   }
+    //   return;
+    // }
     if (appLoading) {
       dispatch(setAppLoading(false));
     }
-  }, []);
+    fetchRewards();
+  };
 
-  const handleClick = (tag: string) => {
+  const fetchRewards = async () => {
+    // console.log(
+    //   "Fetching rewards......................------------------>>>>>>>>>>>>>"
+    // );
+    const allRewards = await rewardService.fetchRewards();
+    if (allRewards?.status) {
+      const updatedRewards = get(allRewards, "data.data.total_points", 0);
+      // setRewards(updatedRewards);
+      dispatch(setTotalRewards(updatedRewards));
+    }
+  };
+
+  const handleClick = (item: HeaderItem) => {
     if (tokenAction) {
     } else {
-      if (tag === "TOOLS") {
-        // handleClickProp ? handleClickProp() : null;
+      if (!item.disabled) {
         dispatch(setAppLoading(true));
-        router.push(`/token?action=${TokenRoutes.createToken}`);
+        router.push(item.navigateTo);
       } else {
         errorToast({ message: "Coming Soon!" });
       }
+    }
+  };
+
+  const handleSignIn = async () => {
+    if (!wallet.connected) {
+      errorToast({ message: "Please connect wallet!" });
+      return;
+    }
+    let loginMessage = await authService.loginMessage({
+      walletAddress: wallet.publicKey?.toBase58(),
+    });
+    if (!loginMessage) {
+      return;
+    }
+    const messageToShow = `${loginMessage.data?.data?.statement}\nnonce: ${
+      loginMessage.data?.data?.nonce
+    }\ndomain: ${
+      loginMessage.data?.data?.resources &&
+      loginMessage.data?.data?.resources[0]
+    }\nissuedAt: ${loginMessage.data?.data?.issuedAt}`;
+    try {
+      const message = new TextEncoder().encode(messageToShow);
+      if (wallet.signMessage) {
+        const uint8arraySignature = await wallet.signMessage(message);
+        if (uint8arraySignature) {
+          let signInResp = await authService.login({
+            signature: base58.encode(uint8arraySignature),
+            message: messageToShow,
+            wallet_address: wallet.publicKey?.toBase58(),
+            session_id: `${new Date().getTime()}_${wallet.publicKey?.toString()}`,
+          });
+        }
+      }
+    } catch (e) {
+      console.warn("could not sign message");
     }
   };
 
@@ -62,7 +177,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             appLoading ? "visible" : "hidden"
           }`}
         >
-          <Loader visible={appLoading} size={50} />
+          <Loader visible={appLoading} size={80} />
         </div>
         <div
           className="cursor-pointer px-4 flex items-center h-full"
@@ -71,7 +186,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             borderColor: borderColor,
           }}
           onClick={() => {
-            if (!tokenAction) {
+            if (get(window, "location.pathname", "") === "/") {
               return;
             } else {
               dispatch(setAppLoading(true));
@@ -93,6 +208,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             borderRightWidth: "2px",
             borderColor: borderColor,
           }}
+          // onClick={handleSignIn}
         >
           <Image
             src={"/menuDisabled.svg"}
@@ -102,69 +218,31 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             priority
           />
         </div>
-        <div
-          className="px-4 flex items-center h-full"
-          style={{
-            borderRightWidth: "2px",
-            borderColor: borderColor,
-          }}
-        >
-          <div
-            className={`text-center ${
-              selectedLink === "MARKET" ? "text-yellow1" : "text-disabledLink"
-            } text-small font-Orbitron w-100 cursor-pointer`}
-          >
-            MARKETS
-          </div>
-        </div>
-        <div
-          className="px-4 flex items-center h-full"
-          style={{
-            borderRightWidth: "2px",
-            borderColor: borderColor,
-          }}
-        >
-          <div
-            className={`text-center ${
-              selectedLink === "TRADE" ? "text-yellow1" : "text-disabledLink"
-            } text-small font-Orbitron w-100 cursor-pointer`}
-          >
-            TRADE
-          </div>
-        </div>
-        <div
-          className="px-4 flex items-center h-full"
-          style={{
-            borderRightWidth: "2px",
-            borderColor: borderColor,
-          }}
-        >
-          <div
-            className={`text-center ${
-              selectedLink === "PORTFOLIO"
-                ? "text-yellow1"
-                : "text-disabledLink"
-            } text-small font-Orbitron w-100 cursor-pointer`}
-          >
-            PORTFOLIO
-          </div>
-        </div>
-        <div
-          className="px-4 flex items-center h-full"
-          style={{
-            borderRightWidth: "2px",
-            borderColor: borderColor,
-          }}
-        >
-          <div
-            className={`text-center ${
-              selectedLink === "TOOLS" ? "text-yellow1" : "text-white"
-            } text-small font-Orbitron w-100 cursor-pointer hover:text-yellow1`}
-            onClick={() => handleClick("TOOLS")}
-          >
-            TOOLS
-          </div>
-        </div>
+        {headerData.map((item, index) => {
+          return (
+            <div
+              className="px-4 flex items-center h-full"
+              style={{
+                borderRightWidth: "2px",
+                borderColor: borderColor,
+              }}
+              key={index}
+            >
+              <div
+                className={`text-center ${
+                  item.disabled
+                    ? "text-disabledLink"
+                    : selectedLink === item.title
+                    ? "text-yellow1"
+                    : "text-white hover:text-yellow1"
+                } text-small font-Orbitron w-100 cursor-pointer`}
+                onClick={() => handleClick(item)}
+              >
+                {item.title}
+              </div>
+            </div>
+          );
+        })}
         <div
           className="px-4"
           style={{
@@ -202,6 +280,27 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             borderColor: borderColor,
           }}
         >
+          <span
+            className="flex pr-2 justify-between items-center h-max cursor-pointer"
+            style={{
+              borderRightWidth: "2px",
+              borderColor: borderColor,
+            }}
+            onClick={() => {
+              router.push("/rewards");
+            }}
+          >
+            <Image
+              src={"/moon.svg"}
+              alt="moon Logo"
+              width={28}
+              height={28}
+              priority
+            />
+            <p className="font-Oxanium text-xsmall text-white ml-2 mr-[10px]">
+              {numberWithCommas(totalRewards)}
+            </p>
+          </span>
           {wallet.connected ? (
             <></>
           ) : (
@@ -246,12 +345,13 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             borderColor: borderColor,
           }}
           onClick={() => {
-            if (!tokenAction) {
-              return;
-            } else {
-              handleClickProp ? handleClickProp() : null;
-              router.push(`/`);
-            }
+            // if (!tokenAction) {
+            //   return;
+            // } else {
+            // console.log("Clicking");
+            handleClickProp ? handleClickProp() : null;
+            router.push(`/`);
+            // }
           }}
         >
           <Image

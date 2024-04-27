@@ -42,7 +42,6 @@ const PrimaryHeader: FC = () => {
         const soltokenpriceData = await axios.get(
           "https://cache.jup.ag/stats/day"
         );
-        // //console.log("soltokenPrice", soltokenpriceData.data.lastXVolumeInUSD);
         const a = soltokenpriceData.data.lastXVolumeInUSD;
         const language = "en";
         const b = Intl.NumberFormat(language, { notation: "compact" }).format(
@@ -90,8 +89,6 @@ const PrimaryHeader: FC = () => {
       value: 0.0001,
     },
   ];
-
-  //console.log(priorityFees);
 
   const selectedPriorityFeeTx = txPriorityData.filter(
     (tx: any, index: number) => {
@@ -292,9 +289,7 @@ const PrimaryHeader: FC = () => {
           </div>
           <label className="switch text-xsmall mx-4">
             <input
-              onClick={() => {
-                // //console.log("Toggle theme");
-              }}
+              onClick={() => {}}
               checked={true}
               type="checkbox"
               onChange={() => {}}

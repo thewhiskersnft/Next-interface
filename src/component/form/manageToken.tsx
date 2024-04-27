@@ -1,12 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import CustomInput from "../customInput";
-import CustomButton from "../customButton";
+import CustomInput from "../common/customInput";
+import CustomButton from "../common/customButton";
 import { revokeMintAuthTxBuilder } from "@/solana/txBuilder/revokeMintAuthTxBuilder";
 import { PublicKey } from "@metaplex-foundation/js";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { revokeFreezeAuthTxBuilder } from "@/solana/txBuilder/revokeFreezeAuthTxBuilder";
-import { errorToast, successToast } from "../toast";
+import { errorToast, successToast } from "../common/toast";
 import { getMint } from "@solana/spl-token";
 import { useDispatch } from "react-redux";
 import {
@@ -74,7 +74,6 @@ const ManageToken = ({
       }
       setFreezeLoading(false);
     } catch (error) {
-      // //console.log(error);
       errorToast({ message: "Please try again!" });
       setFreezeLoading(false);
     }
@@ -113,7 +112,6 @@ const ManageToken = ({
               label="Load"
               loading={tokenLoading}
               onClick={async () => {
-                // // //console.log("Load clicked");
                 setTokenLoading(true);
                 if (!formik?.values?.tokenAddress) {
                   errorToast({ message: "Please enter token address!" });
@@ -126,7 +124,6 @@ const ManageToken = ({
                     new PublicKey(formik?.values?.tokenAddress)
                   );
 
-                  // //console.log("MA : ", mintAccount);
                   if (mintAccount) {
                     formik.setFieldValue(
                       "mintAuthority",

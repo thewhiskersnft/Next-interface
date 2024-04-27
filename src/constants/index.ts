@@ -1,4 +1,4 @@
-import { SidebarItem } from "../interfaces";
+import { HeaderItem, SidebarItem } from "../interfaces";
 
 export const TokenRoutes: Record<string, string> = {
   createToken: "create-token",
@@ -11,9 +11,14 @@ export const TokenRoutes: Record<string, string> = {
 
 export const LiquidityRoutes: Record<string, string> = {
   createOpenBookMarketId: "create-openbook-marketid",
-  createRadyiumLiquidityPool: "create-raydium-liquidity-pool",
+  createLiquidityPool: "create-liquidity-pool",
   fundLiquidityPool: "fund-liquidity-pool",
   renounceLiquidityPool: "renounce-liquidity-pool",
+};
+
+export const CreatorRoutes: Record<string, string> = {
+  snapshotHolders: "snapshot-holders",
+  sendAirdrops: "send-airdrops",
 };
 
 export const sidebarData: SidebarItem[] = [
@@ -69,13 +74,13 @@ export const sidebarData: SidebarItem[] = [
         label: "Create Openbook Market ID",
         description: "Create Openbook Market ID To Set Up Liquidity Pool",
         navigateTo: `/liquidity?action=${LiquidityRoutes.createOpenBookMarketId}`,
-        disabled: true,
+        disabled: false,
       },
       {
-        label: "Create Raydium Liquidity Pool (LP)",
-        description: "Create a Raydium LP",
-        navigateTo: `/liquidity?action=${LiquidityRoutes.createRadyiumLiquidityPool}`,
-        disabled: true,
+        label: "Create Liquidity Pool (LP)",
+        description: "Create a Liquidity Pool on Raydium or Fluxbeam",
+        navigateTo: `/liquidity?action=${LiquidityRoutes.createLiquidityPool}`,
+        disabled: false,
       },
       {
         label: "Fund Liquidity Pool",
@@ -100,11 +105,13 @@ export const sidebarData: SidebarItem[] = [
       {
         label: "Snapshot Holders",
         description: "Snapshot Holder List For NFTs & SPL Tokens",
+        navigateTo: `/creator?action=${CreatorRoutes.snapshotHolders}`,
         disabled: true,
       },
       {
         label: "Send Airdrops",
         description: "Send Bulk Airdrops To Solana Wallets",
+        navigateTo: `/creator?action=${CreatorRoutes.sendAirdrops}`,
         disabled: true,
       },
       {
@@ -144,6 +151,29 @@ export const sidebarData: SidebarItem[] = [
   },
 ];
 
+export const headerData: HeaderItem[] = [
+  {
+    title: "MARKETS",
+    disabled: true,
+    navigateTo: "/markets",
+  },
+  {
+    title: "TRADE",
+    disabled: true,
+    navigateTo: "/trade",
+  },
+  {
+    title: "PORTFOLIO",
+    disabled: true,
+    navigateTo: "/portfolio",
+  },
+  {
+    title: "TOOLS",
+    disabled: false,
+    navigateTo: `/token?action=${TokenRoutes.createToken}`,
+  },
+];
+
 export const keyPairs: Record<string, string> = {
   createV1: "createV1",
   createV2: "createV2",
@@ -157,3 +187,107 @@ export const envs: Record<string, string> = {
   devnet: "Devnet",
   mainnet: "Mainnet-Beta",
 };
+
+export const demoTokens = [
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+  {
+    name: "WIZZ",
+    icon: "",
+    amt: 46544545.55,
+    address: "kjlenckljncjnjdnksldksncdsnc",
+    owner: "Whiskers",
+  },
+];
+
+export enum TransactionType {
+  Deposit = "Deposit",
+  Withdrawl = "Withdrawl",
+  Rewarded = "Rewarded",
+}
+
+export enum TransactionAmount {
+  // Login = 20,
+  SetUsername = "SetUsername",
+  GoogleAuth = "GoogleAuth",
+  InAppWalletCreate = "InAppWalletCreate",
+  InAppWalletFund = "InAppWalletFund",
+  CreateToken = "CreateToken",
+  ManageToken = "ManageToken",
+  UpdateMetadata = "UpdateMetadata",
+  GetTokenVerified = "GetTokenVerified",
+  MintTokens = "MintTokens",
+  BurnTokens = "BurnTokens",
+  MarketIDBareMetal = "MarketIDBareMetal",
+  MarketIDMinimal = "MarketIDMinimal",
+  MarketIDRecommended = "MarketIDRecommended",
+  RenounceLP = "RenounceLP",
+  SnapshotTokenHolders = "SnapshotTokenHolders",
+  SendAirdrops = "SendAirdrops",
+  CreateVanityAddress = "CreateVanityAddress",
+  BurnToClaimRent = "BurnToClaimRent",
+  AirdropChecker = "AirdropChecker",
+  AirdropCheckerBig = "AirdropCheckerBig",
+}
+
+export enum TransactionSource {
+  // Login = 5,
+  SetUsername = "SetUsername",
+  GoogleAuth = "GoogleAuth",
+  InAppWalletFund = "InAppWalletFund",
+  CreateToken = "CreateToken",
+  ManageToken = "ManageToken",
+  InAppWalletCreate = "InAppWalletCreate",
+  UpdateMetadata = "UpdateMetadata",
+  GetTokenVerified = "GetTokenVerified",
+  MintTokens = "MintTokens",
+  BurnTokens = "BurnTokens",
+  MarketIDBareMetal = "MarketIDBareMetal",
+  MarketIDMinimal = "MarketIDMinimal",
+  MarketIDRecommended = "MarketIDRecommended",
+  RenounceLP = "RenounceLP",
+  SnapshotTokenHolders = "SnapshotTokenHolders",
+  SendAirdrops = "SendAirdrops",
+  CreateVanityAddress = "CreateVanityAddress",
+  BurnToClaimRent = "BurnToClaimRent",
+  AirdropChecker = "AirdropChecker",
+  AirdropCheckerBig = "AirdropCheckerBig",
+}
+
+export enum API_METHODS {
+  GET = "GET",
+  POST = "POST",
+}

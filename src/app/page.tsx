@@ -1,6 +1,6 @@
 "use client";
-import ComingSoon from "@/component/comingSoon";
+import ComingSoon from "@/component/common/comingSoon";
 
 export default function Home() {
-  return <ComingSoon />;
+  return <ComingSoon triggerHeadersApi={true} />;
 }

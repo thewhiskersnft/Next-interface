@@ -27,6 +27,12 @@ export interface SidebarItem {
   disabled?: boolean;
 }
 
+export interface HeaderItem {
+  title: string;
+  navigateTo: string;
+  disabled?: boolean;
+}
+
 /** a string of readless charateries (like: base64 string)  */
 export type HexAddress = string;
 

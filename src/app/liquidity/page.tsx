@@ -1,11 +1,11 @@
-import ComingSoon from "@/component/comingSoon";
-import Form from "@/component/form/form";
-import Header from "@/component/header";
-import PrimaryHeader from "@/component/primaryHeader";
-import Sidebar from "@/component/form/sidebar";
+import ComingSoon from "@/component/common/comingSoon";
+import Header from "@/component/common/header";
+import PrimaryHeader from "@/component/common/primaryHeader";
+import Sidebar from "@/component/common/sidebar";
 import { Suspense } from "react";
 import { isMobile } from "react-device-detect";
-import Loader from "@/component/loader";
+import Loader from "@/component/common/loader";
+import LiquidityForm from "@/component/liquidityForm";
 
 export default function Liquidity() {
   return (
@@ -28,7 +28,7 @@ export default function Liquidity() {
             <Header selectedLink="TOOLS" />
             <div className="width-100 flex flex-row h-full overflow-hidden bg-black">
               <Sidebar />
-              <Form />
+              <LiquidityForm />
             </div>
             <PrimaryHeader />
           </div>

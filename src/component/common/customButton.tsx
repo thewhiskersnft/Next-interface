@@ -9,16 +9,22 @@ interface CustomButtonProps {
   labelStyles?: CSSProperties;
   disabled?: boolean;
   loading?: boolean;
+  icon?: JSX.Element;
+  iconPosition?: "left" | "right";
+  loadingText?: string;
 }
 
 const CustomButton: FC<CustomButtonProps> = ({
   label,
+  icon,
+  iconPosition = "left",
   htmlFor,
   onClick,
   containerStyles,
   labelStyles,
   disabled,
   loading,
+  loadingText,
 }) => {
   return (
     <div
@@ -41,7 +47,25 @@ const CustomButton: FC<CustomButtonProps> = ({
           }`}
           style={{ border: "1px solid #FFC83A", ...labelStyles }}
         >
-          {loading ? <Loader visible={true} size={19} /> : label}
+          {loading ? (
+            <>
+              <Loader visible={true} size={19} />
+              <p className="mx-2 font-Orbitron text-small text-white">
+                {loadingText || ""}
+              </p>
+            </>
+          ) : icon ? (
+            <div
+              className={`flex flex-1 ${
+                iconPosition === "left" ? "flex-row" : "flex-row-reverse"
+              } items-center justify-center`}
+            >
+              {icon}
+              {label}
+            </div>
+          ) : (
+            label
+          )}
         </span>
       </label>
     </div>
