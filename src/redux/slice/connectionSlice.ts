@@ -1,9 +1,12 @@
 import { devEndpoints, mainEndpoints } from "@/constants/connection";
+import { isMainnet } from "@/global/hook/getConnectedClusterInfo";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   connection: undefined,
-  currentEndpoint: "https://kathe-2vme68-fast-devnet.helius-rpc.com",
+  currentEndpoint: isMainnet()
+    ? "https://alida-v0xsh4-fast-mainnet.helius-rpc.com"
+    : "https://kathe-2vme68-fast-devnet.helius-rpc.com",
   isConnectionLoading: false,
   allDevEndpoints: [...devEndpoints],
   allMainEndpoints: [...mainEndpoints],
