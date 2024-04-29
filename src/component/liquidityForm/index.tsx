@@ -4,10 +4,12 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState, Suspense } from "react";
 import RightSidebar from "../common/rightSidebar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Loader from "../common/loader";
 import CreateOpenBookMarketId from "./createOpenBookMarketId";
 import CreateLiquidityPools from "./CreateLiquidityPools";
+import caculateEndpointUrlByRpcConfig from "@/application/connection/calculateEndpointUrlByRpcConfig";
+import { setCurrentEndpoint } from "@/redux/slice/connectionSlice";
 
 const LiquidityForm = () => {
   const wallet = useWallet();
@@ -16,13 +18,30 @@ const LiquidityForm = () => {
   const liquidityAction = searchParams.get("action");
 
   const { appLoading } = useSelector((state: any) => state.appDataSlice);
+  const { allDevEndpoints, allMainEndpoints, currentEndpoint, priorityFees } =
+    useSelector((state: any) => state.connectionDataSlice);
+
+  const dispatch = useDispatch();
 
   const [renderForm, setRenderForm] = useState(false);
 
   useEffect(() => {
     setRenderForm(true);
-    // checkAndUpdateRPC();
+    checkAndUpdateRPC();
   }, []);
+
+  const checkAndUpdateRPC = async () => {
+    let data = {
+      strategy: "speed",
+      success: true,
+      rpcs: allMainEndpoints,
+      devrpcs: allDevEndpoints,
+    };
+    const selectedEndpointUrl = await caculateEndpointUrlByRpcConfig(
+      data as any
+    );
+    dispatch(setCurrentEndpoint(selectedEndpointUrl));
+  };
 
   const enableRightSidebar = () => {
     if (
