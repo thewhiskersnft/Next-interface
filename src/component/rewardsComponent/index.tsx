@@ -15,158 +15,7 @@ const tabs = {
   earnPoints: "Earn Points",
 } as { [key: string]: string };
 
-const dummyRewardsData = [
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "edmefcnndckdslcncmlj",
-    totalMoons: 9348,
-    sevenDayMoons: 37,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-  {
-    rank: 54,
-    user: "efcnndckdslcncmldkcm",
-    totalMoons: 9887,
-    sevenDayMoons: 87,
-  },
-];
+const disabledTabs = [tabs.referals];
 
 const RewardsComponent = ({}: RewardsComponentProps) => {
   const [selectedTab, setSelectedTab] = useState(tabs.myRewards);
@@ -192,21 +41,27 @@ const RewardsComponent = ({}: RewardsComponentProps) => {
       <div className="flex flex-1 flex-col py-2">
         <div className="flex" id="tabs">
           {Object.keys(tabs).map((tabKey: string, index: number) => {
+            const isTabDisabled = disabledTabs.includes(tabs[tabKey]);
             let tabLabel = tabs[tabKey] as any;
             return (
               <button
                 key={index + "button"}
+                disabled={isTabDisabled}
                 className={`${
                   selectedTab === tabLabel
                     ? "bg-yellow1 text-black font-semibold"
+                    : isTabDisabled
+                    ? "bg-black text-darkGrey font-light"
                     : "bg-black text-white font-light"
                 } tracking-wide font-semibold font-Orbitron w-[180px] h-[40px] text-center justify-center text-xsmall border-[1px] border-black flex items-center ${
                   selectedTab === tabLabel
                     ? ""
+                    : isTabDisabled
+                    ? ""
                     : "hover:border-yellow1 hover:bg-variant1"
                 }`}
                 onClick={() => {
-                  setSelectedTab(tabLabel);
+                  if (!isTabDisabled) setSelectedTab(tabLabel);
                 }}
                 style={{
                   border: "1px solid #4D4D4D",
@@ -245,7 +100,7 @@ const RewardsComponent = ({}: RewardsComponentProps) => {
           data={{
             User: {
               "Wallet Address": `${wallet?.publicKey?.toString()}`,
-              Rank: "# 1345",
+              Rank: "-",
               "Total Moons": `${totalRewards}`,
               "7-day Moons": `${totalRewards}`,
               Referals: "-",
@@ -268,6 +123,7 @@ const RewardsComponent = ({}: RewardsComponentProps) => {
           label={""}
           loading={false}
           hideCreateBtn={true}
+          hideValuesOverflow={true}
           infoData={[
             "Mint Authority: This is the authority (anaccount) that has the permission to mintnew tokens of a specific type. If a tokenaccount has a mint authority set, thataccount can create more tokens at anytime, increasing the supply.",
             "Freeze Authority: This is the authority that has the capability to freeze and unfreeze token accounts. When a token account is frozen, it can no longer send or receivetokens. This is useful for enforcingcompliance or addressing securityconcerns.",

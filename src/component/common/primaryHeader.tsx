@@ -78,15 +78,15 @@ const PrimaryHeader: FC = () => {
   const txPriorityData = [
     {
       label: "Fast",
-      value: 0.000001,
+      value: 0.0001,
     },
     {
       label: "Turbo",
-      value: 0.00001,
+      value: 0.001,
     },
     {
       label: "Ultra",
-      value: 0.0001,
+      value: 0.01,
     },
   ];
 
