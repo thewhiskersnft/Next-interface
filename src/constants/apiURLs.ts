@@ -8,5 +8,5 @@ export enum AUTH_API_PATH {
 export enum REWARD_API_PATH {
   FETCH_REWARDS = "/points/user/",
   FETCH_LEADERBOARD = "/points/leader/board",
-  UPDATE_USER_POINTS = "/points/ergptu",
+  UPDATE_USER_POINTS = "/points/givePointsToUser",
 }
