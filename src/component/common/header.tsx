@@ -189,7 +189,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
           <Loader visible={appLoading} size={80} />
         </div>
         <div
-          className="cursor-pointer px-4 flex items-center h-full"
+          className="cursor-pointer px-[18px] flex items-center h-full"
           style={{
             borderRightWidth: "2px",
             borderColor: borderColor,
@@ -208,6 +208,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             alt="logo Logo"
             width={20}
             height={20}
+            className="hover:scale-125"
             priority
           />
         </div>
@@ -302,6 +303,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             <Image
               src={"/moon.svg"}
               alt="moon Logo"
+              className="hover:scale-125"
               width={28}
               height={28}
               priority

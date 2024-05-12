@@ -59,9 +59,11 @@ const config: Config = {
         disabledLink: "#8d8d8d",
         successGreen: "#09A854",
         textGreen: "#09A854",
+        textRed: "#D93535",
         loaderBG: "rgba(0,0,0,0.5)",
         modalBG: "#0D0D0D",
         darkText: "#7D7D7D",
+        bgDarkForComponent: "#191815",
       },
       keyframes: {
         wiggle: {
