@@ -52,6 +52,7 @@ const CustomImagePicker: FC<CustomImagePickerProps> = ({
           } p-1 px-[16px] text-white w-[100%] customInp hover:bg-hoverInputBg`}
           style={{ display: "none" }}
           type={"file"}
+          accept="image/*"
           onChange={onChange}
         />
         <section className="flex">

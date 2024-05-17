@@ -17,7 +17,7 @@ import {
   v1TokenValidation,
   v2TokenValidation,
 } from "../../utils/formikValidators";
-import { cloneDeep } from "lodash";
+import { cloneDeep, get } from "lodash";
 import { errorToast, successToast } from "../common/toast";
 import MintOrBurnToken from "./mintOrBurnToken";
 import { PublicKey } from "@solana/web3.js";
@@ -33,6 +33,7 @@ import { NFTStorage, File, Blob } from "nft.storage";
 import { recursiveCheckTransitionStatus } from "@/utils/transactions";
 import { AppENVConfig } from "@/global/config/config";
 import { createToken22TxBuilder } from "@/solana/txBuilder/createToken22TxBuilder";
+import axios from "axios";
 
 export default function Form() {
   const {
@@ -202,12 +203,12 @@ export default function Form() {
     }
     try {
       const uri = await createURI();
-      let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
+      // let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
       successToast({ message: `MetaData Uploaded` });
       const txData = await updateSPLTokenMetadataTxBuilder(
         formik.values.name,
         formik.values.symbol,
-        finalURI,
+        uri,
         connection,
         wallet,
         new PublicKey(formik.values.tokenAddress),
@@ -261,6 +262,42 @@ export default function Form() {
     }
     return resp;
   };
+
+  const pinFileToIPFS = async (dataToSave: any, nameToSave: string) => {
+    const JWT = AppENVConfig.pinata_storage_api_key;
+    const formData = new FormData();
+    formData.append("file", dataToSave);
+
+    const pinataMetadata = JSON.stringify({
+      name: nameToSave,
+    });
+    formData.append("pinataMetadata", pinataMetadata);
+
+    const pinataOptions = JSON.stringify({
+      cidVersion: 0,
+    });
+    formData.append("pinataOptions", pinataOptions);
+
+    try {
+      const res = await axios.post(
+        "https://api.pinata.cloud/pinning/pinFileToIPFS",
+        formData,
+        {
+          // maxBodyLength: "Infinity",
+          headers: {
+            "Content-Type": `multipart/form-data;`,
+            Authorization: `Bearer ${JWT}`,
+          },
+        }
+      );
+      const pinataDataURL = `https://gateway.pinata.cloud/ipfs/${res?.data?.IpfsHash}`;
+      return pinataDataURL;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  };
+
   const createTokenHandler = async (values: any) => {
     if (!wallet.connected) {
       errorToast({ message: "Please Connect The Wallet" });
@@ -275,7 +312,9 @@ export default function Form() {
     if (balance > 5000000) {
       try {
         const uri = await createURI();
-        let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
+        // setButtonClicked(false);
+        // return;
+        // let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
         successToast({ message: `MetaData Uploaded` });
         // const txhash = await createToken22TxBuilder(
         //   formik.values.name,
@@ -292,7 +331,7 @@ export default function Form() {
           formik.values.name,
           formik.values.symbol,
           formik.values.decimal,
-          finalURI,
+          uri,
           formik.values.supply,
           connection,
           wallet,
@@ -330,7 +369,7 @@ export default function Form() {
     if (balance > 5000000) {
       try {
         const uri = await createURI();
-        let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
+        // let finalURI = "https://nftstorage.link/" + uri.url.replace("://", "/");
         successToast({ message: `MetaData Uploaded` });
 
         const transferTaxVal = transferTax
@@ -362,7 +401,7 @@ export default function Form() {
           defaultAccountStateVal,
           permanentDelegateVal,
           nonTransferable,
-          finalURI,
+          uri,
           formik.values.supply,
           connection,
           wallet,
@@ -396,19 +435,13 @@ export default function Form() {
   };
 
   const createURI = async () => {
-    const NFT_STORAGE_TOKEN = AppENVConfig.nft_storage_api_key;
-
-    const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
-    const imageFile = new File([fileData], "nft.png", { type: "image/png" });
-    const imageMetadata = await client.store({
-      // goto store in node_module and comment error for blob or image file expected thrown
-      image: imageFile,
-      name: formik.values.name,
-      symbol: formik.values.symbol,
-      description: formik.values.description,
+    const imageFile = new File([fileData], "nft.png", {
+      type: "image/png",
     });
-    // const imageURL = await getExampleImage(imageMetadata?.embed()?.image?.href);
-    const imageURL = imageMetadata?.embed()?.image?.href;
+    const imageURL = await pinFileToIPFS(
+      imageFile,
+      get(fileData, "name", "file_name")
+    );
     let tokenMetadata = {
       name: formik.values.name,
       symbol: formik.values.symbol,
@@ -427,8 +460,11 @@ export default function Form() {
     if (formik.values?.twitter) {
       tokenMetadata["twitter"] = formik.values.twitter;
     }
-    const metadata = await client.store(tokenMetadata);
-    return metadata;
+    const blob = new Blob([JSON.stringify(tokenMetadata)], {
+      type: "text/plain",
+    });
+    const metadata = await pinFileToIPFS(blob, tokenMetadata.name);
+    return metadata || "";
   };
 
   async function getExampleImage(imgUrl: string) {
