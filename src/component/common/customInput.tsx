@@ -17,9 +17,11 @@ interface CustomInputProps {
   showError?: boolean;
   errorMessage?: string;
   showCurrency?: boolean;
+  showClear?: boolean;
   showCopy?: boolean;
   showSearch?: boolean;
   onSearchClick?: () => void;
+  handleClear?: () => void;
 }
 
 const CustomInput = ({
@@ -39,7 +41,9 @@ const CustomInput = ({
   showCurrency,
   showCopy,
   showSearch,
+  showClear,
   onSearchClick,
+  handleClear,
 }: CustomInputProps) => {
   const handleCopy = () => {
     navigator.clipboard.writeText(`${value}`);
@@ -109,6 +113,22 @@ const CustomInput = ({
               priority
               onClick={handleCopy}
             />
+          )}
+          {showClear && (
+            <span
+              className="cursor-pointer px-2 flex items-center"
+              onClick={handleClear}
+            >
+              <Image
+                src={"/close.svg"}
+                alt="Clear Logo"
+                width={14}
+                height={14}
+                // className="mx-2 cursor-pointer"
+                priority
+                // onClick={handleClear}
+              />
+            </span>
           )}
         </span>
         {showError && (

@@ -34,6 +34,7 @@ import { recursiveCheckTransitionStatus } from "@/utils/transactions";
 import { AppENVConfig } from "@/global/config/config";
 import { createToken22TxBuilder } from "@/solana/txBuilder/createToken22TxBuilder";
 import axios from "axios";
+import { pinFileToIPFS } from "@/utils/pinata";
 
 export default function Form() {
   const {
@@ -208,7 +209,7 @@ export default function Form() {
       const txData = await updateSPLTokenMetadataTxBuilder(
         formik.values.name,
         formik.values.symbol,
-        uri,
+        uri as any,
         connection,
         wallet,
         new PublicKey(formik.values.tokenAddress),
@@ -263,40 +264,67 @@ export default function Form() {
     return resp;
   };
 
-  const pinFileToIPFS = async (dataToSave: any, nameToSave: string) => {
-    const JWT = AppENVConfig.pinata_storage_api_key;
-    const formData = new FormData();
-    formData.append("file", dataToSave);
+  // const pinFileToIPFS = async (
+  //   dataToSave: any,
+  //   nameToSave: string,
+  //   isImage: boolean
+  // ) => {
+  //   "use server";
+  //   const JWT = AppENVConfig.pinata_storage_api_key;
+  //   console.log("-----------================>>>>>>>>>>>>>>>>>>>. ", dataToSave);
+  //   const formData = new FormData();
+  //   let convertedFile = {} as any;
+  //   if (isImage) {
+  //     convertedFile = dataToSave;
+  //   } else {
+  //     convertedFile = new Blob([JSON.stringify(dataToSave)], {
+  //       type: "text/plain",
+  //     });
+  //   }
+  //   formData.append("file", convertedFile);
 
-    const pinataMetadata = JSON.stringify({
-      name: nameToSave,
-    });
-    formData.append("pinataMetadata", pinataMetadata);
+  //   const pinataMetadata = JSON.stringify({
+  //     name: nameToSave,
+  //   });
+  //   formData.append("pinataMetadata", pinataMetadata);
 
-    const pinataOptions = JSON.stringify({
-      cidVersion: 0,
-    });
-    formData.append("pinataOptions", pinataOptions);
+  //   const pinataOptions = JSON.stringify({
+  //     cidVersion: 0,
+  //   });
+  //   formData.append("pinataOptions", pinataOptions);
 
-    try {
-      const res = await axios.post(
-        "https://api.pinata.cloud/pinning/pinFileToIPFS",
-        formData,
-        {
-          // maxBodyLength: "Infinity",
-          headers: {
-            "Content-Type": `multipart/form-data;`,
-            Authorization: `Bearer ${JWT}`,
-          },
-        }
-      );
-      const pinataDataURL = `https://gateway.pinata.cloud/ipfs/${res?.data?.IpfsHash}`;
-      return pinataDataURL;
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
-  };
+  //   try {
+  //     const res = await axios.post(
+  //       "https://api.pinata.cloud/pinning/pinFileToIPFS",
+  //       formData,
+  //       {
+  //         // maxBodyLength: "Infinity",
+  //         headers: {
+  //           "Content-Type": `multipart/form-data;`,
+  //           Authorization: `Bearer ${JWT}`,
+  //         },
+  //       }
+  //     );
+  //     const pinataDataURL = `https://gateway.pinata.cloud/ipfs/${res?.data?.IpfsHash}`;
+  //     console.log(pinataDataURL, "URL DATA");
+  //     // return pinataDataURL;
+  //     // return NextResponse.json({ data: pinataDataURL });
+  //   } catch (error) {
+  //     console.log(error);
+  //     return null;
+  //   }
+  //   // const response = await fetch("/api/pinataUpload", {
+  //   //   method: "POST",
+  //   //   headers: { "Content-Type": "application/json" },
+  //   //   body: JSON.stringify({
+  //   //     nameToSave: nameToSave,
+  //   //     dataToSave: dataToSave,
+  //   //     isImage: isImage,
+  //   //   }),
+  //   // });
+  //   // console.log("Resp from pinata : ", response);
+  //   return response;
+  // };
 
   const createTokenHandler = async (values: any) => {
     if (!wallet.connected) {
@@ -331,7 +359,7 @@ export default function Form() {
           formik.values.name,
           formik.values.symbol,
           formik.values.decimal,
-          uri,
+          uri as any,
           formik.values.supply,
           connection,
           wallet,
@@ -401,7 +429,7 @@ export default function Form() {
           defaultAccountStateVal,
           permanentDelegateVal,
           nonTransferable,
-          uri,
+          uri as any,
           formik.values.supply,
           connection,
           wallet,
@@ -435,12 +463,13 @@ export default function Form() {
   };
 
   const createURI = async () => {
-    const imageFile = new File([fileData], "nft.png", {
-      type: "image/png",
-    });
+    // const imageFile = new File([fileData], "nft.png", {
+    //   type: "image/png",
+    // });
     const imageURL = await pinFileToIPFS(
-      imageFile,
-      get(fileData, "name", "file_name")
+      fileData,
+      get(fileData, "name", "file_name"),
+      true
     );
     let tokenMetadata = {
       name: formik.values.name,
@@ -460,10 +489,14 @@ export default function Form() {
     if (formik.values?.twitter) {
       tokenMetadata["twitter"] = formik.values.twitter;
     }
-    const blob = new Blob([JSON.stringify(tokenMetadata)], {
-      type: "text/plain",
-    });
-    const metadata = await pinFileToIPFS(blob, tokenMetadata.name);
+    // const blob = new Blob([JSON.stringify(tokenMetadata)], {
+    //   type: "text/plain",
+    // });
+    const metadata = await pinFileToIPFS(
+      tokenMetadata,
+      tokenMetadata.name,
+      false
+    );
     return metadata || "";
   };
 
@@ -591,6 +624,11 @@ export default function Form() {
                   showSymbol={false}
                   type={"text"}
                   placeholder={"Enter Token Address"}
+                  showClear={true}
+                  handleClear={() => {
+                    formik.setFieldValue("tokenAddress", "");
+                    setShowUpdateMetadata(false);
+                  }}
                 />
                 {showUpdateMetadata ? (
                   <CreateOrEditToken isEdit={true} formik={formik} />
