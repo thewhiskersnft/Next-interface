@@ -10,6 +10,7 @@ const config: Config = {
     fontFamily: {
       Oxanium: ["Oxanium", "sans-serif"],
       Orbitron: ["Orbitron", "sans-serif"],
+      Inter: ["Inter", "sans-serif"],
     },
     fontWeight: {
       thin: "100",

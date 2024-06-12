@@ -32,10 +32,10 @@ body {
   }
 }
 
-@import url("https://fonts.googleapis.com/css2?family=Oxanium&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Oxanium&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Oxanium:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Oxanium:wght@400;700&display=swap"); */
 
 @font-face {
   font-family: Orbitron;
@@ -45,6 +45,11 @@ body {
 @font-face {
   font-family: Oxanium;
   src: url(../assets/fonts/Oxanium-VariableFont_wght.ttf);
+}
+
+@font-face {
+  font-family: Inter;
+  src: url(../assets/fonts/Inter.ttf);
 }
 
 div,
@@ -58,7 +63,7 @@ h4,
 h5,
 h6,
 section {
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   user-select: none;
 }
 
@@ -265,4 +270,12 @@ input:checked + .slider:before {
   background-position: top left, bottom left, bottom left, top left, top right,
     top left, top right; /* Position gradients */
   background-repeat: no-repeat; /* Prevent gradients from repeating */
+}
+
+.linearGradientWhiteText {
+  /* font-size: 72px; */
+  background: -webkit-linear-gradient(#ffffff, #999999);
+  background-clip: border-box;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

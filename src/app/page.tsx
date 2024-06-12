@@ -29,10 +29,10 @@ export default function Home() {
           >
             <Header selectedLink="" />
             <div className="width-100 flex flex-row h-full overflow-hidden bg-black">
-              <FavouriteSidebar />
+              {/* <FavouriteSidebar /> */}
               <HomeComponent />
             </div>
-            <PrimaryHeader />
+            {/* <PrimaryHeader /> */}
           </div>
         </div>
       </>

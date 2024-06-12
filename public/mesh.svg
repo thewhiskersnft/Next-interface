@@ -1,0 +1,38 @@
+<svg width="1114" height="632" viewBox="0 0 1114 632" fill="none" xmlns="http://www.w3.org/2000/svg">
+<mask id="mask0_4116_14266" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="1230" height="632">
+<ellipse cx="615" cy="316" rx="615" ry="316" fill="url(#paint0_radial_4116_14266)"/>
+</mask>
+<g mask="url(#mask0_4116_14266)">
+<line x1="-221" y1="208.5" x2="1260" y2="208.5" stroke="#D4D4D4"/>
+<line x1="-221" y1="117.5" x2="1260" y2="117.5" stroke="#D4D4D4"/>
+<line x1="-221" y1="26.5" x2="1260" y2="26.5" stroke="#D4D4D4"/>
+<line x1="749.5" y1="-47" x2="749.5" y2="741" stroke="#D4D4D4"/>
+<line x1="1025.5" y1="-47" x2="1025.5" y2="741" stroke="#D4D4D4"/>
+<line x1="841.5" y1="-47" x2="841.5" y2="741" stroke="#D4D4D4"/>
+<line x1="933.5" y1="-47" x2="933.5" y2="741" stroke="#D4D4D4"/>
+<line x1="-221" y1="300.5" x2="1260" y2="300.5" stroke="#D4D4D4"/>
+<line x1="657.5" y1="-47" x2="657.5" y2="741" stroke="#D4D4D4"/>
+<line x1="-221" y1="392.5" x2="1260" y2="392.5" stroke="#D4D4D4"/>
+<line x1="565.5" y1="-47" x2="565.5" y2="741" stroke="#D4D4D4"/>
+<line x1="-221" y1="484.5" x2="1260" y2="484.5" stroke="#D4D4D4"/>
+<line x1="473.5" y1="-47" x2="473.5" y2="741" stroke="#D4D4D4"/>
+<line x1="-221" y1="576.5" x2="1260" y2="576.5" stroke="#D4D4D4"/>
+<line x1="381.5" y1="-47" x2="381.5" y2="741" stroke="#D4D4D4"/>
+<line x1="105.5" y1="-47" x2="105.5" y2="741" stroke="#D4D4D4"/>
+<line x1="197.5" y1="-47" x2="197.5" y2="741" stroke="#D4D4D4"/>
+<line x1="289.5" y1="-47" x2="289.5" y2="741" stroke="#D4D4D4"/>
+<line x1="13.5" y1="-47" x2="13.5" y2="741" stroke="#D4D4D4"/>
+<line x1="842.354" y1="118.646" x2="932.354" y2="208.646" stroke="#D4D4D4"/>
+<path d="M106 118.5L197 208.5" stroke="#D4D4D4"/>
+<path d="M934 393L1025 484" stroke="#D4D4D4"/>
+<line x1="841.646" y1="208.646" x2="931.646" y2="118.646" stroke="#D4D4D4"/>
+<path d="M106 208L197 118" stroke="#D4D4D4"/>
+<path d="M934 484L1025 393" stroke="#D4D4D4"/>
+</g>
+<defs>
+<radialGradient id="paint0_radial_4116_14266" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(615 316) rotate(90) scale(316 615)">
+<stop stop-color="#F5FAF9"/>
+<stop offset="1" stop-color="#F5FAF9" stop-opacity="0"/>
+</radialGradient>
+</defs>
+</svg>
