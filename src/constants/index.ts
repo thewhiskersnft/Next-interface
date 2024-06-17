@@ -154,7 +154,7 @@ export const sidebarData: SidebarItem[] = [
 export const headerData: HeaderItem[] = [
   {
     title: "MARKETS",
-    disabled: true,
+    disabled: false,
     navigateTo: "/markets",
   },
   {

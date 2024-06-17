@@ -2,12 +2,12 @@ import ComingSoon from "@/component/common/comingSoon";
 import Header from "@/component/common/header";
 import Loader from "@/component/common/loader";
 import PrimaryHeader from "@/component/common/primaryHeader";
-import RewardsComponent from "@/component/rewardsComponent";
+import MarketComponent from "@/component/markets";
 import React, { Suspense } from "react";
 
-interface RewardsProps {}
+interface MarketsProps {}
 
-const Rewards = ({}: RewardsProps) => {
+const Markets = ({}: MarketsProps) => {
   return (
     <Suspense
       fallback={
@@ -25,9 +25,9 @@ const Rewards = ({}: RewardsProps) => {
             className="width-100 flex flex-col h-max"
             style={{ height: "100vh", overflow: "hidden" }}
           >
-            <Header selectedLink="" />
+            <Header selectedLink="MARKETS" />
             <div className="width-100 flex flex-row h-full overflow-hidden bg-black">
-              <RewardsComponent />
+              <MarketComponent />
             </div>
             <PrimaryHeader />
           </div>
@@ -37,4 +37,4 @@ const Rewards = ({}: RewardsProps) => {
   );
 };
 
-export default Rewards;
+export default Markets;
