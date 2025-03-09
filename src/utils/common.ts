@@ -8,3 +8,10 @@ export const handleCopy = (text: string) => {
 export function numberWithCommas(x: number) {
   return x ? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : x;
 }
+
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}

@@ -159,7 +159,7 @@ export const headerData: HeaderItem[] = [
   },
   {
     title: "TRADE",
-    disabled: true,
+    disabled: false,
     navigateTo: "/trade",
   },
   {
