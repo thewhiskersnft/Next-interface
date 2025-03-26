@@ -21,7 +21,8 @@ const Markets = ({}: MarketsProps) => {
           <ComingSoon hideOnWeb={true} />
         </div>
         <div className="hidden lg:block">
-          <div
+          <ComingSoon hideOnWeb={false} />
+          {/* <div
             className="width-100 flex flex-col h-max"
             style={{ height: "100vh", overflow: "hidden" }}
           >
@@ -30,7 +31,7 @@ const Markets = ({}: MarketsProps) => {
               <MarketComponent />
             </div>
             <PrimaryHeader />
-          </div>
+          </div> */}
         </div>
       </>
     </Suspense>

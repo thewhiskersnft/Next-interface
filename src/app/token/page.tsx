@@ -5,6 +5,7 @@ import PrimaryHeader from "@/component/common/primaryHeader";
 import Sidebar from "@/component/common/sidebar";
 import { Suspense } from "react";
 import Loader from "@/component/common/loader";
+import React from "react";
 
 export default function Token() {
   return (
@@ -20,7 +21,8 @@ export default function Token() {
           <ComingSoon hideOnWeb={true} />
         </div>
         <div className="hidden lg:block">
-          <div
+          <ComingSoon hideOnWeb={false} />
+          {/* <div
             className="width-100 flex flex-col h-max"
             style={{ height: "100vh", overflow: "hidden" }}
           >
@@ -30,7 +32,7 @@ export default function Token() {
               <Form />
             </div>
             <PrimaryHeader />
-          </div>
+          </div> */}
         </div>
       </>
     </Suspense>

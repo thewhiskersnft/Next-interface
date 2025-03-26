@@ -117,18 +117,21 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
   };
 
   const fetchRewards = async () => {
-    const allRewards = await rewardService.fetchRewards();
-    if (allRewards?.status) {
-      const updatedRewards = get(allRewards, "data.data.total_points", 0);
-      // setRewards(updatedRewards);
-      dispatch(setTotalRewards(updatedRewards));
-    }
+    // const allRewards = await rewardService.fetchRewards();
+    // if (allRewards?.status) {
+    //   const updatedRewards = get(allRewards, "data.data.total_points", 0);
+    //   // setRewards(updatedRewards);
+    //   dispatch(setTotalRewards(updatedRewards));
+    // }
   };
 
   const handleClick = (item: HeaderItem) => {
+    // console.log(tokenAction, "tokenAction");
+    // console.log(item, "item");
     if (tokenAction) {
     } else {
       if (!item.disabled) {
+        // console.log("Pushing");
         dispatch(setAppLoading(true));
         router.push(item.navigateTo);
       } else {
@@ -242,11 +245,17 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
                 className={`text-center ${
                   item.disabled
                     ? "text-disabledLink"
-                    : selectedLink === item.title
+                    : window?.location?.pathname === item.navigateTo
                     ? "text-yellow1"
                     : "text-white hover:text-yellow1"
                 } text-small font-Orbitron w-100 cursor-pointer`}
-                onClick={() => handleClick(item)}
+                onClick={() => {
+                  // console.log(item);
+                  if (window?.location?.pathname === item.navigateTo) {
+                    return;
+                  }
+                  handleClick(item);
+                }}
               >
                 {item.title}
               </div>
@@ -290,7 +299,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             borderColor: borderColor,
           }}
         >
-          <span
+          {/* <span
             className="flex pr-2 justify-between items-center h-max cursor-pointer"
             style={{
               borderRightWidth: "2px",
@@ -311,7 +320,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             <p className="font-Oxanium text-xsmall text-white ml-2 mr-[10px]">
               {numberWithCommas(totalRewards)}
             </p>
-          </span>
+          </span> */}
           {wallet.connected ? (
             <></>
           ) : (
