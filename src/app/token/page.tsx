@@ -21,8 +21,8 @@ export default function Token() {
           <ComingSoon hideOnWeb={true} />
         </div>
         <div className="hidden lg:block">
-          <ComingSoon hideOnWeb={false} />
-          {/* <div
+          {/* <ComingSoon hideOnWeb={false} /> */}
+          <div
             className="width-100 flex flex-col h-max"
             style={{ height: "100vh", overflow: "hidden" }}
           >
@@ -32,7 +32,7 @@ export default function Token() {
               <Form />
             </div>
             <PrimaryHeader />
-          </div> */}
+          </div>
         </div>
       </>
     </Suspense>

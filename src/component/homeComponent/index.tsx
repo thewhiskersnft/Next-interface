@@ -752,7 +752,7 @@ const HomeComponent = ({}: HomeComponentProps) => {
         <section className="flex gap-6">
           <a
             className="twitter cursor-pointer"
-            href={"https://twitter.com/TheWhiskersNFT"}
+            href={"https://x.com/moonlytrade"}
             target="_blank"
             rel="noopener noreferrer"
             style={{ pointerEvents: "auto" }}
@@ -783,7 +783,7 @@ const HomeComponent = ({}: HomeComponentProps) => {
           </a>
           <a
             className="telegram cursor-pointer"
-            href={"https://twitter.com/TheWhiskersNFT"}
+            href={"https://x.com/moonlytrade"}
             target="_blank"
             rel="noopener noreferrer"
             style={{ pointerEvents: "auto" }}

@@ -34,7 +34,7 @@ class AuthService {
       setLocalGUID(userGUID);
       setLocalWalletAddress(walletAddress);
       const fetchPointsEvents = new CustomEvent(EVENTS.GET_REWARD_POINTS);
-      window.dispatchEvent(fetchPointsEvents);
+      window?.dispatchEvent(fetchPointsEvents);
     }
     return resp;
   };

@@ -48,11 +48,11 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
   const { totalRewards } = useSelector((state: any) => state.userDataSlice);
 
   const attachEvents = () => {
-    window.addEventListener(EVENTS.GET_REWARD_POINTS, fetchRewards);
+    window?.addEventListener(EVENTS.GET_REWARD_POINTS, fetchRewards);
   };
 
   const detachEvents = () => {
-    window.removeEventListener(EVENTS.GET_REWARD_POINTS, fetchRewards);
+    window?.removeEventListener(EVENTS.GET_REWARD_POINTS, fetchRewards);
   };
 
   useEffect(() => {
@@ -127,8 +127,8 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
 
   const handleClick = (item: HeaderItem) => {
     // console.log(tokenAction, "tokenAction");
-    // console.log(item, "item");
-    if (tokenAction) {
+    console.log(item, "item");
+    if (tokenAction && item.title == "TOOLS") {
     } else {
       if (!item.disabled) {
         // console.log("Pushing");
@@ -299,7 +299,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             borderColor: borderColor,
           }}
         >
-          {/* <span
+          <span
             className="flex pr-2 justify-between items-center h-max cursor-pointer"
             style={{
               borderRightWidth: "2px",
@@ -320,7 +320,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             <p className="font-Oxanium text-xsmall text-white ml-2 mr-[10px]">
               {numberWithCommas(totalRewards)}
             </p>
-          </span> */}
+          </span>
           {wallet.connected ? (
             <></>
           ) : (

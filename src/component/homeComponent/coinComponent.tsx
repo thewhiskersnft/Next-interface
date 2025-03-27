@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import { infoToast } from "../common/toast";
 
 interface CoinComponentProps {
   index: number;
@@ -69,7 +70,7 @@ const CoinComponent = ({ index, isVerified, isUp }: CoinComponentProps) => {
           <div className="flex gap-4 mt-1">
             <a
               className="twitter cursor-pointer"
-              href={"https://twitter.com/TheWhiskersNFT"}
+              href={"https://x.com/moonlytrade"}
               target="_blank"
               rel="noopener noreferrer"
               style={{ pointerEvents: "auto" }}
@@ -100,7 +101,7 @@ const CoinComponent = ({ index, isVerified, isUp }: CoinComponentProps) => {
             </a>
             <a
               className="telegram cursor-pointer"
-              href={"https://twitter.com/TheWhiskersNFT"}
+              href={"https://x.com/moonlytrade"}
               target="_blank"
               rel="noopener noreferrer"
               style={{ pointerEvents: "auto" }}
@@ -313,6 +314,9 @@ const CoinComponent = ({ index, isVerified, isUp }: CoinComponentProps) => {
       <div>
         <p
           className={`flex text-xsmall font-Inter font-normal w-full text-center text-white bg-[#222222CC] px-3 py-3 rounded-xl hover:text-yellow1 hover:scale-95`}
+          onClick={() => {
+            infoToast({ message: "Coming Soon!" });
+          }}
         >
           <Image
             src="/bolt.svg"

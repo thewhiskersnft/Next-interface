@@ -170,8 +170,8 @@ export const headerData: HeaderItem[] = [
   {
     title: "TOOLS",
     disabled: false,
-    // navigateTo: `/token?action=${TokenRoutes.createToken}`,
-    navigateTo: "/token",
+    navigateTo: `/token?action=${TokenRoutes.createToken}`,
+    // navigateTo: "/token",
   },
 ];
 

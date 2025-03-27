@@ -51,7 +51,7 @@ class RewardsService {
     });
     if (resp.status) {
       const fetchPointsEvents = new CustomEvent(EVENTS.GET_REWARD_POINTS);
-      window.dispatchEvent(fetchPointsEvents);
+      window?.dispatchEvent(fetchPointsEvents);
     }
     return resp;
   };

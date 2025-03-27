@@ -6,6 +6,7 @@ import rewardService from "@/services/rewardService";
 import { get } from "lodash";
 import { useSelector } from "react-redux";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { infoToast } from "../common/toast";
 
 interface RewardsComponentProps {}
 
@@ -15,7 +16,7 @@ const tabs = {
   earnPoints: "Earn Points",
 } as { [key: string]: string };
 
-const disabledTabs = [tabs.referals];
+const disabledTabs = [tabs.referals, tabs.earnPoints];
 
 const RewardsComponent = ({}: RewardsComponentProps) => {
   const [selectedTab, setSelectedTab] = useState(tabs.myRewards);
@@ -26,15 +27,16 @@ const RewardsComponent = ({}: RewardsComponentProps) => {
   const wallet = useWallet();
 
   useEffect(() => {
-    fetchLeaderboardData();
+    infoToast({ message: "Coming Soon!" });
+    // fetchLeaderboardData();
   }, []);
 
-  const fetchLeaderboardData = async () => {
-    const leaderboardData = await rewardService.fetchLeaderboard();
-    if (leaderboardData.status) {
-      setRewards(get(leaderboardData, "data.data", []));
-    }
-  };
+  // const fetchLeaderboardData = async () => {
+  //   const leaderboardData = await rewardService.fetchLeaderboard();
+  //   if (leaderboardData.status) {
+  //     setRewards(get(leaderboardData, "data.data", []));
+  //   }
+  // };
 
   return (
     <div className="h-full w-full px-4 py-4 box-border flex gap-4">

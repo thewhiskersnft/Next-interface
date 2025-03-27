@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Image from "next/image";
 import FilterIcon from "./asset/filter-horizontal.svg"; // Adjust the path if needed

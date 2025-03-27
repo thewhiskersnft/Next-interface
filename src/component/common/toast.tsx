@@ -35,6 +35,22 @@ export const errorToast = ({ message, description = "" }: ToastProps) => {
   toast(<ErrorComp message={message} description={description} />);
 };
 
+const InfoComp = ({ message, description }: ToastProps) => {
+  return (
+    <div className="bg-yellow1 flex items-center w-full">
+      <Image src={"/info.webp"} alt="info" width={48} height={48} priority />
+      <span className="pl-2">
+        <p className="text-small text-black font-extrabold">Info</p>
+        <p className="text-xsmall font-bold text-black">{message}</p>
+      </span>
+    </div>
+  );
+};
+
+export const infoToast = ({ message, description = "" }: ToastProps) => {
+  toast(<InfoComp message={message} description={description} />);
+};
+
 const SuccessComp = ({
   message,
   description,

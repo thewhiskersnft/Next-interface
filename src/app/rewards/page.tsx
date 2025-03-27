@@ -21,8 +21,8 @@ const Rewards = ({}: RewardsProps) => {
           <ComingSoon hideOnWeb={true} />
         </div>
         <div className="hidden lg:block">
-          <ComingSoon hideOnWeb={false} />
-          {/* <div
+          {/* <ComingSoon hideOnWeb={false} /> */}
+          <div
             className="width-100 flex flex-col h-max"
             style={{ height: "100vh", overflow: "hidden" }}
           >
@@ -31,7 +31,7 @@ const Rewards = ({}: RewardsProps) => {
               <RewardsComponent />
             </div>
             <PrimaryHeader />
-          </div> */}
+          </div>
         </div>
       </>
     </Suspense>

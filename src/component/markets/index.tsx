@@ -1,8 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FavouriteSidebar from "../common/favouritesSidebar";
 import Image from "next/image";
 import CoinComponent from "../homeComponent/coinComponent";
+import { infoToast } from "../common/toast";
 
 interface MarketComponentProps {}
 
@@ -35,6 +36,9 @@ const MarketComponent = ({}: MarketComponentProps) => {
   const [selectedTimeFilter, setSelectedTimeFilter] = useState({
     ...timeFilter[0],
   });
+  useEffect(() => {
+    infoToast({ message: "Coming Soon!" });
+  }, []);
   return (
     <div
       className="bg-[transparent] w-[100vw] flex"
@@ -124,7 +128,7 @@ const MarketComponent = ({}: MarketComponentProps) => {
             <img
               className="justify-center align-center"
               src={
-                "https:media.istockphoto.com/id/985069206/photo/child-abuse-concept.jpg?s=1024x1024&w=is&k=20&c=aNwzRHymu_T44dkNoPK4Gt5tYiaUHSW534Bf-lUFqk8="
+                "https://img.freepik.com/premium-photo/teddy-bear-sits-lantern-light-that-says-teddy-bear_766363-8420.jpg"
               }
               alt="svg"
               style={{
