@@ -76,7 +76,7 @@ export default function ComingSoon({
               </a>
               <a
                 className="discord ml-4"
-                href={"https://discord.gg/9SR8mvhq8z"}
+                href={"https://discord.gg/hXbmdYXt"}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ pointerEvents: "auto" }}

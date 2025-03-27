@@ -85,7 +85,7 @@ const CoinComponent = ({ index, isVerified, isUp }: CoinComponentProps) => {
             </a>
             <a
               className="discord"
-              href={"https://discord.gg/9SR8mvhq8z"}
+              href={"https://discord.gg/hXbmdYXt"}
               target="_blank"
               rel="noopener noreferrer"
               style={{ pointerEvents: "auto" }}
