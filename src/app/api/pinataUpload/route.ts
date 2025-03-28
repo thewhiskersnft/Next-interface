@@ -1,5 +1,5 @@
 import { toBase64 } from "@/utils/pinata";
-import { NextAuthRequest } from "./../../../../node_modules/next-auth/src/core/types";
+// import { NextAuthRequest } from "./../../../../node_modules/next-auth/src/core/types";
 import { AppENVConfig } from "@/global/config/config";
 import { getBrowserFileFromMetaplexFile } from "@metaplex-foundation/js";
 import axios from "axios";
