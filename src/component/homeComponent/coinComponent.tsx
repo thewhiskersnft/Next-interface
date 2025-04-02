@@ -46,7 +46,7 @@ const CoinComponent = ({ index, isVerified, isUp }: CoinComponentProps) => {
           )}
         </span>
         <div className="flex flex-col justify-between">
-          <p className="text-small font-Oxanium">{`BONK`}</p>
+          <p className="text-small font-Oxanium">{`MOON`}</p>
           <div className="flex mt-0">
             {" "}
             <p

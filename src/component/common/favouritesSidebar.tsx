@@ -2,13 +2,7 @@ import Image from "next/image";
 import React from "react";
 import { infoToast } from "./toast";
 
-const demoFavs = [
-  { icon: "/cat1.svg" },
-  { icon: "/cat1.svg" },
-  { icon: "/cat1.svg" },
-  { icon: "/cat1.svg" },
-  { icon: "/cat1.svg" },
-];
+const demoFavs = [{ icon: "/cat1.svg" }, { icon: "/moon.svg" }];
 
 const FavouriteSidebar = () => {
   return (

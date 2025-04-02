@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import LaunpadDropCard from "./launchpadDropCard";
+import FAQ from "./faq";
 
 // import Image from "next/image";
 // import React, { useState } from "react";
@@ -335,14 +336,20 @@ const HomeComponent = ({}: HomeComponentProps) => {
         className="w-[100vw]"
         style={{ height: "calc(100vh - 46px)", overflow: "hidden" }}
       >
-        <Image
+        {/* <Image
           src={"/homeBg.png"}
           alt="Home Logo"
           style={{ width: "100%" }}
           width={900}
           height={100}
           priority
-        />
+        /> */}
+        <iframe
+          src="https://unicorn.studio/embed/mbs1rjklu6ZqRSlVd09Q"
+          width="1440px"
+          height="900px"
+          loading="lazy"
+        ></iframe>
       </div>
       <div className="bg-[#0D0D0F] w-[100vw] flex items-center justify-center">
         <p className="text-[#A0A0A0] font-[400] text-large font-Inter">
@@ -578,13 +585,13 @@ const HomeComponent = ({}: HomeComponentProps) => {
         style={{ zIndex: 2 }}
       >
         <h3 className="font-[400] text-[44px] font-Inter linearGradientWhiteText">
-          Gem Finder
+          Memeverse
         </h3>
         <p className="text-[#A0A0A0] font-[400] text-[22px] max-w-[500px] mx-auto font-Inter">
           Discover new tokens and filter by your preferences.
         </p>
         <Image
-          src={"/gemFinder.svg"}
+          src={"/memeverse.svg"}
           className="mx-auto mt-16"
           alt="Trading Logo"
           style={{ width: "80%", zIndex: 0 }}
@@ -602,7 +609,7 @@ const HomeComponent = ({}: HomeComponentProps) => {
           priority
         />
       </div>
-      <div
+      {/* <div
         className="bg-[#131314] w-full text-center mt-20 relative"
         style={{ zIndex: 2 }}
       >
@@ -628,7 +635,7 @@ const HomeComponent = ({}: HomeComponentProps) => {
             );
           })}
         </div>
-      </div>
+      </div> */}
       <div
         className="bg-[#131314] w-full text-center mt-20 relative"
         style={{ zIndex: 2 }}
@@ -706,7 +713,7 @@ const HomeComponent = ({}: HomeComponentProps) => {
         <p className="text-[#A0A0A0] font-[400] text-[22px] max-w-[500px] mx-auto font-Inter">
           Take your emotion out of the equation
         </p>
-        <div className="w-[80vw] flex gap-8 mx-auto flex-col mt-8">
+        {/* <div className="w-[80vw] flex gap-8 mx-auto flex-col mt-8">
           {[
             "What is moonly?",
             "What do I need to start using Moonly?",
@@ -734,7 +741,8 @@ const HomeComponent = ({}: HomeComponentProps) => {
               </div>
             );
           })}
-        </div>
+        </div> */}
+        <FAQ />
       </div>
       <div className="flex justify-between items-center py-6 px-[10%] border-t-[0.8px] border-[#323232]">
         <section className="flex gap-6">
@@ -743,9 +751,6 @@ const HomeComponent = ({}: HomeComponentProps) => {
           </p>
           <p className="text-[#BDBDBD] font-[300] text-[16px] font-Inter cursor-pointer">
             Terms Of Use
-          </p>
-          <p className="text-[#BDBDBD] font-[300] text-[16px] font-Inter cursor-pointer">
-            FAQ
           </p>
         </section>
 
@@ -783,7 +788,7 @@ const HomeComponent = ({}: HomeComponentProps) => {
           </a>
           <a
             className="telegram cursor-pointer"
-            href={"https://x.com/moonlytrade"}
+            href={"https://t.me/moonlytrade"}
             target="_blank"
             rel="noopener noreferrer"
             style={{ pointerEvents: "auto" }}

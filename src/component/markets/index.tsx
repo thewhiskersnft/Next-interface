@@ -85,7 +85,7 @@ const MarketComponent = ({}: MarketComponentProps) => {
                       }
                     >
                       <p className="text-[#FFFFFF] font-Inter font-[500] text-[12px] uppercase">
-                        BONK
+                        MOON
                       </p>
                       <p className="text-[#909090] font-Inter font-[500] text-[12px] uppercase">
                         7.3729 K
