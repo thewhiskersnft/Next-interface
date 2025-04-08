@@ -1,0 +1,281 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* @import url("https://fonts.googleapis.com/css2?family=Oxanium&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Oxanium:wght@400;700&display=swap"); */
+
+@font-face {
+  font-family: Orbitron;
+  src: url(../assets/fonts/Orbitron-VariableFont_wght.ttf);
+}
+
+@font-face {
+  font-family: Oxanium;
+  src: url(../assets/fonts/Oxanium-VariableFont_wght.ttf);
+}
+
+@font-face {
+  font-family: Inter;
+  src: url(../assets/fonts/Inter.ttf);
+}
+
+div,
+p,
+span,
+input,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+section {
+  letter-spacing: 1px;
+  user-select: none;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 28px;
+  height: 14px;
+  margin-left: 10px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #4d4d4d;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 9px;
+  width: 9px;
+  left: 2px;
+  bottom: 2px;
+  top: 2px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #ffc83a;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(14px);
+  -ms-transform: translateX(14px);
+  transform: translateX(14px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.toast-message {
+  background: darkblue;
+  color: #fff;
+  font-size: 20px;
+  width: 34vw;
+  padding: 30px 20px;
+}
+
+.Toastify__toast-theme--light.Toastify__toast--default {
+  background-color: #ffc83a;
+  border-radius: 2px;
+}
+
+.Toastify__toast-theme--light.Toastify__toast--success {
+  background-color: #09a854;
+  max-width: max-content;
+  border-radius: 2px;
+}
+
+.Toastify--animate-icon {
+  display: none !important;
+}
+
+.dropdownContainer {
+  margin-top: 10px;
+}
+
+.Dropdown-control {
+  background-color: #222 !important;
+  font-family: "Orbitron" !important;
+  border: 0 !important;
+}
+
+.Dropdown-option {
+  background-color: #222 !important;
+  color: #fff !important;
+}
+
+.Dropdown-option:hover {
+  background-color: #ffc83a !important;
+  color: black !important;
+}
+
+.Dropdown-menu {
+  border: 0 !important;
+  background-color: #222 !important;
+  padding-top: 10px;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+* {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.loader {
+  border: 7px solid rgba(255, 255, 255, 0.4);
+  border-top: 7px solid #ffc83a;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.custom-card-border {
+  /* border: 1px solid #ffc83a; */
+  border: 1px solid transparent; /* Transparent border to reserve space for border gradients */
+  background-image: linear-gradient(
+      to right,
+      #ffc83a 0%,
+      transparent 25%,
+      transparent 75%,
+      #ffc83a 100%
+    ),
+    linear-gradient(
+      to right,
+      #ffc83a 0%,
+      transparent 25%,
+      transparent 75%,
+      #ffc83a 100%
+    ),
+    /* Top border */
+      linear-gradient(
+        to bottom,
+        #ffc83a 0%,
+        transparent 25%,
+        transparent 75%,
+        #ffc83a 100%
+      ),
+    /* Bottom border */
+      linear-gradient(
+        to left,
+        #ffc83a 0%,
+        transparent 25%,
+        transparent 75%,
+        #ffc83a 100%
+      ),
+    /* Left border */
+      linear-gradient(
+        to right,
+        #ffc83a 0%,
+        transparent 25%,
+        transparent 75%,
+        #ffc83a 100%
+      ),
+    /* Right border */
+      linear-gradient(
+        to bottom,
+        #ffc83a 0%,
+        transparent 25%,
+        transparent 75%,
+        #ffc83a 100%
+      ),
+    /* Left vertical border */
+      linear-gradient(
+        to bottom,
+        #ffc83a 0%,
+        transparent 25%,
+        transparent 75%,
+        #ffc83a 100%
+      ); /* Right vertical border */
+  background-size: 100% 1px, 100% 1px, 100% 1px, 1px 100%, 1px 100%, 1px 100%,
+    1px 100%; /* Gradient size */
+  background-position: top left, bottom left, bottom left, top left, top right,
+    top left, top right; /* Position gradients */
+  background-repeat: no-repeat; /* Prevent gradients from repeating */
+}
+
+.linearGradientWhiteText {
+  /* font-size: 72px; */
+  background: -webkit-linear-gradient(#ffffff, #999999);
+  background-clip: border-box;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

@@ -1,0 +1,1 @@
+export const PLATFORM_FEE_SOL_TOKEN_CREATION = 0;

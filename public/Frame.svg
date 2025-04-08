@@ -1,0 +1,20 @@
+<svg width="33" height="32" viewBox="0 0 33 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Frame 41407">
+<g id="hexagon">
+<mask id="mask0_74_294" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="33" height="32">
+<rect id="Bounding box" x="0.5" width="32" height="32" fill="#D9D9D9"/>
+</mask>
+<g mask="url(#mask0_74_294)">
+<path id="hexagon_2" d="M9.75858 27.6666L3.01758 16L9.75858 4.33337H23.2406L29.9816 16L23.2406 27.6666H9.75858ZM10.709 25.9915H22.2902L28.0252 16L22.2899 6.00854H10.709L4.94058 16L10.709 25.9915Z" fill="white"/>
+</g>
+</g>
+<g id="add">
+<mask id="mask1_74_294" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="4" y="4" width="25" height="24">
+<rect id="Bounding box_2" x="4.5" y="4" width="24" height="24" fill="#D9D9D9"/>
+</mask>
+<g mask="url(#mask1_74_294)">
+<path id="add_2" d="M15.75 16.75H10V15.25H15.75V9.5H17.2499V15.25H23V16.75H17.2499V22.5H15.75V16.75Z" fill="white"/>
+</g>
+</g>
+</g>
+</svg>
