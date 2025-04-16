@@ -338,7 +338,7 @@ const HomeComponent = ({}: HomeComponentProps) => {
       >
         <iframe
           src="https://unicorn.studio/embed/mbs1rjklu6ZqRSlVd09Q"
-          width="1440px"
+          width="100%"
           height="900px"
           loading="lazy"
         ></iframe>
