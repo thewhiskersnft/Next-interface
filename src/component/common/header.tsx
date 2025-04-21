@@ -299,7 +299,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             borderColor: borderColor,
           }}
         >
-          <span
+          {/* <span
             className="flex pr-2 justify-between items-center h-max cursor-pointer"
             style={{
               borderRightWidth: "2px",
@@ -320,7 +320,7 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
             <p className="font-Oxanium text-xsmall text-white ml-2 mr-[10px]">
               {numberWithCommas(totalRewards)}
             </p>
-          </span>
+          </span> */}
           {wallet.connected ? (
             <></>
           ) : (

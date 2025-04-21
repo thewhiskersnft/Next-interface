@@ -153,7 +153,7 @@ export const sidebarData: SidebarItem[] = [
 
 export const headerData: HeaderItem[] = [
   {
-    title: "MARKETS",
+    title: "MEMEVERSE",
     disabled: false,
     navigateTo: "/markets",
   },
@@ -162,11 +162,11 @@ export const headerData: HeaderItem[] = [
     disabled: false,
     navigateTo: "/trade",
   },
-  {
-    title: "PORTFOLIO",
-    disabled: true,
-    navigateTo: "/portfolio",
-  },
+  // {
+  //   title: "Market",
+  //   disabled: true,
+  //   navigateTo: "/portfolio",
+  // },
   {
     title: "TOOLS",
     disabled: false,

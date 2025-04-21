@@ -39,7 +39,7 @@ const Popup = () => {
               placeholder="Enter Telegram Handle"
               className="h-[52px] w-[90%] m-auto rounded-[5px] mt-4 text-small text-white font-light flex justify-start items-center px-3  bg-[#222222cc]  border border-borderColor outline-none placeholder:text-white "
             />
-            <div className=" bg-[#222222cc] w-max text-white px-6 py-3 rounded-3xl text-small mt-6 m-auto">
+            <div className=" bg-[#222222cc] w-max text-white px-6 py-3 rounded-3xl text-small mt-6 m-auto cursor-pointer">
               SUBSCRIBE
             </div>
           </div>
