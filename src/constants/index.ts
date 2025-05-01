@@ -173,6 +173,12 @@ export const headerData: HeaderItem[] = [
     navigateTo: `/token?action=${TokenRoutes.createToken}`,
     // navigateTo: "/token",
   },
+  {
+    title: "DOCS",
+    disabled: false,
+    navigateTo: `https://the-whiskers.gitbook.io/moonly-trade`,
+    // navigateTo: "/token",
+  },
 ];
 
 export const keyPairs: Record<string, string> = {

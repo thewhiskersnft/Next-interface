@@ -250,10 +250,15 @@ const Header: React.FC<HeaderProps> = ({ selectedLink, handleClickProp }) => {
                     : "text-white hover:text-yellow1"
                 } text-small font-Orbitron w-100 cursor-pointer`}
                 onClick={() => {
-                  // console.log(item);
+                  if (item.title === "DOCS") {
+                    window.open(item.navigateTo, "_blank");
+                    return;
+                  }
+
                   if (window?.location?.pathname === item.navigateTo) {
                     return;
                   }
+
                   handleClick(item);
                 }}
               >
