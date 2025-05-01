@@ -333,16 +333,41 @@ const HomeComponent = ({}: HomeComponentProps) => {
   return (
     <div className="bg-[#131314] scroll-smooth" style={{ overflow: "auto" }}>
       <div
-        className="w-[100vw]"
+        className="w-[100vw] relative"
         style={{ height: "calc(100vh - 46px)", overflow: "hidden" }}
       >
+        <div
+          className="absolute text-white text-center z-10 px-4 w-full"
+          style={{ top: "15%", left: "50%", transform: "translateX(-50%)" }}
+        >
+          <h1
+            className="text-[42px] font-orbitron mb-2 bg-clip-text text-transparent"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, hsla(0, 0%, 100%, 1), hsla(0, 0%, 60%, 1))",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            Lightning Fast Trading for Power Users
+          </h1>
+
+          <p className="text-[18px] font-Inter text-[#A0A0A0]">
+            Moonly lets you trade all your favorite assets at lightning speed{" "}
+            <br />
+            without compromising security.
+          </p>
+        </div>
+
         <iframe
           src="https://unicorn.studio/embed/mbs1rjklu6ZqRSlVd09Q"
           width="100%"
-          height="900px"
+          style={{ height:"calc(100vh - 46px)"}}
           loading="lazy"
+          className="z-0"
         ></iframe>
       </div>
+
       <div className="bg-[#0D0D0F] w-[100vw] flex items-center justify-center">
         <p className="text-[#A0A0A0] font-[400] text-large font-Inter">
           Powered by TradingView
